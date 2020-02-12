@@ -20,15 +20,14 @@ export default class Splash extends React.Component {
     loading: true,
     userInfo: null,
   };
-  componentDidMount() {
+  async componentDidMount() {
     console.log('Did mount');
-    Helper.getLocalStorageItem('userInfo').then(data => {
-      if (data) {
-        this.setState({loading: false, userInfo: data});
-      } else {
-        this.setState({loading: false});
-      }
-    });
+    Helper.checkAppVersion();
+    const data = await Helper.getLocalStorageItem('userInfo');
+    console.log(data, 'data');
+    if (data) {
+      this.setState({loading: false, userInfo: data});
+    }
   }
   render() {
     const {loading} = this.state;
