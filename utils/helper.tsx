@@ -1,4 +1,4 @@
-import {Alert} from 'react-native';
+import {Alert, Platform, Linking} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import _ from 'lodash';
 import VersionNumber from 'react-native-version-number';
@@ -7,12 +7,16 @@ import APIEndpoint from '../config/api-endpoint';
 import Events from '../utils/events';
 
 const Helper = {
-  async getLocalStorageItem(key) {
-    AsyncStorage.getItem(key).then(res => {
+  getLocalStorageItem(key) {
+    return AsyncStorage.getItem(key).then(res => {
       if (!res) return null;
       return JSON.parse(res);
     });
   },
+  setLocalStorageItem(key, value) {
+    AsyncStorage.setItem(key, JSON.stringify(value));
+  },
+
   appUpdateAlert(cancelled) {
     const cancelValue = {
       text: 'Cancel',
@@ -26,18 +30,6 @@ const Helper = {
           Linking.openURL(
             'https://play.google.com/store/apps/details?id=com.premium.sales.corporation',
           );
-        } else {
-          // Linking.canOpenURL(
-          //   'https://play.google.com/store/apps/details?id=com.premium.sales.corporation'
-          // )
-          //   .then(supported => {
-          //     if (!supported) {
-          //       console.log('Unable to Open Url');
-          //     } else {
-          //       return Linking.openURL(AppData.testFlightUrl);
-          //     }
-          //   })
-          //   .catch(err => console.error('Unable to Open Url', err));
         }
       },
       style: 'default',
