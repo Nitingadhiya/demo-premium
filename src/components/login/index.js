@@ -1,28 +1,14 @@
 import React, {Component} from 'react';
-import {
-  Text,
-  View,
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  Dimensions,
-  AsyncStorage,
-  Linking,
-  Modal,
-  Alert,
-  Platform,
-  BackHandler,
-} from 'react-native';
-import {CommonActions, StackActions} from '@react-navigation/native';
-import {TextInputView} from '../../common/components';
-import {MIcon, McIcon, AIcon} from '../../common/assets/vector-icon';
+import {Text, View, TouchableOpacity} from 'react-native';
+import {CommonActions} from '@react-navigation/native';
+import {TextInputView, SpinnerView} from '../../common/components';
+import {MIcon, McIcon} from '../../common/assets/vector-icon';
 import {Color} from '../../common/styles';
 import styles from './styles';
 import Helper from '../../utils/helper';
 import APICaller from '../../utils/api-caller';
 import {userLoginEndPoint} from '../../config/api-endpoint';
+import NavigationHelper from '../../utils/navigation-helper';
 
 class LoginComponent extends Component {
   static navigationOptions = () => ({
@@ -86,6 +72,8 @@ class LoginComponent extends Component {
     const {rememberme, loginForm, error} = this.state;
     const {email, password} = loginForm;
     this.resetFormState();
+
+    // Check validation
     if (!email || !password) {
       this.setState(prevState => {
         let error = Object.assign({}, prevState.error);
@@ -95,23 +83,21 @@ class LoginComponent extends Component {
       });
       return;
     }
+    this.setState({loadingData: true});
+    // Remember me
     if (rememberme) {
       Helper.setLocalStorageItem('userCredentials', loginForm);
     }
 
+    // User Login API
     APICaller(userLoginEndPoint(email, password), 'GET').then(async json => {
-      // this.setState({loadingData: false});
+      this.setState({loadingData: false});
       if (json.data.Success === '1') {
         const userInfo = json.data.Response;
         await Helper.setLocalStorageItem('userInfo', userInfo);
         Helper.registerWithtoken(global.fcmToken);
         // global.LoginType = userInfo.LoginType;
-        this.props.navigation.dispatch(
-          CommonActions.reset({
-            index: 1,
-            routes: [{name: 'FeedList'}],
-          }),
-        );
+        NavigationHelper.reset(this.props.navigation, 'FeedList');
       } else {
         const message = json.data.Message;
         this.setState(prevState => {
@@ -134,6 +120,7 @@ class LoginComponent extends Component {
 
   render() {
     const {loginForm, passwordSecure, rememberme} = this.state;
+    const {navigation} = this.props;
     return (
       <View style={styles.container}>
         <View style={styles.textBoxView}>
@@ -185,7 +172,7 @@ class LoginComponent extends Component {
               <MIcon
                 name={`${rememberme ? 'check-box' : 'check-box-outline-blank'}`}
                 size={20}
-                color={Color.APP_COLOR}
+                color={Color.primary}
               />
               <Text style={{marginLeft: 2}}>Remember me</Text>
             </TouchableOpacity>
@@ -198,14 +185,7 @@ class LoginComponent extends Component {
           {this.errorView('formError')}
           <View style={styles.loginView}>
             {this.state.loadingData ? (
-              <View style={styles.spinnerView}>
-                <Spinner
-                  color={Colors.APP_COLOR}
-                  isVisible
-                  type="ThreeBounce"
-                  size={60}
-                />
-              </View>
+              <SpinnerView />
             ) : (
               <TouchableOpacity
                 style={styles.touchableLogin}
@@ -217,7 +197,7 @@ class LoginComponent extends Component {
           <View style={styles.dontAccountView}>
             <TouchableOpacity
               style={styles.touchDontAccount}
-              onPress={() => this.props.navigation.navigate('SignUp')}>
+              onPress={() => NavigationHelper.navigate(navigation, 'Register')}>
               <Text style={styles.dontAccText}>Don't have an Account?</Text>
               <Text style={styles.createAccText}> Create Account</Text>
             </TouchableOpacity>

@@ -15,7 +15,7 @@ export * from './textinput-view';
 // export * from "./dashboard-modal";
 // export * from "./bottom-bg";
 // export * from "./language-modal";
-// export * from "./spinner";
+export * from './spinner';
 // export * from "./empty-component";
 // export * from "./load-more-component";
 // export * from "./app-update-modal";

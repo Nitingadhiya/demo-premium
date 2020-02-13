@@ -1,45 +1,47 @@
-import {Color, Matrics, Fonts, ApplicationStyles} from '../../common/styles';
+import {Color, Matrics} from '../../common/styles';
 
 export default styles = {
+  headerTitleView: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+  },
+  headerTitleText: {
+    fontSize: 20,
+  },
   container: {
-    // flex: 1,
-    width: '90%',
+    flex: 1,
     backgroundColor: Color.white,
-    paddingTop: 20,
-    position: 'absolute',
-    borderWidth: 1,
-    borderRadius: 10,
-    margin: 20,
-    top: 0,
+    marginTop: 10,
   },
   txtStyle2: {
-    color: Color.VERY_DARK_GRAY,
+    color: Color.darkGrey,
     textAlign: 'center',
     fontSize: Matrics.ScaleValue(17),
   },
   txtStyle3: {
-    color: Color.VERY_DARK_GRAY,
+    color: Color.darkGrey,
     fontSize: Matrics.ScaleValue(14),
     alignSelf: 'center',
     marginLeft: Matrics.ScaleValue(5),
   },
   txtStyle4: {
-    color: Color.VERY_DARK_GRAY,
+    color: Color.darkGrey,
     fontSize: Matrics.ScaleValue(14),
     alignSelf: 'center',
   },
   txtStyle5: {
     fontSize: Matrics.ScaleValue(15),
-    color: Color.VERY_DARK_GRAY,
+    color: Color.darkGrey,
   },
   txtStyle6: {
     fontSize: Matrics.ScaleValue(15),
-    color: Color.VIVID_ORANGE,
+    color: Color.orangish,
   },
   checkboxStyle: {
     color: Color.WHITE,
-    backgroundColor: Color.VERY_DARK_GRAY,
-    borderColor: Color.VERY_DARK_GRAY,
+    backgroundColor: Color.darkGrey,
+    borderColor: Color.darkGrey,
     borderRadius: Matrics.ScaleValue(2),
   },
   imageStyle: {
@@ -63,7 +65,7 @@ export default styles = {
     fontWeight: 'bold',
   },
   fbLoginText: {
-    color: Color.DARK_MODERATE_BLUE,
+    color: Color.darkGreyBlue,
     fontSize: Matrics.ScaleValue(18),
     fontWeight: 'bold',
   },
@@ -77,6 +79,14 @@ export default styles = {
     width: '80%',
     borderBottomWidth: 1,
     borderBottomColor: '#d3d3d3',
+  },
+  subRadioBoxView: {
+    width: '80%',
+    borderBottomWidth: 1,
+    borderBottomColor: '#d3d3d3',
+    flexDirection: 'row',
+    height: 50,
+    alignItems: 'center',
   },
   floatingView: {
     margin: 10,
@@ -100,12 +110,7 @@ export default styles = {
     alignItems: 'center',
     justifyContent: 'center',
   },
-  loginView: {
-    height: 40,
-    width: '60%',
-    marginVertical: 10,
-    alignItems: 'center',
-  },
+  loginView: {height: 40, width: '60%', marginTop: 15, alignItems: 'center'},
   touchableLogin: {
     backgroundColor: '#393184',
     width: 120,
@@ -116,11 +121,7 @@ export default styles = {
   },
   loginText: {color: '#fff', fontSize: 16, fontWeight: 'bold'},
   dontAccountView: {flex: 1, flexDirection: 'row', marginTop: 5},
-  touchDontAccount: {
-    justifyContent: 'center',
-    flexDirection: 'row',
-    height: 40,
-  },
+  touchDontAccount: {justifyContent: 'center', flexDirection: 'row'},
   dontAccText: {color: '#000', fontSize: 14},
   createAccText: {color: '#393184', fontSize: 14},
   lastLineScreen: {
@@ -136,16 +137,15 @@ export default styles = {
     paddingHorizontal: 10,
   },
   errorView: {
-    //height: 15,
+    height: 15,
     justifyContent: 'center',
+    width: '100%',
+    alignItems: 'flex-start',
     width: '80%',
   },
   errorText: {
     fontSize: 14,
     color: 'red',
-  },
-  loginErrorView: {
-    marginTop: 3,
   },
   passwordVisible: {
     marginRight: 5,
@@ -158,23 +158,17 @@ export default styles = {
     justifyContent: 'center',
     alignSelf: 'center',
   },
-  centerText: {fontSize: 18, textAlign: 'center', color: '#fff'},
-  rectangleContainer: {
-    flex: 1,
+  cityList: {
+    height: 55,
+    width: '80%',
+    borderBottomWidth: 1,
+    borderBottomColor: '#d3d3d3',
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
   },
-  productListIcon: {
-    position: 'absolute',
-    zIndex: 1,
-    height: 50,
-    width: 50,
-    backgroundColor: Color.primary,
-    borderRadius: 25,
-    bottom: 40,
-    right: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+  bottomText: {color: Color.black, fontSize: 12},
+  extraBottomSpace: {
+    height: Matrics.ScaleValue(40),
   },
 };

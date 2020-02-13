@@ -1,43 +1,14 @@
 import React, {Component} from 'react';
-import {
-  Text,
-  View,
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  Dimensions,
-  AsyncStorage,
-  Linking,
-  Modal,
-  Alert,
-  Platform,
-  BackHandler,
-} from 'react-native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {TextInputView} from '../../common/components';
-import {MIcon, McIcon, AIcon} from '../../common/assets/vector-icon';
-import {Color} from '../../common/styles';
+import {SafeAreaView, TouchableOpacity} from 'react-native';
+import {AIcon} from '../../common/assets/vector-icon';
 import CarouselSliderView from '../../common/components/carousel-slider-view';
 import LoginComponent from '../../components/login';
-import APICaller from '../../utils/api-caller';
-import APIEndpoint from '../../config/api-endpoint';
 import styles from './styles';
-import {Matrics} from '../../common/styles';
 
 class Login extends Component {
-  static navigationOptions = () => ({
-    header: null,
-  });
-  state = {
-    sliderImage: null,
-  };
-
   render() {
-    const {sliderImage} = this.state;
     return (
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={styles.container}>
         <CarouselSliderView />
         <LoginComponent navigation={this.props.navigation} />
 

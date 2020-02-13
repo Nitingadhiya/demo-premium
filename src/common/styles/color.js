@@ -1,6 +1,8 @@
 const Color = {
+  primary: '#393184',
   white: 'white',
   lightGray: '#777777',
+  darkGrey: 'rgb(105,105,105)',
   textGray: '#a3a3a3', // '#010101'
   starColor: 'rgb(255,197,63)',
   inActiveStarColor: 'rgb(210,210,210)',

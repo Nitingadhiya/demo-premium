@@ -1,8 +1,8 @@
-import React, { Component } from "react";
-import { View } from "react-native";
-import Spinner from "react-native-spinkit";
-import { Matrics, Color } from "../../../common/styles";
-import Styles from "./styles";
+import React, {Component} from 'react';
+import {View} from 'react-native';
+import Spinner from 'react-native-spinkit';
+import {Matrics, Color} from '../../../common/styles';
+import styles from './styles';
 
 export const SpinnerView = ({}) => {
   return (
@@ -11,8 +11,8 @@ export const SpinnerView = ({}) => {
         style={styles.spinner}
         isVisible={true}
         size={Matrics.ScaleValue(50)}
-        type={"ThreeBounce"}
-        color={Color.darkRed}
+        type={'ThreeBounce'}
+        color={Color.primary}
       />
     </View>
   );

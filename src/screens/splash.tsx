@@ -17,6 +17,8 @@ import {StackNavigatorParamlist} from './types';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Helper from '../utils/helper';
 import enableFontPatch from '../utils/enableFontPatch';
+import Register from './register';
+import OTPScreen from './otp';
 
 type Props = {
   route: RouteProp<StackNavigatorParamlist, 'Splash'>;
@@ -90,7 +92,7 @@ export default class Splash extends React.Component {
                 ? options.title
                 : scene.route.name;
 
-            if (options.headerTitle === 'Login') {
+            if (!options.headerTitle) {
               return null;
             }
             return (
@@ -138,10 +140,16 @@ export default class Splash extends React.Component {
             );
           },
         }}>
+        <Stack.Screen name="Login" component={Login} />
         <Stack.Screen
-          name="Login"
-          component={Login}
-          options={{headerTitle: 'Login'}}
+          name="Register"
+          component={Register}
+          options={{headerTitle: 'Register'}}
+        />
+        <Stack.Screen
+          name="OTPScreen"
+          component={OTPScreen}
+          options={{headerTitle: 'Verify OTP'}}
         />
         <Stack.Screen
           name="FeedList"
