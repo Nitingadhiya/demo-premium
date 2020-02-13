@@ -4,6 +4,19 @@ export default styles = {
   container: {
     flex: 1,
   },
+  lastLineScreen: {
+    height: 30,
+    width: '100%',
+    position: 'absolute',
+    zIndex: 1,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#e5e5e5',
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+  },
+  bottomText: {color: Color.black, fontSize: 12},
   productListIcon: {
     position: 'absolute',
     zIndex: 1,

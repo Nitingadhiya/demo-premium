@@ -6,6 +6,8 @@ const updateTokenEndPoint = (userName, token) =>
   `UpdateTokenForUser?Username=${userName}&Token=${token}`;
 const userRegistrationEndPoint = 'UserRegisteration';
 const getCityEndPoint = 'GetCityList';
+const validateOtpEndPoint = (mobileNo, otp) =>
+  `ValidateOTP?MobileNo=${mobileNo}&OTP=${otp}`;
 
 module.exports = {
   checkVersionEndPoint,
@@ -14,4 +16,5 @@ module.exports = {
   updateTokenEndPoint,
   userRegistrationEndPoint,
   getCityEndPoint,
+  validateOtpEndPoint,
 };
