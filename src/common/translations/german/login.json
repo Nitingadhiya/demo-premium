@@ -1,0 +1,17 @@
+{
+  "Sign In": "Einloggen",
+  "Forgot Password?": "Passwort vergessen?",
+  "Don't Have an Account?": "Noch keinen Account?",
+  "Sign Up": "Anmelden",
+  "Sign in with Facebook": "Mit Facebook anmelden",
+  "Sign in with Twitter": "Mit Twitter anmelden",
+  "Password": "Passwort",
+  "Email Id": "E-Mail",
+  "Or": "Oder",
+  "The Phone field is required": "Das Feld für die Telefonnummer ist erforderlich.",
+  "Phone": "Telefon-Nummer",
+  "Email": "E-Mail-Adresse",
+  "Login without password": "Login ohne Passwort",
+  "We have sent you your login code via SMS to number": "Wir haben dir deinen Login Code als SMS an {{number}} gesendet",
+  "Check messages": "Nachrichten überprüfen"
+}
