@@ -8,7 +8,7 @@ import {
   Alert,
   FlatList,
 } from 'react-native';
-import {VersionNumber} from '../../package';
+import {VersionNumber, AnimatedCircularProgress} from '../../package';
 import styles from './styles';
 import {Images, Color, Matrics} from '../../common/styles';
 import {MIcon, McIcon} from '../../common/assets/vector-icon';
@@ -17,51 +17,8 @@ import {userDashboardEndPoint} from '../../config/api-endpoint';
 
 let self;
 class SystemCardView extends Component {
-  state = {
-    systemDescription: null,
-    refreshing: false,
-  };
-
   componentDidMount() {
     self = this;
-    const {userInfo} = this.props;
-    this.userDashboard(userInfo.UserName);
-  }
-  userDashboard(userName) {
-    this.setState({
-      loadingData: true,
-    });
-    if (!userName) {
-      Alert.alert('Alert', 'Invalid username');
-      return;
-    }
-
-    APICaller(
-      userDashboardEndPoint(userName, VersionNumber.buildVersion),
-      'GET',
-    ).then(json => {
-      this.setState({
-        loadingData: false,
-        refreshing: false,
-      });
-      if (json.data.Success === '1') {
-        const systemDescription = json.data.Response;
-        this.setState({
-          systemDescription,
-        });
-      }
-    });
-  }
-
-  checkSYStag(systemTag) {
-    if (systemTag) {
-      const sysTg = systemTag.split('-');
-      if (sysTg[0] === 'SYS') {
-        return 'true';
-      }
-      return 'false';
-    }
-    return 'false';
   }
 
   navigateSignature(systemTag, signature) {
@@ -69,9 +26,34 @@ class SystemCardView extends Component {
   }
 
   renderItemFlat({item}) {
+    checkSYStag = systemTag => {
+      if (systemTag) {
+        const sysTg = systemTag.split('-');
+        if (sysTg[0] === 'SYS') {
+          return 'true';
+        }
+        return 'false';
+      }
+      return 'false';
+    };
+    animatedCircle = (percentage, days) => (
+      <AnimatedCircularProgress
+        size={parseInt(Matrics.screenWidth / 7.5)}
+        width={3}
+        fill={percentage || 0}
+        tintColor="red"
+        backgroundColor="grey">
+        {fill => (
+          <View style={styles.points}>
+            <Text style={styles.dayNumber}>{days || 0}</Text>
+            <Text style={styles.dayText}>Days</Text>
+          </View>
+        )}
+      </AnimatedCircularProgress>
+    );
     return (
       <View style={styles.systemProtectedView}>
-        {self.checkSYStag(item.SystemTag) === 'true' ? (
+        {checkSYStag(item.SystemTag) === 'true' ? (
           <TouchableOpacity
             style={styles.signatureVerifyScreen}
             onPress={() =>
@@ -156,19 +138,7 @@ class SystemCardView extends Component {
           <TouchableOpacity
             style={styles.protectedDTSubView}
             onPress={() => self.getWarrantyFn(item.SystemTag)}>
-            {/* <AnimatedCircularProgress
-              size={parseInt(Matrics.screenWidth / 7.5)}
-              width={3}
-              fill={item.WarrantyPercentage || 0}
-              tintColor="red"
-              backgroundColor="grey">
-              {fill => (
-                <View style={styles.points}>
-                  <Text style={styles.dayNumber}>{item.WarrantyDays || 0}</Text>
-                  <Text style={styles.dayText}>Days</Text>
-                </View>
-              )}
-            </AnimatedCircularProgress> */}
+            {animatedCircle(item.WarrantyPercentage, item.WarrantyDays)}
             <View style={styles.textdescView}>
               <Text style={styles.textdesc}>{'Warranty'.toUpperCase()}</Text>
             </View>
@@ -180,21 +150,8 @@ class SystemCardView extends Component {
             onPress={() =>
               self.showAntivirusKey(item.Antivirus, item.AntivirusKey)
             }>
-            {/* <AnimatedCircularProgress
-              size={parseInt(Matrics.screenWidth / 7.5)}
-              width={3}
-              fill={item.AntivirusPercentage || 0}
-              tintColor="red"
-              backgroundColor="grey">
-              {fill => (
-                <View style={styles.points}>
-                  <Text style={styles.dayNumber}>
-                    {item.AntivirusDays || 0}
-                  </Text>
-                  <Text style={styles.dayText}>Days</Text>
-                </View>
-              )}
-            </AnimatedCircularProgress> */}
+            {animatedCircle(item.AntivirusPercentage, item.AntivirusDays)}
+
             <View style={styles.textdescView}>
               <Text style={styles.textdesc}>{'Anti-virus'.toUpperCase()}</Text>
             </View>
@@ -202,19 +159,7 @@ class SystemCardView extends Component {
           <TouchableOpacity
             style={styles.protectedDTSubView}
             onPress={() => self.getServiceDayFn(item.SystemTag)}>
-            {/* <AnimatedCircularProgress
-              size={parseInt(Matrics.screenWidth / 7.5)}
-              width={3}
-              fill={item.ServicePercentage || 0}
-              tintColor="red"
-              backgroundColor="grey">
-              {fill => (
-                <View style={styles.points}>
-                  <Text style={styles.dayNumber}>{item.ServiceDays || 0}</Text>
-                  <Text style={styles.dayText}>Days</Text>
-                </View>
-              )}
-            </AnimatedCircularProgress> */}
+            {animatedCircle(item.ServicePercentage, item.ServiceDays)}
             <View style={styles.textdescView}>
               <Text style={styles.textdesc}>{'Services'.toUpperCase()}</Text>
             </View>
@@ -222,19 +167,7 @@ class SystemCardView extends Component {
           <TouchableOpacity
             style={styles.protectedDTSubView}
             onPress={() => self.getBonusDayFn(item.SystemTag)}>
-            {/* <AnimatedCircularProgress
-              size={parseInt(Matrics.screenWidth / 7.5)}
-              width={3}
-              fill={item.BonusPercentage || 0}
-              tintColor="red"
-              backgroundColor="grey">
-              {fill => (
-                <View style={styles.points}>
-                  <Text style={styles.dayNumber}>{item.BonusDays || 0}</Text>
-                  <Text style={styles.dayText}>Days</Text>
-                </View>
-              )}
-            </AnimatedCircularProgress> */}
+            {animatedCircle(item.BonusPercentage, item.BonusDays)}
             <View style={styles.textdescView}>
               <Text style={styles.textdesc}>{'Bonus Day'.toUpperCase()}</Text>
             </View>
@@ -254,7 +187,7 @@ class SystemCardView extends Component {
   }
 
   render() {
-    const {systemDescription} = this.state;
+    const {systemDescription} = this.props;
     return (
       <View style={{flex: 1}}>
         {systemDescription && systemDescription[0].UserName ? (

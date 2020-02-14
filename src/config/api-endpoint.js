@@ -12,6 +12,9 @@ const getCategoryListEndPoint = 'GetCategoryList';
 const getVersionCodeEndPoint = 'GetVersionCode';
 const userDashboardEndPoint = (userName, buildVersion) =>
   `UserDashboard?Username=${userName}&UserVersion=${buildVersion}`;
+const getComplaintImageEndPoint = 'GetComplaintImages';
+const getComplaintChargeEndPoint = (systemTag, userName) =>
+  `GetComplaintCharges?SystemTag=${systemTag}&BaseUserName=${userName}`;
 
 module.exports = {
   checkVersionEndPoint,
@@ -24,4 +27,6 @@ module.exports = {
   getCategoryListEndPoint,
   getVersionCodeEndPoint,
   userDashboardEndPoint,
+  getComplaintImageEndPoint,
+  getComplaintChargeEndPoint,
 };

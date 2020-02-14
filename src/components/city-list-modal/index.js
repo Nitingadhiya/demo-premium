@@ -43,9 +43,7 @@ class CityListModal extends Component {
   }
 
   getCityList = () => {
-    console.log('Lppk');
     APICaller(getCityEndPoint, 'GET').then(json => {
-      console.log(json, 'json');
       if (json.data.Success === '0' || json.data.Success === 0) {
         Alert.alert('Alert', json.data.Message);
       }

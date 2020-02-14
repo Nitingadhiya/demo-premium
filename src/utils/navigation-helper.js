@@ -1,5 +1,4 @@
 import {CommonActions} from '@react-navigation/native';
-
 const NavigationHelper = {
   navigate(navigation, screen, params) {
     navigation.dispatch(

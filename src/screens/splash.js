@@ -20,6 +20,7 @@ import enableFontPatch from '../utils/enableFontPatch';
 import UserNavigation from './user-navigation';
 import Register from './register';
 import OTPScreen from './otp';
+import SubmitComplaint from './submit-complaint';
 
 type Props = {
   route: RouteProp<StackNavigatorParamlist, 'Splash'>,
@@ -152,6 +153,11 @@ export default class Splash extends React.Component {
           name="OTPScreen"
           component={OTPScreen}
           options={{headerTitle: 'Verify OTP'}}
+        />
+        <Stack.Screen
+          name="SubmitComplaint"
+          component={SubmitComplaint}
+          options={{headerTitle: 'Submit Complaint'}}
         />
         {/* <Stack.Screen
           name="Details"

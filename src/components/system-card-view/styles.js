@@ -105,7 +105,7 @@ export default styles = {
     color: '#000',
     textAlign: 'center',
   },
-  animateCircleView: {
+  animatedCircleView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
