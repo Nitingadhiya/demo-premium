@@ -21,6 +21,7 @@ import UserNavigation from './user-navigation';
 import Register from './register';
 import OTPScreen from './otp';
 import SubmitComplaint from './submit-complaint';
+import AddSystem from './add-system';
 
 type Props = {
   route: RouteProp<StackNavigatorParamlist, 'Splash'>,
@@ -158,6 +159,11 @@ export default class Splash extends React.Component {
           name="SubmitComplaint"
           component={SubmitComplaint}
           options={{headerTitle: 'Submit Complaint'}}
+        />
+        <Stack.Screen
+          name="AddSystem"
+          component={AddSystem}
+          options={{headerTitle: 'Add System'}}
         />
         {/* <Stack.Screen
           name="Details"

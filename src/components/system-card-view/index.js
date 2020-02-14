@@ -14,6 +14,7 @@ import {Images, Color, Matrics} from '../../common/styles';
 import {MIcon, McIcon} from '../../common/assets/vector-icon';
 import APICaller from '../../utils/api-caller';
 import {userDashboardEndPoint} from '../../config/api-endpoint';
+import Events from '../../utils/events';
 
 let self;
 class SystemCardView extends Component {
@@ -24,6 +25,10 @@ class SystemCardView extends Component {
   navigateSignature(systemTag, signature) {
     this.props.navigation.navigate('SignCapture', {systemTag, signature});
   }
+
+  EditSystemNameMethod = (systemTag, systemName) => {
+    Events.trigger('systemNameUpdateModal', {systemTag, systemName});
+  };
 
   renderItemFlat({item}) {
     checkSYStag = systemTag => {
@@ -51,6 +56,7 @@ class SystemCardView extends Component {
         )}
       </AnimatedCircularProgress>
     );
+
     return (
       <View style={styles.systemProtectedView}>
         {checkSYStag(item.SystemTag) === 'true' ? (
@@ -121,7 +127,9 @@ class SystemCardView extends Component {
         </View>
         <TouchableOpacity
           style={styles.editSystemTouch}
-          onPress={() => self.modalOpenSystem(item.SystemTag, item.SystemName)}>
+          onPress={() =>
+            self.EditSystemNameMethod(item.SystemTag, item.SystemName)
+          }>
           <Text style={styles.systemNameText} numberOfLines={1}>
             This is Your "{item.SystemName ? item.SystemName : '-'}"{' '}
           </Text>

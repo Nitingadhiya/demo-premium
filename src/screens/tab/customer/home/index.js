@@ -22,6 +22,7 @@ import {
 } from '../../../../common/components';
 import SystemCardView from '../../../../components/system-card-view';
 import CategoryItemList from '../../../../components/category-item-list';
+import EditSystemNameModal from '../../../../components/edit-system-name';
 import ComplaintOptionsModal from '../../../../components/complaint-options-modal';
 import NavigationHelper from '../../../../utils/navigation-helper';
 
@@ -34,9 +35,11 @@ export default class Dashboard extends Component {
   };
 
   componentDidMount() {
-    console.log('Dod ');
     this.getUserInfo();
     this.checkUpdateAvailable();
+    Events.on('refreshDashboard', 'refresh', () => {
+      this.getUserInfo();
+    });
   }
 
   async getUserInfo() {
@@ -89,8 +92,19 @@ export default class Dashboard extends Component {
     Events.trigger('complaintRegisterModal', true);
   }
 
+  _onRefresh = () => {
+    this.setState({refreshing: true});
+    this.userDashboard(this.state.userInfo.UserName);
+  };
+
   render() {
-    const {userInfo, updateAvailable, systemDescription} = this.state;
+    const {navigation} = this.props;
+    const {
+      userInfo,
+      updateAvailable,
+      systemDescription,
+      refreshing,
+    } = this.state;
     return (
       <View style={styles.mainContainer}>
         {updateAvailable ? <UpdateAvailableView /> : null}
@@ -98,7 +112,7 @@ export default class Dashboard extends Component {
           style={{flex: 1}}
           refreshControl={
             <RefreshControl
-              refreshing={this.state.refreshing}
+              refreshing={refreshing}
               onRefresh={this._onRefresh}
             />
           }>
@@ -118,7 +132,7 @@ export default class Dashboard extends Component {
           ) : null}
           <TouchableOpacity
             style={styles.actionTouch}
-            onPress={() => NavigationHelper.navigate('AddSystem')}>
+            onPress={() => NavigationHelper.navigate(navigation, 'AddSystem')}>
             <Text style={{color: '#fff', fontSize: 14}}>Add System</Text>
           </TouchableOpacity>
         </View>
@@ -128,8 +142,10 @@ export default class Dashboard extends Component {
           visible={true}
           systemDescription={systemDescription}
           userName={userInfo && userInfo.UserName}
-          navigation={this.props.navigation}
+          navigation={navigation}
         />
+        {/* Update System Name */}
+        <EditSystemNameModal userName={userInfo && userInfo.UserName} />
       </View>
     );
   }

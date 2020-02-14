@@ -15,6 +15,12 @@ const userDashboardEndPoint = (userName, buildVersion) =>
 const getComplaintImageEndPoint = 'GetComplaintImages';
 const getComplaintChargeEndPoint = (systemTag, userName) =>
   `GetComplaintCharges?SystemTag=${systemTag}&BaseUserName=${userName}`;
+const getItemTypeListEndPoint = 'GetItemTypeList';
+const getSystemTypeListEndPoint = 'GetSystemTypeList';
+const addSystemEndPoint = (itemType, systemType, systemName, userName) =>
+  `AddSystem?ItemType=${itemType}&SystemType=${systemType}&SystemName=${systemName}&Username=${userName}&ServiceTag=`;
+const updateSystemNameEndPoint = (systemName, userName, systemTag) =>
+  `AddSystem?SystemName=${systemName}&Username=${userName}&ServiceTag=${systemTag}`;
 
 module.exports = {
   checkVersionEndPoint,
@@ -29,4 +35,8 @@ module.exports = {
   userDashboardEndPoint,
   getComplaintImageEndPoint,
   getComplaintChargeEndPoint,
+  getItemTypeListEndPoint,
+  getSystemTypeListEndPoint,
+  addSystemEndPoint,
+  updateSystemNameEndPoint,
 };
