@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {SafeAreaView, View, Text} from 'react-native';
+import RNOtpVerify from 'react-native-otp-verify';
 import CodeInput from 'react-native-confirmation-code-input';
 import APICaller from '../../utils/api-caller';
 import {validateOtpEndPoint} from '../../config/api-endpoint';

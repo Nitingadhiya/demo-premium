@@ -1,6 +1,21 @@
 /* eslint-disable global-require */
 // import assetsImages from '../../../../form-assets/images';
 const images = {
+  SideMenuIcon: require('./files/_0041_Rectangle-228-Copy.png'),
+  PremiumIcon: require('./files/premiumIcon.png'),
+  AppIcon: require('./files/app_icon.png'),
+  //notProtected: require('./files/notProtected.png'),
+  goldOnIcon: require('./files/shield-gold-on.png'),
+  goldOffIcon: require('./files/shield-gold-off.png'),
+
+  silverOnIcon: require('./files/shield-silver-on.png'),
+  silverOffIcon: require('./files/shield-silver-off.png'),
+
+  platinumOnIcon: require('./files/shield-platinum-on.png'),
+  platinumOffIcon: require('./files/shield-platinum-off.png'),
+
+  fmcIcon: require('./files/shield-fmc.png'),
+  dashBoardIcon: require('./files/dashboard-logo.png'),
   // welcomeBg: assetsImages.welcomeBg,
   // welcomeLogo: assetsImages.welcomeLogo,
   // listDefault: assetsImages.listDefault,

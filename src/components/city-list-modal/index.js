@@ -81,11 +81,7 @@ class CityListModal extends Component {
   }
 
   render() {
-    const {
-      searchPlaceholderText,
-      closeModalPress,
-      addressModalVisible,
-    } = this.props;
+    const {searchPlaceholderText, closeModalPress} = this.props;
     const {searchTextValue, filterCityList, citySearch} = this.state;
     return (
       <Modal

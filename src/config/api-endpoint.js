@@ -8,6 +8,10 @@ const userRegistrationEndPoint = 'UserRegisteration';
 const getCityEndPoint = 'GetCityList';
 const validateOtpEndPoint = (mobileNo, otp) =>
   `ValidateOTP?MobileNo=${mobileNo}&OTP=${otp}`;
+const getCategoryListEndPoint = 'GetCategoryList';
+const getVersionCodeEndPoint = 'GetVersionCode';
+const userDashboardEndPoint = (userName, buildVersion) =>
+  `UserDashboard?Username=${userName}&UserVersion=${buildVersion}`;
 
 module.exports = {
   checkVersionEndPoint,
@@ -17,4 +21,7 @@ module.exports = {
   userRegistrationEndPoint,
   getCityEndPoint,
   validateOtpEndPoint,
+  getCategoryListEndPoint,
+  getVersionCodeEndPoint,
+  userDashboardEndPoint,
 };

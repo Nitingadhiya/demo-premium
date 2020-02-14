@@ -6,6 +6,7 @@ import {useSafeArea} from 'react-native-safe-area-context';
 import {useIsFocused, RouteProp} from '@react-navigation/native';
 
 import overlay from '../overlay';
+import Dashboard from '../tab/customer/home';
 import {Feed} from '../feed';
 import {Message} from '../message';
 import {Notifications} from '../notifications';
@@ -44,7 +45,7 @@ export const CustomerBottomTabs = (props: Props) => {
   return (
     <React.Fragment>
       <Tab.Navigator
-        initialRouteName="Home"
+        initialRouteName="Dashboard"
         backBehavior="initialRoute"
         shifting={true}
         activeColor={theme.colors.primary}
@@ -55,8 +56,8 @@ export const CustomerBottomTabs = (props: Props) => {
         swipeEnabled={true}
         sceneAnimationEnabled={false}>
         <Tab.Screen
-          name="Home"
-          component={Feed}
+          name="Dashboard"
+          component={Dashboard}
           options={{
             tabBarIcon: 'home-account',
             tabBarLabel: 'Home',

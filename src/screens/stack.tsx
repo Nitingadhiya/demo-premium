@@ -16,17 +16,6 @@ export const StackNavigator = () => {
           headerTransparent: true,
         }}
       />
-      {/* <Stack.Screen
-        name="FeedList"
-        component={BottomTabs}
-        options={({route}) => {
-          console.log('!@# options', {route});
-          const routeName = route.state
-            ? route.state.routes[route.state.index].name
-            : 'Feed';
-          return {headerTitle: routeName};
-        }}
-      /> */}
     </Stack.Navigator>
   );
 };

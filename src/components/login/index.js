@@ -97,7 +97,7 @@ class LoginComponent extends Component {
         await Helper.setLocalStorageItem('userInfo', userInfo);
         Helper.registerWithtoken(global.fcmToken);
         // global.LoginType = userInfo.LoginType;
-        NavigationHelper.reset(this.props.navigation, 'FeedList');
+        NavigationHelper.reset(this.props.navigation, 'UserNavigation');
       } else {
         const message = json.data.Message;
         this.setState(prevState => {

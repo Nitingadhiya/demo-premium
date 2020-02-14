@@ -24,6 +24,7 @@
     "react-native-confirmation-code-input": "^1.0.4",
     "react-native-gesture-handler": "^1.5.6",
     "react-native-looped-carousel": "^0.1.13",
+    "react-native-otp-verify": "^1.0.3",
     "react-native-paper": "^3.6.0",
     "react-native-reanimated": "^1.7.0",
     "react-native-safe-area-context": "^0.7.2",

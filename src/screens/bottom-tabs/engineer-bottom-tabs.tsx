@@ -68,7 +68,7 @@ export const EngineerBottomTabs = (props: Props) => {
           component={Feed}
           options={{
             tabBarIcon: 'format-list-bulleted',
-            tabBarLabel: 'Complaint',
+            tabBarLabel: 'Engineer',
             tabBarColor,
           }}
         />

@@ -17,17 +17,18 @@ import {StackNavigatorParamlist} from './types';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Helper from '../utils/helper';
 import enableFontPatch from '../utils/enableFontPatch';
+import UserNavigation from './user-navigation';
 import Register from './register';
 import OTPScreen from './otp';
 
 type Props = {
-  route: RouteProp<StackNavigatorParamlist, 'Splash'>;
+  route: RouteProp<StackNavigatorParamlist, 'Splash'>,
 };
 const Stack = createStackNavigator();
 const primary = '#393184';
 export default class Splash extends React.Component {
   state = {
-    loading: true,
+    loading: false,
     userInfo: null,
     appState: AppState.currentState,
   };
@@ -36,14 +37,12 @@ export default class Splash extends React.Component {
     console.disableYellowBox = true;
     enableFontPatch();
 
-    Helper.setLocalStorageItem('userInfo', {LoginType: '4'});
     //Helper.checkAppVersion(); //Check application update
     const data = await Helper.getLocalStorageItem('userInfo');
     console.log(data, 'data');
     if (data) {
-      this.setState({loading: false, userInfo: data});
+      this.setState({userInfo: data});
     }
-    setTimeout(() => {});
   }
   componentWillUnmount() {
     AppState.removeEventListener('change', this.handleAppStateChange);
@@ -63,6 +62,7 @@ export default class Splash extends React.Component {
 
   tabBarBottom() {
     const {userInfo} = this.state;
+    if (!userInfo) return AdminBottomTabs;
     if (userInfo.LoginType === '1') return AdminBottomTabs;
     if (userInfo.LoginType === '2') return ManagerBottomTabs;
     if (userInfo.LoginType === '3') return EngineerBottomTabs;
@@ -71,7 +71,7 @@ export default class Splash extends React.Component {
   }
 
   render() {
-    const {loading} = this.state;
+    const {loading, userInfo} = this.state;
     if (loading) {
       return (
         <View>
@@ -106,7 +106,7 @@ export default class Splash extends React.Component {
                   <TouchableOpacity
                     style={{marginLeft: 10}}
                     onPress={() => {
-                      ((navigation as any) as DrawerNavigationProp<{}>).openDrawer();
+                      // ((navigation as any) as DrawerNavigationProp<{}>).openDrawer();
                     }}>
                     <Avatar.Image
                       size={40}
@@ -140,7 +140,9 @@ export default class Splash extends React.Component {
             );
           },
         }}>
-        <Stack.Screen name="Login" component={Login} />
+        {!userInfo ? <Stack.Screen name="Login" component={Login} /> : null}
+
+        <Stack.Screen name="UserNavigation" component={UserNavigation} />
         <Stack.Screen
           name="Register"
           component={Register}
@@ -151,53 +153,12 @@ export default class Splash extends React.Component {
           component={OTPScreen}
           options={{headerTitle: 'Verify OTP'}}
         />
-        <Stack.Screen
-          name="FeedList"
-          component={this.tabBarBottom()}
-          options={({route}) => {
-            console.log('!@# options', {route});
-            const routeName = route.state
-              ? route.state.routes[route.state.index].name
-              : 'Feed';
-            return {headerTitle: routeName};
-          }}
-        />
-        <Stack.Screen
+        {/* <Stack.Screen
           name="Details"
           component={Details}
           options={{headerTitle: 'Tweet'}}
-        />
+        /> */}
       </Stack.Navigator>
     );
   }
 }
-
-// import React from 'react';
-// import {View, Text} from 'react-native';
-// import {RouteProp} from '@react-navigation/native';
-// import {createStackNavigator} from '@react-navigation/stack';
-// import {BottomTabs} from './bottomTabs';
-// import {StackNavigatorParamlist} from './types';
-
-// type Props = {
-//   route: RouteProp<StackNavigatorParamlist, 'Splash'>;
-// };
-// const Stack = createStackNavigator();
-
-// export const Splash = (props: Props) => {
-//   return (
-//     <Stack.Navigator initialRouteName="Splash" headerMode="screen">
-//       <Stack.Screen
-//         name="FeedList"
-//         component={BottomTabs}
-//         options={({route}) => {
-//           console.log('!@# options', {route});
-//           const routeName = route.state
-//             ? route.state.routes[route.state.index].name
-//             : 'Feed';
-//           return {headerTitle: routeName};
-//         }}
-//       />
-//     </Stack.Navigator>
-//   );
-// };
