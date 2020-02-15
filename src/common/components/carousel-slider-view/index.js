@@ -2,7 +2,10 @@ import React, {Component} from 'react';
 import {View, Image} from 'react-native';
 import Carousel from 'react-native-looped-carousel';
 import APICaller from '../../../utils/api-caller';
-import APIEndpoint from '../../../config/api-endpoint';
+import {
+  sliderImagesEndPoint,
+  getDealerImageEndPoint,
+} from '../../../config/api-endpoint';
 import {Matrics, Color} from '../../styles';
 import styles from './styles';
 
@@ -12,11 +15,16 @@ class CarouselSliderView extends Component {
   };
 
   componentDidMount() {
-    this.getSliderImage();
+    const {type} = this.props;
+    if (type === 'Dealer') {
+      this.dealerItem();
+    } else {
+      this.getSliderImage();
+    }
   }
 
   getSliderImage() {
-    APICaller(APIEndpoint.sliderImagesEndPoint, 'GET', '').then(json => {
+    APICaller(sliderImagesEndPoint, 'GET', '').then(json => {
       if (json.data.Success === '1') {
         this.setState({
           sliderImage: json.data.Response,
@@ -24,6 +32,23 @@ class CarouselSliderView extends Component {
       }
     });
   }
+
+  dealerItem() {
+    APICaller({getDealerImageEndPoint}, 'GET').then(json => {
+      this.setState({
+        loadingData: false,
+      });
+      if (json.data.Success === '1') {
+        let data = json.data.Response;
+        _.map(data, res => {
+          res.uri = res.Slide;
+          delete res.Slide;
+        });
+        this.setState({sliderImage: data});
+      }
+    });
+  }
+
   render() {
     const {sliderImage} = this.state;
     return (

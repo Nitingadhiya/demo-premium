@@ -43,7 +43,7 @@ export default class Splash extends React.Component {
     const data = await Helper.getLocalStorageItem('userInfo');
     console.log(data, 'data');
     if (data) {
-      this.setState({userInfo: data});
+      //this.setState({userInfo: data});
     }
   }
   componentWillUnmount() {

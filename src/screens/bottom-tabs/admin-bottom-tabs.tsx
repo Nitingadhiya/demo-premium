@@ -7,6 +7,7 @@ import {useIsFocused, RouteProp} from '@react-navigation/native';
 
 import overlay from '../overlay';
 import {Feed} from '../feed';
+import Dashboard from '../tab/admin/home';
 import {Message} from '../message';
 import {Notifications} from '../notifications';
 import {StackNavigatorParamlist} from '../types';
@@ -44,7 +45,7 @@ export const AdminBottomTabs = (props: Props) => {
   return (
     <React.Fragment>
       <Tab.Navigator
-        initialRouteName="Home"
+        initialRouteName="Dashboard"
         backBehavior="initialRoute"
         shifting={true}
         activeColor={theme.colors.primary}
@@ -55,8 +56,8 @@ export const AdminBottomTabs = (props: Props) => {
         swipeEnabled={true}
         sceneAnimationEnabled={false}>
         <Tab.Screen
-          name="Home"
-          component={Feed}
+          name="Dashboard"
+          component={Dashboard}
           options={{
             tabBarIcon: 'home-account',
             tabBarLabel: 'Home',

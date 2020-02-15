@@ -24,6 +24,7 @@ const updateSystemNameEndPoint = (systemName, userName, systemTag) =>
 const getServiceEndPoint = tag => `GetService?SystemTag=${tag}`;
 const getBonusEndPoint = tag => `GetBonus?SystemTag=${tag}`;
 const getSystemWarrantyEndPoint = tag => `GetSystem?SystemTag=${tag}`;
+const getDealerImageEndPoint = 'GetDealerImages';
 
 module.exports = {
   checkVersionEndPoint,
@@ -45,4 +46,5 @@ module.exports = {
   getServiceEndPoint,
   getBonusEndPoint,
   getSystemWarrantyEndPoint,
+  getDealerImageEndPoint,
 };

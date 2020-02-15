@@ -7,6 +7,7 @@ import {
   checkVersionEndPoint,
   updateTokenEndPoint,
   getComplaintChargeEndPoint,
+  getVersionCodeEndPoint,
 } from '../config/api-endpoint';
 import Events from './events';
 import NavigationHelper from './navigation-helper';
@@ -78,6 +79,15 @@ const Helper = {
           }
         }
       } else {
+      }
+    });
+  },
+  checkUpdateAvailable() {
+    APICaller(getVersionCodeEndPoint, 'GET').then(json => {
+      if (json.data.Success === '1') {
+        if (VersionNumber.buildVersion < json.data.VersionCode) {
+          Events.trigger('updateAvailable', true);
+        }
       }
     });
   },

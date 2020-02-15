@@ -5,6 +5,7 @@ import {
   ScrollView,
   RefreshControl,
   TouchableOpacity,
+  SafeAreaView,
 } from 'react-native';
 import {VersionNumber} from '../../../../package';
 
@@ -19,31 +20,25 @@ import styles from './styles';
 import {
   UpdateAvailableView,
   UserInfoDashboardView,
+  SpinnerView,
 } from '../../../../common/components';
-import SystemCardView from '../../../../components/system-card-view';
-import CategoryItemList from '../../../../components/category-item-list';
-import EditSystemNameModal from '../../../../components/edit-system-name';
+import AdminTabel from '../../../../components/admin-table';
+import TeamComplaintOverview from '../../../../components/team-complaints-overview';
+import TeamTasksOverview from '../../../../components/team-tasks-overview';
 import ComplaintOptionsModal from '../../../../components/complaint-options-modal';
 import ComplaintWithQRCode from '../../../../components/complaint-with-qr-code';
-import AntivirusKeyModal from '../../../../components/antivirus-key-modal';
-import SystemServiceModal from '../../../../components/system-service-modal';
 import NavigationHelper from '../../../../utils/navigation-helper';
-import BonusDaysModal from '../../../../components/bonus-modal';
-import SystemWarrantyModal from '../../../../components/system-warranty-modal';
 
 export default class Dashboard extends Component {
   state = {
-    userInfo: null,
+    loadingData: false,
     updateAvailable: false,
     systemDescription: null,
-    complaintRegisterModal: true,
+    refreshing: false,
   };
 
   componentDidMount() {
     this.getUserInfo();
-    Events.on('refreshDashboard', 'refresh', () => {
-      this.getUserInfo();
-    });
     Events.on('updateAvailable', 'Updates', res => {
       this.setState({
         updateAvailable: res,
@@ -57,7 +52,6 @@ export default class Dashboard extends Component {
     this.setState({
       userInfo,
     });
-
     this.userDashboard(userInfo.UserName);
   }
 
@@ -78,9 +72,21 @@ export default class Dashboard extends Component {
         refreshing: false,
       });
       if (json.data.Success === '1') {
-        const systemDescription = json.data.Response;
+        const systmDescription = json.data.Response;
+        let arrSystem = [];
+        for (var key in systmDescription) {
+          if (key === 'length' || !systmDescription.hasOwnProperty(key))
+            continue;
+          var value = systmDescription[key];
+          arrSystem.push({
+            key: key,
+            amount: value[0].Amount,
+            todayCount: value[0].TodayCount,
+            totalCount: value[0].TotalCount,
+          });
+        }
         this.setState({
-          systemDescription,
+          systemDescription: arrSystem,
         });
       }
     });
@@ -90,7 +96,7 @@ export default class Dashboard extends Component {
     Events.trigger('complaintRegisterModal', true);
   }
 
-  _onRefresh = () => {
+  onRefresh = () => {
     this.setState({refreshing: true});
     this.userDashboard(this.state.userInfo.UserName);
   };
@@ -99,42 +105,59 @@ export default class Dashboard extends Component {
     const {navigation} = this.props;
     const {
       userInfo,
+      refreshing,
+      loadingData,
       updateAvailable,
       systemDescription,
-      refreshing,
     } = this.state;
     return (
-      <View style={styles.mainContainer}>
+      <SafeAreaView style={styles.safeView}>
+        {loadingData ? <SpinnerView /> : null}
         {updateAvailable ? <UpdateAvailableView /> : null}
         <ScrollView
           style={{flex: 1}}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
-              onRefresh={this._onRefresh}
+              onRefresh={this.onRefresh}
             />
           }>
-          <UserInfoDashboardView userInfo={userInfo} />
-          <CategoryItemList />
-          {systemDescription ? (
-            <SystemCardView systemDescription={systemDescription} />
+          {userInfo ? (
+            <AdminTabel
+              userName={userInfo.UserName}
+              systemDescription={systemDescription}
+            />
           ) : null}
-        </ScrollView>
-        <View style={styles.bottomButton}>
-          {systemDescription && systemDescription[0].UserName ? (
-            <TouchableOpacity
-              style={styles.actionTouch}
-              onPress={() => this.registerComplain()}>
-              <Text style={{color: '#fff', fontSize: 14}}>Complaint Book</Text>
-            </TouchableOpacity>
-          ) : null}
-          <TouchableOpacity
-            style={styles.actionTouch}
-            onPress={() => NavigationHelper.navigate(navigation, 'AddSystem')}>
-            <Text style={{color: '#fff', fontSize: 14}}>Add System</Text>
-          </TouchableOpacity>
-        </View>
+          <TeamComplaintOverview text="Today Team Complaints Overview" />
+          <TeamTasksOverview text="Today Team Work Tasks Overview" />
 
+          <View style={styles.bodyView}>
+            <TouchableOpacity
+              style={styles.TouchBTN}
+              onPress={() =>
+                NavigationHelper.navigate(navigation, 'OrderReady')
+              }>
+              <Text style={styles.dashBtnText}>Ready Orders</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.TouchBTN}
+              onPress={() => this.registerComplain()}>
+              <Text style={styles.dashBtnText}>Complaint Booking</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.TouchBTN}>
+              <Text style={styles.dashBtnText}>Team's Components Stocks</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.TouchBTN}>
+              <Text style={styles.dashBtnText}>Reports Accept from Team</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.TouchBTN}>
+              <Text style={styles.dashBtnText}>Team's Components Stocks</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.TouchBTN}>
+              <Text style={styles.dashBtnText}>Reports Accept from Team</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
         {/* complaint Register options modal */}
         <ComplaintOptionsModal
           visible={true}
@@ -142,27 +165,12 @@ export default class Dashboard extends Component {
           userName={userInfo && userInfo.UserName}
           navigation={navigation}
         />
-        {/* Update System Name */}
-        <EditSystemNameModal userName={userInfo && userInfo.UserName} />
-
         {/* complaint with QR Code */}
         <ComplaintWithQRCode
           userName={userInfo && userInfo.UserName}
           navigation={navigation}
         />
-
-        {/* Antivirus Modal */}
-        <AntivirusKeyModal />
-
-        {/*system service modal info*/}
-        <SystemServiceModal />
-
-        {/* Bonus modal */}
-        <BonusDaysModal />
-
-        {/* System Warranty modal */}
-        <SystemWarrantyModal />
-      </View>
+      </SafeAreaView>
     );
   }
 }
