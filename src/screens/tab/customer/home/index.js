@@ -24,7 +24,12 @@ import SystemCardView from '../../../../components/system-card-view';
 import CategoryItemList from '../../../../components/category-item-list';
 import EditSystemNameModal from '../../../../components/edit-system-name';
 import ComplaintOptionsModal from '../../../../components/complaint-options-modal';
+import ComplaintWithQRCode from '../../../../components/complaint-with-qr-code';
+import AntivirusKeyModal from '../../../../components/antivirus-key-modal';
+import SystemServiceModal from '../../../../components/system-service-modal';
 import NavigationHelper from '../../../../utils/navigation-helper';
+import BonusDaysModal from '../../../../components/bonus-modal';
+import SystemWarrantyModal from '../../../../components/system-warranty-modal';
 
 export default class Dashboard extends Component {
   state = {
@@ -146,6 +151,24 @@ export default class Dashboard extends Component {
         />
         {/* Update System Name */}
         <EditSystemNameModal userName={userInfo && userInfo.UserName} />
+
+        {/* complaint with QR Code */}
+        <ComplaintWithQRCode
+          userName={userInfo && userInfo.UserName}
+          navigation={navigation}
+        />
+
+        {/* Antivirus Modal */}
+        <AntivirusKeyModal />
+
+        {/*system service modal info*/}
+        <SystemServiceModal />
+
+        {/* Bonus modal */}
+        <BonusDaysModal />
+
+        {/* System Warranty modal */}
+        <SystemWarrantyModal />
       </View>
     );
   }

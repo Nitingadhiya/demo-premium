@@ -145,7 +145,9 @@ class SystemCardView extends Component {
         <View style={styles.animatedCircleView}>
           <TouchableOpacity
             style={styles.protectedDTSubView}
-            onPress={() => self.getWarrantyFn(item.SystemTag)}>
+            onPress={() =>
+              Events.trigger('systemWarrantyEvent', {systemTag: item.SystemTag})
+            }>
             {animatedCircle(item.WarrantyPercentage, item.WarrantyDays)}
             <View style={styles.textdescView}>
               <Text style={styles.textdesc}>{'Warranty'.toUpperCase()}</Text>
@@ -156,17 +158,23 @@ class SystemCardView extends Component {
             activeOpacity={0.8}
             // disabled={!item.Antivirus}
             onPress={() =>
-              self.showAntivirusKey(item.Antivirus, item.AntivirusKey)
+              Events.trigger('antivirusKeyEvent', {
+                antivirus: item.Antivirus,
+                key: item.AntivirusKey,
+              })
             }>
             {animatedCircle(item.AntivirusPercentage, item.AntivirusDays)}
-
             <View style={styles.textdescView}>
               <Text style={styles.textdesc}>{'Anti-virus'.toUpperCase()}</Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.protectedDTSubView}
-            onPress={() => self.getServiceDayFn(item.SystemTag)}>
+            onPress={() =>
+              Events.trigger('systemServiceEvent', {
+                systemTag: item.SystemTag,
+              })
+            }>
             {animatedCircle(item.ServicePercentage, item.ServiceDays)}
             <View style={styles.textdescView}>
               <Text style={styles.textdesc}>{'Services'.toUpperCase()}</Text>
@@ -174,7 +182,11 @@ class SystemCardView extends Component {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.protectedDTSubView}
-            onPress={() => self.getBonusDayFn(item.SystemTag)}>
+            onPress={() =>
+              Events.trigger('bonusDaysEvent', {
+                systemTag: item.SystemTag,
+              })
+            }>
             {animatedCircle(item.BonusPercentage, item.BonusDays)}
             <View style={styles.textdescView}>
               <Text style={styles.textdesc}>{'Bonus Day'.toUpperCase()}</Text>

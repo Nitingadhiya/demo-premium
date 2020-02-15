@@ -23,12 +23,14 @@ import Events from '../../utils/events';
 import {useNavigation} from '@react-navigation/native';
 
 let tmpSys = [];
+let self;
 class ComplaintOptionsModal extends Component {
   state = {
     complaintRegisterModal: false,
     compImages: null,
   };
   componentDidMount() {
+    self = this;
     Events.on('complaintRegisterModal', 'Image', res => {
       this.setState({complaintRegisterModal: true});
     });
@@ -46,40 +48,6 @@ class ComplaintOptionsModal extends Component {
     });
   }
 
-  getComplainCharge(result) {
-    const {userName, navigation} = this.props;
-    if (userName) {
-      this.setState({
-        loadingData: true,
-      });
-      APICaller(getComplaintChargeEndPoint(result, userName), 'GET').then(
-        json => {
-          this.setState({
-            loadingData: false,
-          });
-          if (json.data.Success === '1') {
-            //if (json.data.Response.ComplaintCharge) {
-            if (result) {
-              NavigationHelper.navigate(navigation, 'SubmitComplaint', {
-                systemTag: result,
-                complainCharge: json.data.Response.ComplaintCharge,
-                data: json.data.Response,
-              });
-            } else {
-              NavigationHelper.navigate(navigation, 'SubmitComplaint', {
-                systemTag: '',
-                tmpSystemName: tmpSys,
-                complainCharge: json.data.Response.ComplaintCharge,
-                data: json.data.Response,
-              });
-            }
-            //}
-          }
-        },
-      );
-    }
-  }
-
   withoutQRCode = () => {
     const {systemDescription} = this.props;
     this.setState({complaintRegisterModal: false});
@@ -95,8 +63,13 @@ class ComplaintOptionsModal extends Component {
         }
       }
     });
-    this.getComplainCharge('');
+    self.getComplaintCharge('');
   };
+
+  getComplaintCharge(result) {
+    const {navigation, userName} = this.props;
+    Helper.getComplaintCharge(navigation, userName, result, tmpSys);
+  }
 
   render() {
     const {compImages, complaintRegisterModal} = this.state;
@@ -121,7 +94,7 @@ class ComplaintOptionsModal extends Component {
                 onPress={() => {
                   this.setState({complaintRegisterModal: false});
                   setTimeout(() => {
-                    this.setState({qrCode: true});
+                    Events.trigger('ComplaintWithQRCodeEvent', true);
                   }, 500);
                 }}>
                 {compImages ? (

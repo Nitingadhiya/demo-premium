@@ -6,8 +6,10 @@ import APICaller from './api-caller';
 import {
   checkVersionEndPoint,
   updateTokenEndPoint,
+  getComplaintChargeEndPoint,
 } from '../config/api-endpoint';
 import Events from './events';
+import NavigationHelper from './navigation-helper';
 
 const Helper = {
   getLocalStorageItem(key) {
@@ -88,6 +90,32 @@ const Helper = {
         updateTokenEndPoint(userInfo.UserName, token),
         'GET',
       ).then(json => {});
+    }
+  },
+  getComplaintCharge(navigation, userName, result, tmpSys) {
+    if (userName && navigation) {
+      APICaller(getComplaintChargeEndPoint(result, userName), 'GET').then(
+        json => {
+          if (json.data.Success === '1') {
+            //if (json.data.Response.ComplaintCharge) {
+            if (result) {
+              NavigationHelper.navigate(navigation, 'SubmitComplaint', {
+                systemTag: result,
+                complainCharge: json.data.Response.ComplaintCharge,
+                data: json.data.Response,
+              });
+            } else {
+              NavigationHelper.navigate(navigation, 'SubmitComplaint', {
+                systemTag: '',
+                tmpSystemName: tmpSys,
+                complainCharge: json.data.Response.ComplaintCharge,
+                data: json.data.Response,
+              });
+            }
+            //}
+          }
+        },
+      );
     }
   },
 };

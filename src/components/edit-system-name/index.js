@@ -54,12 +54,10 @@ class EditSystemNameModal extends Component {
     this.setState({
       showSystemNameError: '',
     });
-    console.log(systemName, 'ss');
     APICaller(
       updateSystemNameEndPoint(systemName, userName, this.state.systemTag),
       'GET',
     ).then(json => {
-      console.log(json, 'json');
       if (json.data.Success === '2') {
         Events.trigger('refreshDashboard');
         this.setState({

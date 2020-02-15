@@ -39,6 +39,12 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string/>
+	<key>NSCameraUsageDescription</key>
+	<string>Need Camera to access Qr code</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Need photo to access Qr code</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Need Microphone to access Qr code</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>

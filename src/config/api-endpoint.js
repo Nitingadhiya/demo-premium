@@ -21,6 +21,9 @@ const addSystemEndPoint = (itemType, systemType, systemName, userName) =>
   `AddSystem?ItemType=${itemType}&SystemType=${systemType}&SystemName=${systemName}&Username=${userName}&ServiceTag=`;
 const updateSystemNameEndPoint = (systemName, userName, systemTag) =>
   `AddSystem?SystemName=${systemName}&Username=${userName}&ServiceTag=${systemTag}`;
+const getServiceEndPoint = tag => `GetService?SystemTag=${tag}`;
+const getBonusEndPoint = tag => `GetBonus?SystemTag=${tag}`;
+const getSystemWarrantyEndPoint = tag => `GetSystem?SystemTag=${tag}`;
 
 module.exports = {
   checkVersionEndPoint,
@@ -39,4 +42,7 @@ module.exports = {
   getSystemTypeListEndPoint,
   addSystemEndPoint,
   updateSystemNameEndPoint,
+  getServiceEndPoint,
+  getBonusEndPoint,
+  getSystemWarrantyEndPoint,
 };
