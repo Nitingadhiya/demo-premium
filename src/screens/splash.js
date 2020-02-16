@@ -22,6 +22,11 @@ import Register from './register';
 import OTPScreen from './otp';
 import SubmitComplaint from './submit-complaint';
 import AddSystem from './add-system';
+import ForgotPassword from './forgot-password';
+import ProductDetails from './product-details';
+import MyProfile from './my-profile';
+import Parts from './parts';
+import PlaceOrder from './placeOrder';
 
 type Props = {
   route: RouteProp<StackNavigatorParamlist, 'Splash'>,
@@ -43,7 +48,7 @@ export default class Splash extends React.Component {
     const data = await Helper.getLocalStorageItem('userInfo');
     console.log(data, 'data');
     if (data) {
-      //this.setState({userInfo: data});
+      this.setState({userInfo: data});
     }
   }
   componentWillUnmount() {
@@ -83,7 +88,7 @@ export default class Splash extends React.Component {
     }
     return (
       <Stack.Navigator
-        headerMode="screen"
+        headerMode="none"
         screenOptions={{
           header: ({scene, previous, navigation}) => {
             const {options} = scene.descriptor;
@@ -93,8 +98,12 @@ export default class Splash extends React.Component {
                 : options.title !== undefined
                 ? options.title
                 : scene.route.name;
-
+            // console.log(navigation, 'options.headerTitle');
             if (!options.headerTitle) {
+              return null;
+            }
+
+            if (options.headerTitle === 'Product') {
               return null;
             }
             return (
@@ -151,6 +160,11 @@ export default class Splash extends React.Component {
           options={{headerTitle: 'Register'}}
         />
         <Stack.Screen
+          name="ForgotPassword"
+          component={ForgotPassword}
+          options={{headerTitle: 'Forgot Password'}}
+        />
+        <Stack.Screen
           name="OTPScreen"
           component={OTPScreen}
           options={{headerTitle: 'Verify OTP'}}
@@ -164,6 +178,28 @@ export default class Splash extends React.Component {
           name="AddSystem"
           component={AddSystem}
           options={{headerTitle: 'Add System'}}
+        />
+        <Stack.Screen
+          name="ProductDetails"
+          component={ProductDetails}
+          options={{headerTitle: 'Product Details'}}
+          headerMode="none"
+        />
+        <Stack.Screen
+          name="MyProfile"
+          component={MyProfile}
+          options={{headerTitle: 'Profile'}}
+          headerMode="none"
+        />
+        <Stack.Screen
+          name="Parts"
+          component={Parts}
+          options={{headerTitle: 'System Parts'}}
+        />
+        <Stack.Screen
+          name="PlaceOrder"
+          component={PlaceOrder}
+          options={{headerTitle: 'Place Order'}}
         />
         {/* <Stack.Screen
           name="Details"

@@ -1,12 +1,17 @@
 import React, {Component} from 'react';
-import {View, Text, Image} from 'react-native';
+import {View, Text, Image, TouchableOpacity} from 'react-native';
 import styles from './styles';
+import {useNavigation} from '@react-navigation/native';
+import NavigationHelper from '../../../utils/navigation-helper';
 
 export const UserInfoDashboardView = ({userInfo}) => {
+  const navigation = useNavigation();
   if (!userInfo) return <View />;
   return (
     <View style={styles.container}>
-      <View style={styles.userView}>
+      <TouchableOpacity
+        style={styles.userView}
+        onPress={() => NavigationHelper.navigate(navigation, 'MyProfile')}>
         <View style={styles.imageView}>
           {userInfo.UserImage && (
             <Image
@@ -36,7 +41,7 @@ export const UserInfoDashboardView = ({userInfo}) => {
             </View>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     </View>
   );
 };

@@ -25,6 +25,14 @@ const getServiceEndPoint = tag => `GetService?SystemTag=${tag}`;
 const getBonusEndPoint = tag => `GetBonus?SystemTag=${tag}`;
 const getSystemWarrantyEndPoint = tag => `GetSystem?SystemTag=${tag}`;
 const getDealerImageEndPoint = 'GetDealerImages';
+const fetchProductListEndPoint = userName =>
+  `GetProductList?ProductNo=&Username=${userName}&WishCart=`;
+const getProductDetailsEndPoint = (id, userName) =>
+  `GetProductList?ProductNo=${id}&Username=${userName}&WishCart=`;
+const getWishlistEndPoint = userName =>
+  `GetProductList?ProductNo=&Username=${userName}&WishCart=WISH`;
+const getOrderListEndPoint = userName => `GetOrderList?Username=${userName}`;
+const getUserProfileEndPoint = userName => `UserProfile?Username=${userName}`;
 
 module.exports = {
   checkVersionEndPoint,
@@ -47,4 +55,9 @@ module.exports = {
   getBonusEndPoint,
   getSystemWarrantyEndPoint,
   getDealerImageEndPoint,
+  fetchProductListEndPoint,
+  getProductDetailsEndPoint,
+  getWishlistEndPoint,
+  getOrderListEndPoint,
+  getUserProfileEndPoint,
 };

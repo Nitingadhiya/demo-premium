@@ -21,10 +21,14 @@ import {
 import Animated from 'react-native-reanimated';
 
 import {PreferencesContext} from '../context/preferencesContext';
+import {MIcon, McIcon} from '../common/assets/vector-icon';
+import NavigationHelper from '../utils/navigation-helper';
 
 type Props = DrawerContentComponentProps<DrawerNavigationProp>;
 
 export function DrawerContent(props: Props) {
+  console.log(props);
+
   const paperTheme = useTheme();
   const {rtl, theme, toggleRTL, toggleTheme} = React.useContext(
     PreferencesContext,
@@ -34,6 +38,8 @@ export function DrawerContent(props: Props) {
     inputRange: [0, 0.5, 0.7, 0.8, 1],
     outputRange: [-100, -85, -70, -45, 0],
   });
+
+  const navigation = props.navigation;
 
   return (
     <DrawerContentScrollView {...props}>
@@ -79,33 +85,103 @@ export function DrawerContent(props: Props) {
         </View>
         <Drawer.Section style={styles.drawerSection}>
           <DrawerItem
-            // icon={({color, size}) => (
-            //   <MaterialCommunityIcons
-            //     name="account-outline"
-            //     color={color}
-            //     size={size}
-            //   />
-            // )}
+            icon={({color, size}) => (
+              <McIcon name="home" color={color} size={size} />
+            )}
+            label="Home"
+            onPress={() => NavigationHelper.navigate(navigation, 'Dashboard')}
+          />
+          <DrawerItem
+            icon={({color, size}) => (
+              <McIcon name="account-outline" color={color} size={size} />
+            )}
             label="Profile"
-            onPress={() => {}}
+            onPress={() => NavigationHelper.navigate(navigation, 'MyProfile')}
           />
           <DrawerItem
-            // icon={({color, size}) => (
-            //   <MaterialCommunityIcons name="tune" color={color} size={size} />
-            // )}
-            label="Preferences"
-            onPress={() => {}}
+            icon={({color, size}) => (
+              <McIcon name="tune" color={color} size={size} />
+            )}
+            label="Product List"
+            onPress={() => NavigationHelper.navigate(navigation, 'ProductList')}
           />
           <DrawerItem
-            // icon={({color, size}) => (
-            //   <MaterialCommunityIcons
-            //     name="bookmark-outline"
-            //     color={color}
-            //     size={size}
-            //   />
-            // )}
-            label="Bookmarks"
-            onPress={() => {}}
+            icon={({color, size}) => (
+              <McIcon name="tune" color={color} size={size} />
+            )}
+            label="Wishlist"
+            onPress={() => NavigationHelper.navigate(navigation, 'WishList')}
+          />
+          <DrawerItem
+            icon={({color, size}) => (
+              <McIcon name="tune" color={color} size={size} />
+            )}
+            label="Pending order"
+            onPress={() => NavigationHelper.navigate(navigation, 'Order')}
+          />
+          <DrawerItem
+            icon={({color, size}) => (
+              <McIcon name="tune" color={color} size={size} />
+            )}
+            label="Offer"
+            onPress={() => NavigationHelper.navigate(navigation, 'Offer')}
+          />
+          <DrawerItem
+            icon={({color, size}) => (
+              <McIcon name="bookmark-outline" color={color} size={size} />
+            )}
+            label="Chat"
+            onPress={() => NavigationHelper.navigate(navigation, 'Chat')}
+          />
+          <DrawerItem
+            icon={({color, size}) => (
+              <McIcon name="bookmark-outline" color={color} size={size} />
+            )}
+            label="Engineer Location"
+            onPress={() =>
+              NavigationHelper.navigate(navigation, 'EngineerLocation')
+            }
+          />
+          <DrawerItem
+            icon={({color, size}) => (
+              <McIcon name="bookmark-outline" color={color} size={size} />
+            )}
+            label="Chat"
+            onPress={() => NavigationHelper.navigate(navigation, 'Chat')}
+          />
+          <DrawerItem
+            icon={({color, size}) => (
+              <McIcon name="bookmark-outline" color={color} size={size} />
+            )}
+            label="System Warranty"
+            onPress={() =>
+              NavigationHelper.navigate(navigation, 'SystemWarranty')
+            }
+          />
+          <DrawerItem
+            icon={({color, size}) => (
+              <McIcon name="bookmark-outline" color={color} size={size} />
+            )}
+            label="Change Password"
+            onPress={() =>
+              NavigationHelper.navigate(navigation, 'ChangePassword')
+            }
+          />
+          <DrawerItem
+            icon={({color, size}) => (
+              <McIcon name="bookmark-outline" color={color} size={size} />
+            )}
+            label="System Verify"
+            onPress={() =>
+              NavigationHelper.navigate(navigation, 'SystemVerify')
+            }
+          />
+          <DrawerItem
+            icon={({color, size}) => (
+              <McIcon name="bookmark-outline" color={color} size={size} />
+            )}
+            label="Logout"
+            onPress={() => NavigationHelper.navigate(navigation, 'Logout')}
           />
         </Drawer.Section>
         <Drawer.Section title="Preferences">

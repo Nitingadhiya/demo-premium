@@ -178,7 +178,9 @@ class LoginComponent extends Component {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.rememberView}
-              onPress={() => this.props.navigation.navigate('ForgotPassword')}>
+              onPress={() =>
+                NavigationHelper.navigate(navigation, 'ForgotPassword')
+              }>
               <Text>Forgot password?</Text>
             </TouchableOpacity>
           </View>

@@ -7,10 +7,15 @@ import {useIsFocused, RouteProp} from '@react-navigation/native';
 
 import overlay from '../overlay';
 import Dashboard from '../tab/customer/home';
+import ProductList from '../../screens/product-list';
 import {Feed} from '../feed';
 import {Message} from '../message';
 import {Notifications} from '../notifications';
 import {StackNavigatorParamlist} from '../types';
+import WishList from '../wish-list';
+import Order from '../order';
+import Offer from '../Offer';
+import Chat from '../chat';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -53,7 +58,6 @@ export const CustomerBottomTabs = (props: Props) => {
           .alpha(0.6)
           .rgb()
           .string()}
-        swipeEnabled={true}
         sceneAnimationEnabled={false}>
         <Tab.Screen
           name="Dashboard"
@@ -66,7 +70,7 @@ export const CustomerBottomTabs = (props: Props) => {
         />
         <Tab.Screen
           name="ProductList"
-          component={Feed}
+          component={ProductList}
           options={{
             tabBarIcon: 'format-list-bulleted',
             tabBarLabel: 'Product',
@@ -75,7 +79,7 @@ export const CustomerBottomTabs = (props: Props) => {
         />
         <Tab.Screen
           name="WishList"
-          component={Feed}
+          component={WishList}
           options={{
             tabBarIcon: 'binoculars',
             tabBarLabel: 'Wishlist',
@@ -84,7 +88,7 @@ export const CustomerBottomTabs = (props: Props) => {
         />
         <Tab.Screen
           name="Order"
-          component={Feed}
+          component={Order}
           options={{
             tabBarIcon: 'shopping',
             tabBarLabel: 'Order',
@@ -93,8 +97,8 @@ export const CustomerBottomTabs = (props: Props) => {
         />
 
         <Tab.Screen
-          name="Notifications"
-          component={Notifications}
+          name="Offer"
+          component={Offer}
           options={{
             tabBarIcon: 'bell-outline',
             tabBarLabel: 'Offer',
@@ -102,8 +106,8 @@ export const CustomerBottomTabs = (props: Props) => {
           }}
         />
         <Tab.Screen
-          name="Messages"
-          component={Message}
+          name="Chat"
+          component={Chat}
           options={{
             tabBarIcon: 'message-text-outline',
             tabBarLabel: 'chat',

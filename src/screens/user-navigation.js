@@ -80,75 +80,78 @@ export default class UserNavigation extends React.Component {
     }
     return (
       <Stack.Navigator
-        headerMode="screen"
-        screenOptions={{
-          header: ({scene, previous, navigation}) => {
-            const {options} = scene.descriptor;
-            const title =
-              options.headerTitle !== undefined
-                ? options.headerTitle
-                : options.title !== undefined
-                ? options.title
-                : scene.route.name;
-
-            if (!options.headerTitle) {
-              return null;
-            }
-            return (
-              <Appbar.Header theme={{colors: primary}}>
-                {previous ? (
-                  <Appbar.BackAction
-                    onPress={navigation.goBack}
-                    color={primary}
-                  />
-                ) : (
-                  <TouchableOpacity
-                    style={{marginLeft: 10}}
-                    onPress={() => {
-                      // ((navigation as any) as DrawerNavigationProp<{}>).openDrawer();
-                    }}>
-                    <Avatar.Image
-                      size={40}
-                      source={{
-                        uri:
-                          'https://pbs.twimg.com/profile_images/952545910990495744/b59hSXUd_400x400.jpg',
-                      }}
-                    />
-                  </TouchableOpacity>
-                )}
-                <Appbar.Content
-                  title={
-                    title === 'Feed' ? (
-                      <MaterialCommunityIcons
-                        style={{marginRight: 10}}
-                        name="twitter"
-                        size={40}
-                        color={primary}
-                      />
-                    ) : (
-                      title
-                    )
-                  }
-                  titleStyle={{
-                    fontSize: 18,
-                    fontWeight: 'bold',
-                    color: primary,
-                  }}
-                />
-              </Appbar.Header>
-            );
-          },
-        }}>
+        headerMode="none"
+        // screenOptions={{
+        //   header: ({scene, previous, navigation}) => {
+        //     const {options} = scene.descriptor;
+        //     const title =
+        //       options.headerTitle !== undefined
+        //         ? options.headerTitle
+        //         : options.title !== undefined
+        //         ? options.title
+        //         : scene.route.name;
+        //     console.log(options);
+        //     if (!options.headerTitle) {
+        //       return null;
+        //     }
+        //     return (
+        //       <Appbar.Header theme={{colors: primary}}>
+        //         {previous ? (
+        //           <Appbar.BackAction
+        //             onPress={navigation.goBack}
+        //             color={primary}
+        //           />
+        //         ) : (
+        //           <TouchableOpacity
+        //             style={{marginLeft: 10}}
+        //             onPress={() => {
+        //               // ((navigation as any) as DrawerNavigationProp<{}>).openDrawer();
+        //             }}>
+        //             <Avatar.Image
+        //               size={40}
+        //               source={{
+        //                 uri:
+        //                   'https://pbs.twimg.com/profile_images/952545910990495744/b59hSXUd_400x400.jpg',
+        //               }}
+        //             />
+        //           </TouchableOpacity>
+        //         )}
+        //         <Appbar.Content
+        //           title={
+        //             title === 'Feed' ? (
+        //               <MaterialCommunityIcons
+        //                 style={{marginRight: 10}}
+        //                 name="twitter"
+        //                 size={40}
+        //                 color={primary}
+        //               />
+        //             ) : (
+        //               title
+        //             )
+        //           }
+        //           titleStyle={{
+        //             fontSize: 18,
+        //             fontWeight: 'bold',
+        //             color: primary,
+        //           }}
+        //         />
+        //       </Appbar.Header>
+        //     );
+        //   },
+        // }}
+      >
         <Stack.Screen
           name="tabHome"
           component={this.tabBarBottom()}
-          options={({route}) => {
-            console.log('!@# options', {route});
-            const routeName = route.state
-              ? route.state.routes[route.state.index].name
-              : 'Feed';
-            return {headerTitle: routeName};
-          }}
+          // options={({route}) => {
+          //   console.log('!@# options ********', {route});
+          //   const routeName = route.state
+          //     ? route.state.routes[route.state.index].name
+          //     : 'Feed';
+          //   return {
+          //     headerTitle: routeName,
+          //   };
+          // }}
         />
         <Stack.Screen
           name="Details"

@@ -30,6 +30,7 @@ import SystemServiceModal from '../../../../components/system-service-modal';
 import NavigationHelper from '../../../../utils/navigation-helper';
 import BonusDaysModal from '../../../../components/bonus-modal';
 import SystemWarrantyModal from '../../../../components/system-warranty-modal';
+import {Appbar} from 'react-native-paper';
 
 export default class Dashboard extends Component {
   state = {
@@ -105,6 +106,10 @@ export default class Dashboard extends Component {
     } = this.state;
     return (
       <View style={styles.mainContainer}>
+        <Appbar.Header>
+          <Appbar.Action icon="menu" onPress={() => navigation.openDrawer()} />
+          <Appbar.Content title={'Dashboard'} />
+        </Appbar.Header>
         {updateAvailable ? <UpdateAvailableView /> : null}
         <ScrollView
           style={{flex: 1}}
