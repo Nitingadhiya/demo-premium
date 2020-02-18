@@ -27,8 +27,6 @@ import NavigationHelper from '../utils/navigation-helper';
 type Props = DrawerContentComponentProps<DrawerNavigationProp>;
 
 export function DrawerContent(props: Props) {
-  console.log(props);
-
   const paperTheme = useTheme();
   const {rtl, theme, toggleRTL, toggleTheme} = React.useContext(
     PreferencesContext,

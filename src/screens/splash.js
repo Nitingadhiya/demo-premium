@@ -27,6 +27,14 @@ import ProductDetails from './product-details';
 import MyProfile from './my-profile';
 import Parts from './parts';
 import PlaceOrder from './placeOrder';
+import EngineerLocation from './engineer-location';
+import {SystemVerify} from './system-verify';
+import ChangePassword from './change-password';
+import ServicePackage from './select-serivce-pack';
+import ComplainList from './complaint-list';
+import EditProfile from './edit-profile';
+import OrderReady from './order-ready';
+// import SignCapture from './signature-capture';
 
 type Props = {
   route: RouteProp<StackNavigatorParamlist, 'Splash'>,
@@ -62,7 +70,7 @@ export default class Splash extends React.Component {
       nextAppState === 'active'
     ) {
       console.log('state', nextAppState);
-      Helper.checkAppVersion();
+      //Helper.checkAppVersion();
     }
     this.setState({appState: nextAppState});
   };
@@ -201,6 +209,46 @@ export default class Splash extends React.Component {
           component={PlaceOrder}
           options={{headerTitle: 'Place Order'}}
         />
+        <Stack.Screen
+          name="EngineerLocation"
+          component={EngineerLocation}
+          options={{headerTitle: 'Location'}}
+        />
+        <Stack.Screen
+          name="SystemVerify"
+          component={SystemVerify}
+          options={{headerTitle: 'System Verify'}}
+        />
+        <Stack.Screen
+          name="ChangePassword"
+          component={ChangePassword}
+          options={{headerTitle: 'Change Password'}}
+        />
+        <Stack.Screen
+          name="SelectServicePack"
+          component={ServicePackage}
+          options={{headerTitle: 'Select Service Pack'}}
+        />
+        <Stack.Screen
+          name="ComplaintList"
+          component={ComplainList}
+          options={{headerTitle: 'Complaint list'}}
+        />
+        <Stack.Screen
+          name="EditProfile"
+          component={EditProfile}
+          options={{headerTitle: 'Edit Profile'}}
+        />
+        <Stack.Screen
+          name="OrderReady"
+          component={OrderReady}
+          options={{headerTitle: 'Order Ready'}}
+        />
+        {/* <Stack.Screen
+          name="SignatureCapture"
+          component={SignCapture}
+          options={{headerTitle: 'Signature Capture'}}
+        /> */}
         {/* <Stack.Screen
           name="Details"
           component={Details}

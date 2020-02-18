@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, AppState} from 'react-native';
+import {View, Text} from 'react-native';
 import {RouteProp} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {AdminBottomTabs} from './bottom-tabs/admin-bottom-tabs';
@@ -29,35 +29,14 @@ export default class UserNavigation extends React.Component {
   state = {
     loading: false,
     userInfo: null,
-    appState: AppState.currentState,
   };
   async componentDidMount() {
-    AppState.addEventListener('change', this.handleAppStateChange);
-    console.disableYellowBox = true;
-    enableFontPatch();
-
-    //Helper.checkAppVersion(); //Check application update
     const data = await Helper.getLocalStorageItem('userInfo');
     console.log(data, 'data');
     if (data) {
       this.setState({userInfo: data});
     }
   }
-  componentWillUnmount() {
-    AppState.removeEventListener('change', this.handleAppStateChange);
-  }
-
-  handleAppStateChange = nextAppState => {
-    console.log(this.state.appState, 'state');
-    if (
-      this.state.appState.match(/inactive|background/) &&
-      nextAppState === 'active'
-    ) {
-      console.log('state', nextAppState);
-      Helper.checkAppVersion();
-    }
-    this.setState({appState: nextAppState});
-  };
 
   tabBarBottom() {
     const {userInfo} = this.state;
