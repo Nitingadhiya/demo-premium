@@ -21,7 +21,7 @@ import {Matrics, Color} from '../../common/styles';
 import Events from '../../utils/events';
 import Helper from '../../utils/helper';
 import NavigationHelper from '../../utils/navigation-helper';
-import {SpinnerView} from '../../common/components';
+import {SpinnerView, Header} from '../../common/components';
 import ProductItemList from '../../components/product-list';
 
 class WishList extends Component {
@@ -89,10 +89,7 @@ class WishList extends Component {
     const {navigation} = this.props;
     return (
       <SafeAreaView style={styles.safeView}>
-        <Appbar.Header>
-          <Appbar.Action icon="menu" onPress={() => navigation.openDrawer()} />
-          <Appbar.Content title={'Wishlist'} />
-        </Appbar.Header>
+        <Header title="Wish list" left="menu" />
 
         {loadingData ? <SpinnerView /> : null}
         <View style={{flex: 1}}>

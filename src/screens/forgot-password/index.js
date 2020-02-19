@@ -87,10 +87,7 @@ class ForgotPassword extends Component {
     const {navigation} = this.props;
     return (
       <SafeAreaView style={{flex: 1}}>
-        <Appbar.Header>
-          <Appbar.BackAction onPress={() => navigation.goBack()} />
-          <Appbar.Content title={'Forgot Password'} />
-        </Appbar.Header>
+        <Header title={'Forgot Password'} left="back" />
         <KeyboardAvoidingView style={{flex: 1}}>
           <View style={styles.container}>
             <View style={styles.textBoxView}>

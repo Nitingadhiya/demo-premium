@@ -24,7 +24,7 @@ import {Matrics, Color} from '../../common/styles';
 import Events from '../../utils/events';
 import Helper from '../../utils/helper';
 import NavigationHelper from '../../utils/navigation-helper';
-import {SpinnerView} from '../../common/components';
+import {SpinnerView, Header} from '../../common/components';
 import POrder from '../../components/order';
 
 class MyProfile extends Component {
@@ -118,6 +118,7 @@ class MyProfile extends Component {
     if (!profileInfo) return <View />;
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: Color.white}}>
+        <Header title="My Profile" left="back" />
         <ScrollView style={{flex: 1}}>
           <View style={{position: 'absolute', zIndex: 1, top: 10, left: 5}}>
             <TouchableOpacity

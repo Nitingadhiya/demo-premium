@@ -19,7 +19,7 @@ import {
 
 import {Color, Matrics} from '../../common/styles';
 import APICaller from '../../utils/api-caller';
-import {TextInputView, SpinnerView} from '../../common/components';
+import {TextInputView, SpinnerView, Header} from '../../common/components';
 
 class ChangePassword extends Component {
   state = {
@@ -97,6 +97,7 @@ class ChangePassword extends Component {
     const {nPassword, oPassword} = this.state;
     return (
       <SafeAreaView style={{flex: 1}}>
+        <Header title={'Change Password'} left="back" />
         <KeyboardAvoidingView style={{flex: 1}}>
           <View style={styles.container}>
             <View style={styles.textBoxView}>

@@ -4,6 +4,7 @@ import RNOtpVerify from 'react-native-otp-verify';
 import CodeInput from 'react-native-confirmation-code-input';
 import APICaller from '../../utils/api-caller';
 import {validateOtpEndPoint} from '../../config/api-endpoint';
+import {Header} from '../../common/components';
 import styles from './styles';
 import {Matrics} from '../../common/styles';
 import Events from '../../utils/events';
@@ -77,6 +78,7 @@ class OTPScreen extends Component {
     return (
       <SafeAreaView
         style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <Header title="Verify otp" left="back" />
         <View
           style={{
             justifyContent: 'center',

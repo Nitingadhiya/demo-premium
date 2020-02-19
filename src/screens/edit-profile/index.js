@@ -531,6 +531,7 @@ export default class EditProfile extends Component {
     const {validationMsg} = this.state;
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+        <Header title={'Edit Profile'} left="back" />
         {validationMsg ? (
           <View
             style={{

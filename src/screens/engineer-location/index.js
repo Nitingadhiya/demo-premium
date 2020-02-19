@@ -10,6 +10,7 @@ class Chat extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <Header title={'Location'} left="menu" />
         <Text>sd</Text>
       </View>
     );

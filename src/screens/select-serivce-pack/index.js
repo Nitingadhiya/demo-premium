@@ -15,11 +15,11 @@ import {
   Dimensions,
   ScrollView,
 } from 'react-native';
-import Spinner from 'react-native-spinkit';
 import _ from 'lodash';
 import {Images, Color, Matrics} from '../../common/styles';
 import {MIcon} from '../../common/assets/vector-icon';
 import APICaller from '../../utils/api-caller';
+import {SpinnerView, Header} from '../../common/components';
 
 class ServicePackage extends Component {
   state = {
@@ -224,14 +224,10 @@ class ServicePackage extends Component {
     const netAmount = priceRate - onlineDiscount + shipping;
     return (
       <SafeAreaView style={{flex: 1}}>
+        <Header title="Service Pack" left="back" />
         {this.state.loadingData ? (
           <View style={styles.spinnerView}>
-            <Spinner
-              color={Color.primary}
-              isVisible={true}
-              type="ThreeBounce"
-              size={60}
-            />
+            <SpinnerView />
           </View>
         ) : null}
         <ScrollView style={{flex: 1}}>

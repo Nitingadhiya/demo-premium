@@ -9,16 +9,14 @@ import {
 import {VersionNumber} from '../../../../package';
 
 import APICaller from '../../../../utils/api-caller';
-import {
-  getVersionCodeEndPoint,
-  userDashboardEndPoint,
-} from '../../../../config/api-endpoint';
+import {userDashboardEndPoint} from '../../../../config/api-endpoint';
 import Helper from '../../../../utils/helper';
 import Events from '../../../../utils/events';
 import styles from './styles';
 import {
   UpdateAvailableView,
   UserInfoDashboardView,
+  Header,
 } from '../../../../common/components';
 import SystemCardView from '../../../../components/system-card-view';
 import CategoryItemList from '../../../../components/category-item-list';
@@ -106,10 +104,8 @@ export default class Dashboard extends Component {
     } = this.state;
     return (
       <View style={styles.mainContainer}>
-        <Appbar.Header>
-          <Appbar.Action icon="menu" onPress={() => navigation.openDrawer()} />
-          <Appbar.Content title={'Dashboard'} />
-        </Appbar.Header>
+        <Header title="Dashboard" left="menu" />
+
         {updateAvailable ? <UpdateAvailableView /> : null}
         <ScrollView
           style={{flex: 1}}

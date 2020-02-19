@@ -10,6 +10,7 @@ import {
   ImageBackground,
 } from 'react-native';
 import {Color, Images} from '../../common/styles';
+import {Header} from '../../common/components';
 // ASSETS
 const data = [
   [
@@ -98,6 +99,7 @@ class Chat extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <Header title={'Chat'} left="menu" />
         <FlatList
           data={data}
           showsVerticalScrollIndicator={false}

@@ -26,7 +26,7 @@ import _ from 'lodash';
 import {Matrics, Color} from '../../common/styles';
 import {MIcon} from '../../common/assets/vector-icon';
 import APICaller from '../../utils/api-caller';
-import {SpinnerView} from '../../common/components';
+import {SpinnerView, Header} from '../../common/components';
 import {useNavigation} from '@react-navigation/native';
 
 let filterComplainDesc = [];
@@ -317,10 +317,8 @@ export default class submitComplaint extends Component {
     const {navigation} = this.props;
     return (
       <SafeAreaView style={{flex: 1}}>
-        <Appbar.Header>
-          <Appbar.BackAction onPress={() => navigation.goBack()} />
-          <Appbar.Content title={'Submit Complaint'} />
-        </Appbar.Header>
+        <Header title="Submit Complaint" left="back" />
+
         {!this.state.webviewLoad && this.state.webviewShow ? (
           <View
             style={{

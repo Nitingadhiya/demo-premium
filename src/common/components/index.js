@@ -6,7 +6,7 @@
 export * from './textinput-view';
 // export * from "./loader";
 // export * from "./confirm-modal";
-// export * from "./common-header";
+export * from './common-header';
 // export * from "./radio";
 // export * from "./custom-picker";
 // export * from "./date-time-picker";

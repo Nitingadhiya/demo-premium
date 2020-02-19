@@ -24,6 +24,7 @@ import _ from 'lodash';
 import CodeInput from 'react-native-confirmation-code-input';
 import {Color, Matrics} from '../../common/styles';
 import APICaller from '../../utils/api-caller';
+import {Header} from '../../common/components';
 
 /** ******* QR code ********** */
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -148,6 +149,7 @@ export class SystemVerify extends Component {
   render() {
     return (
       <SafeAreaView style={{flex: 1}}>
+        <Header title="System Verify" left="back" />
         {this.state.loadingData ? (
           <View style={styles.spinnerView}>
             <Spinner

@@ -354,6 +354,7 @@ class ComplainList extends Component {
   render() {
     return (
       <SafeAreaView style={{flex: 1}}>
+        <Header title={'Complaint list'} left="back" />
         <View
           style={{
             borderWidth: 1,

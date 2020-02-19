@@ -13,7 +13,7 @@ import {MIcon, McIcon, FIcon} from '../../common/assets/vector-icon';
 import APICaller from '../../utils/api-caller';
 import styles from './styles';
 import {userRegistrationEndPoint} from '../../config/api-endpoint';
-import {TextInputView, SpinnerView} from '../../common/components';
+import {TextInputView, SpinnerView, Header} from '../../common/components';
 import {Color} from '../../common/styles';
 import NavigationHelper from '../../utils/navigation-helper';
 
@@ -185,6 +185,7 @@ class Register extends Component {
     } = this.state;
     return (
       <SafeAreaView style={styles.container}>
+        <Header title="Register" left="back" />
         <KeyboardAvoidingView
           style={{flex: 1}}
           keyboardShouldPersistTaps={'handled'}

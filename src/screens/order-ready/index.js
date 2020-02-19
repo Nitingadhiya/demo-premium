@@ -21,6 +21,7 @@ import _ from 'lodash';
 import APICaller from '../../utils/api-caller';
 import {Images, Color, Matrics} from '../../common/styles';
 import POrder from '../../components/pending-order';
+import {Header} from '../../common/components';
 
 let self;
 
@@ -181,6 +182,7 @@ class OrderReady extends Component {
     }
     return (
       <SafeAreaView style={{flex: 1}}>
+        <Header title="Order Ready" left="menu" />
         <ScrollView
           style={{padding: 10, backgroundColor: '#eee', flex: 1}}
           refreshControl={

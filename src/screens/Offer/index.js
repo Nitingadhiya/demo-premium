@@ -14,7 +14,8 @@ import {
 } from 'react-native';
 import {Color, Matrics} from '../../common/styles';
 import OfferList from '../../components/offer-list';
-import {Appbar} from 'react-native-paper';
+import {Header} from '../../common/components';
+
 let self;
 
 //= ===CLASS DECLARATION====//
@@ -113,10 +114,8 @@ class Offer extends Component {
   render() {
     return (
       <SafeAreaView style={{flex: 1}}>
-        <Appbar.Header>
-          <Appbar.Action icon="menu" onPress={() => navigation.openDrawer()} />
-          <Appbar.Content title={'Offer'} />
-        </Appbar.Header>
+        <Header title="Offer" left="menu" />
+
         <OfferList />
         <OfferList />
         <OfferList />

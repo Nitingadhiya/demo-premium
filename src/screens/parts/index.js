@@ -67,6 +67,7 @@ class Parts extends Component {
     const {loadingData, partList} = this.state;
     return (
       <SafeAreaView style={{flex: 1}}>
+        <Header title="Offer" left="back" />
         {loadingData ? <SpinnerView /> : null}
         <View style={{flex: 1}}>
           {partList.length > 0 && (

@@ -10,10 +10,7 @@ import {
 import {VersionNumber} from '../../../../package';
 
 import APICaller from '../../../../utils/api-caller';
-import {
-  getVersionCodeEndPoint,
-  userDashboardEndPoint,
-} from '../../../../config/api-endpoint';
+import {userDashboardEndPoint} from '../../../../config/api-endpoint';
 import Helper from '../../../../utils/helper';
 import Events from '../../../../utils/events';
 import styles from './styles';
@@ -21,12 +18,11 @@ import {
   UpdateAvailableView,
   UserInfoDashboardView,
   SpinnerView,
+  Header,
 } from '../../../../common/components';
 import CarouselSliderView from '../../../../common/components/carousel-slider-view';
 
 import CategoryItemList from '../../../../components/category-item-list';
-import TeamComplaintOverview from '../../../../components/team-complaints-overview';
-import TeamTasksOverview from '../../../../components/team-tasks-overview';
 import ComplaintOptionsModal from '../../../../components/complaint-options-modal';
 import ComplaintWithQRCode from '../../../../components/complaint-with-qr-code';
 import NavigationHelper from '../../../../utils/navigation-helper';
@@ -103,6 +99,7 @@ export default class Dashboard extends Component {
     } = this.state;
     return (
       <SafeAreaView style={styles.safeView}>
+        <Header title="Dashboard" left="menu" />
         {loadingData ? <SpinnerView /> : null}
         {updateAvailable ? <UpdateAvailableView /> : null}
         <ScrollView

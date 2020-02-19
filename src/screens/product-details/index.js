@@ -24,7 +24,7 @@ import {Matrics, Color} from '../../common/styles';
 import Events from '../../utils/events';
 import Helper from '../../utils/helper';
 import NavigationHelper from '../../utils/navigation-helper';
-import {SpinnerView} from '../../common/components';
+import {SpinnerView, Header} from '../../common/components';
 import SegmentControl from 'react-native-segment-control';
 
 class ProductDetails extends Component {

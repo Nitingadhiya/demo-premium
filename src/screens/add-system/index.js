@@ -16,11 +16,11 @@ import {
   addSystemEndPoint,
 } from '../../config/api-endpoint';
 import styles from './styles';
-import {Matrics} from '../../common/styles';
+import {Matrics, Color} from '../../common/styles';
 import Events from '../../utils/events';
 import Helper from '../../utils/helper';
 import NavigationHelper from '../../utils/navigation-helper';
-import {SpinnerView, TextInputView} from '../../common/components';
+import {SpinnerView, TextInputView, Header} from '../../common/components';
 
 class AddSystem extends Component {
   state = {
@@ -119,8 +119,10 @@ class AddSystem extends Component {
       selectedSystemType,
       systemName,
     } = this.state;
+
     return (
       <SafeAreaView style={{flex: 1}}>
+        <Header title={'Add System'} left="back" />
         {loadingData ? <SpinnerView /> : null}
         <View style={styles.container}>
           <View style={styles.viewItemTypeText}>

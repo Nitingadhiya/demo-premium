@@ -43,7 +43,7 @@ const Stack = createStackNavigator();
 const primary = '#393184';
 export default class Splash extends React.Component {
   state = {
-    loading: false,
+    loading: true,
     userInfo: null,
     appState: AppState.currentState,
   };
@@ -56,7 +56,9 @@ export default class Splash extends React.Component {
     const data = await Helper.getLocalStorageItem('userInfo');
     console.log(data, 'data');
     if (data) {
-      this.setState({userInfo: data});
+      this.setState({userInfo: data, loading: false});
+    } else {
+      this.setState({loading: false});
     }
   }
   componentWillUnmount() {
@@ -74,16 +76,6 @@ export default class Splash extends React.Component {
     }
     this.setState({appState: nextAppState});
   };
-
-  tabBarBottom() {
-    const {userInfo} = this.state;
-    if (!userInfo) return AdminBottomTabs;
-    if (userInfo.LoginType === '1') return AdminBottomTabs;
-    if (userInfo.LoginType === '2') return ManagerBottomTabs;
-    if (userInfo.LoginType === '3') return EngineerBottomTabs;
-    if (userInfo.LoginType === '4') return CustomerBottomTabs;
-    if (userInfo.LoginType === '4') return DealerBottomTabs;
-  }
 
   render() {
     const {loading, userInfo} = this.state;

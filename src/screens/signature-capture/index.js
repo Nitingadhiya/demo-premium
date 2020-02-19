@@ -14,6 +14,7 @@ import {
   ImageBackground,
 } from 'react-native';
 import SignatureCapture from 'react-native-signature-capture';
+import {Header} from '../../common/components';
 import {Images, Color, Matrics} from '../../common/styles';
 import APICaller from '../../utils/api-caller';
 import Events from '../util/events';
@@ -114,6 +115,7 @@ class SignCapture extends Component {
   render() {
     return (
       <SafeAreaView style={{flex: 1}}>
+        <Header title="Signature Capture" left="back" />
         {this.state.loading ? (
           <View style={styles.spinnerView}>
             <Spinner

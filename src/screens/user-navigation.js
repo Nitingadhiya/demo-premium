@@ -50,7 +50,7 @@ export default class UserNavigation extends React.Component {
 
   render() {
     const {loading, userInfo} = this.state;
-    if (loading) {
+    if (loading || !userInfo) {
       return (
         <View>
           <Text>Please wait...</Text>

@@ -10,17 +10,14 @@ import {
 import {VersionNumber} from '../../../../package';
 
 import APICaller from '../../../../utils/api-caller';
-import {
-  getVersionCodeEndPoint,
-  userDashboardEndPoint,
-} from '../../../../config/api-endpoint';
+import {userDashboardEndPoint} from '../../../../config/api-endpoint';
 import Helper from '../../../../utils/helper';
 import Events from '../../../../utils/events';
 import styles from './styles';
 import {
   UpdateAvailableView,
-  UserInfoDashboardView,
   SpinnerView,
+  Header,
 } from '../../../../common/components';
 import AdminTabel from '../../../../components/admin-table';
 import TeamComplaintOverview from '../../../../components/team-complaints-overview';
@@ -112,6 +109,7 @@ export default class Dashboard extends Component {
     } = this.state;
     return (
       <SafeAreaView style={styles.safeView}>
+        <Header title="Dashboard" left="menu" />
         {loadingData ? <SpinnerView /> : null}
         {updateAvailable ? <UpdateAvailableView /> : null}
         <ScrollView
