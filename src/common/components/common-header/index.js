@@ -5,19 +5,20 @@ import {Color, ApplicationStyles, Images, Matrics} from '../../styles';
 import {Appbar} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 
-const drawerMenu = ({navigation}) => (
+const drawerMenu = navigation => (
   <Appbar.Action icon="menu" onPress={() => navigation.openDrawer()} />
 );
 
-const backButton = ({navigation}) => (
+const backButton = navigation => (
   <Appbar.BackAction onPress={() => navigation.goBack()} />
 );
 
 export const Header = ({title, left}) => {
   const navigation = useNavigation();
+  console.log(navigation, 'nav');
 
   return (
-    <Appbar.Header>
+    <Appbar.Header style={{backgroundColor: Color.primary}}>
       {left === 'menu' && drawerMenu(navigation)}
       {left === 'back' && backButton(navigation)}
       <Appbar.Content title={title} />

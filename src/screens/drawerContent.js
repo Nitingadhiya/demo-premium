@@ -23,6 +23,7 @@ import Animated from 'react-native-reanimated';
 import {PreferencesContext} from '../context/preferencesContext';
 import {MIcon, McIcon} from '../common/assets/vector-icon';
 import NavigationHelper from '../utils/navigation-helper';
+import Helper from '../utils/helper';
 
 type Props = DrawerContentComponentProps<DrawerNavigationProp>;
 
@@ -38,7 +39,6 @@ export function DrawerContent(props: Props) {
   });
 
   const navigation = props.navigation;
-
   return (
     <DrawerContentScrollView {...props}>
       <Animated.View
@@ -50,7 +50,7 @@ export function DrawerContent(props: Props) {
             transform: [{translateX}],
           },
         ]}>
-        <View style={styles.userInfoSection}>
+        {/* <View style={styles.userInfoSection}>
           <TouchableOpacity
             style={{marginLeft: 10}}
             onPress={() => {
@@ -64,7 +64,7 @@ export function DrawerContent(props: Props) {
               size={50}
             />
           </TouchableOpacity>
-          <Title style={styles.title}>Dawid Urbaniak</Title>
+          <Title style={styles.title}>user name</Title>
           <Caption style={styles.caption}>@trensik</Caption>
           <View style={styles.row}>
             <View style={styles.section}>
@@ -80,7 +80,7 @@ export function DrawerContent(props: Props) {
               <Caption style={styles.caption}>Obserwujący</Caption>
             </View>
           </View>
-        </View>
+        </View> */}
         <Drawer.Section style={styles.drawerSection}>
           <DrawerItem
             icon={({color, size}) => (

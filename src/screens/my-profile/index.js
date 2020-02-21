@@ -118,7 +118,7 @@ class MyProfile extends Component {
     if (!profileInfo) return <View />;
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: Color.white}}>
-        <Header title="My Profile" left="back" />
+        {/* <Header title="My Profile" left="back" /> */}
         <ScrollView style={{flex: 1}}>
           <View style={{position: 'absolute', zIndex: 1, top: 10, left: 5}}>
             <TouchableOpacity

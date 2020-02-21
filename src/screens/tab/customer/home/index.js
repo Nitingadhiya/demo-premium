@@ -102,10 +102,10 @@ export default class Dashboard extends Component {
       systemDescription,
       refreshing,
     } = this.state;
+    console.log(navigation);
     return (
       <View style={styles.mainContainer}>
         <Header title="Dashboard" left="menu" />
-
         {updateAvailable ? <UpdateAvailableView /> : null}
         <ScrollView
           style={{flex: 1}}
