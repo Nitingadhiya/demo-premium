@@ -5,7 +5,7 @@ export default styles = {
     borderColor: Color.paleGreyTwo,
     padding: 5,
     backgroundColor: Color.white,
-    margin: 10,
+    margin: 5,
     borderRadius: 5,
   },
   font16Center: {fontSize: 16, textAlign: 'center'},

@@ -14,7 +14,7 @@ import {Notifications} from '../notifications';
 import {StackNavigatorParamlist} from '../types';
 import WishList from '../wish-list';
 import Order from '../order';
-import Offer from '../Offer';
+import Offer from '../offer';
 import Chat from '../chat';
 
 const Tab = createMaterialBottomTabNavigator();

@@ -138,11 +138,11 @@ export default class Dashboard extends Component {
         <Header title="Dashboard" left="menu" />
         {loadingData ? <SpinnerView /> : null}
         {updateAvailable ? <UpdateAvailableView /> : null}
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.button}
           onPress={() => this.backgroundJobMethod()}>
           <Text>Schedule everRunning job</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <ScrollView
           style={{flex: 1}}
           refreshControl={

@@ -35,6 +35,14 @@ const getOrderListEndPoint = userName => `GetOrderList?Username=${userName}`;
 const getUserProfileEndPoint = userName => `UserProfile?Username=${userName}`;
 const getLocationListEndPoint = 'GetLocationList';
 const updateLatLongEndPoint = 'UpdateLatLong';
+const complaintTaskListEndPoint = userName =>
+  `UserDashboard?Username=${userName}`;
+const changePasswordEndPoint = (userName, oldPassword, newPassword) =>
+  `ChangePassword?Username=${userName}&OldPassword=${oldPassword}&NewPassword=${newPassword}`;
+const insertWishCartEndPoint = (productNo, userName, type) =>
+  `InsertWishCart?ProductNo=${productNo}&Username=${userName}&WishCart=${type}`;
+const removeWishCartEndPoint = (productNo, userName, type) =>
+  `RemoveWishCart?ProductNo=${productNo}&Username=${userName}&WishCart=${type}`;
 
 module.exports = {
   checkVersionEndPoint,
@@ -64,4 +72,8 @@ module.exports = {
   getUserProfileEndPoint,
   getLocationListEndPoint,
   updateLatLongEndPoint,
+  complaintTaskListEndPoint,
+  changePasswordEndPoint,
+  insertWishCartEndPoint,
+  removeWishCartEndPoint,
 };

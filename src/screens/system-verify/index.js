@@ -236,7 +236,7 @@ export class SystemVerify extends Component {
                       <View style={styles.leftAndRightOverlay} />
 
                       <View style={styles.rectangle}>
-                        <Animatable.View
+                        {/* <Animatable.View
                           style={styles.scanBar}
                           direction="alternate-reverse"
                           iterationCount="infinite"
@@ -246,7 +246,7 @@ export class SystemVerify extends Component {
                             'translateY',
                             SCREEN_WIDTH * 0.22,
                           )}
-                        />
+                        /> */}
                       </View>
 
                       <View style={styles.leftAndRightOverlay} />

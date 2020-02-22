@@ -36,4 +36,16 @@ export default styles = {
     marginLeft: -2,
     paddingLeft: 10,
   },
+  checkout: {
+    height: 45,
+    width: Matrics.screenWidth,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Color.primary,
+    flexDirection: 'row',
+  },
+  checkoutText: {
+    color: '#fff',
+    fontSize: 16,
+  },
 };

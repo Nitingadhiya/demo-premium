@@ -22,7 +22,12 @@ const Helper = {
   setLocalStorageItem(key, value) {
     AsyncStorage.setItem(key, JSON.stringify(value));
   },
-
+  removeLocalStorage(key) {
+    AsyncStorage.removeItem(key);
+  },
+  clearLocalStorage() {
+    AsyncStorage.clear();
+  },
   appUpdateAlert(cancelled) {
     const cancelValue = {
       text: 'Cancel',

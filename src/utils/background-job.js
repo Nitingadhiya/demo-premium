@@ -15,6 +15,7 @@ const BackgroundServiceHelper = {
         console.log(
           `Background Job fired*************************!. Key = ${BackgroundServiceHelper.everRunningJobKey()}`,
         );
+        if (!global.userInfo) return;
         Geolocation.getCurrentPosition(
           position => {
             const body = JSON.stringify({

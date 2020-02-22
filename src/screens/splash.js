@@ -34,6 +34,7 @@ import ServicePackage from './select-serivce-pack';
 import ComplainList from './complaint-list';
 import EditProfile from './edit-profile';
 import OrderReady from './order-ready';
+import UpdateAddress from './update-address';
 // import SignCapture from './signature-capture';
 
 type Props = {
@@ -219,7 +220,7 @@ export default class Splash extends React.Component {
           options={{headerTitle: 'Change Password'}}
         />
         <Stack.Screen
-          name="SelectServicePack"
+          name="ServicePackage"
           component={ServicePackage}
           options={{headerTitle: 'Select Service Pack'}}
         />
@@ -237,6 +238,11 @@ export default class Splash extends React.Component {
           name="OrderReady"
           component={OrderReady}
           options={{headerTitle: 'Order Ready'}}
+        />
+        <Stack.Screen
+          name="UpdateAddress"
+          component={UpdateAddress}
+          options={{headerTitle: 'Update address'}}
         />
         {/* <Stack.Screen
           name="SignatureCapture"

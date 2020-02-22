@@ -23,6 +23,7 @@ import {
   CheckBox,
 } from 'react-native';
 import _ from 'lodash';
+import {Header, SpinnerView} from '../../common/components';
 //import * as Animatable from 'react-native-animatable';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 // ASSETS
@@ -352,9 +353,13 @@ class ComplainList extends Component {
   // ----------->>>Render Method-------------->>>
 
   render() {
+    const {LoginType} = this.state;
     return (
       <SafeAreaView style={{flex: 1}}>
-        <Header title={'Complaint list'} left="back" />
+        <Header
+          title={'Complaint list'}
+          left={LoginType === '3' || LoginType === '2' ? 'menu' : 'back'}
+        />
         <View
           style={{
             borderWidth: 1,
@@ -391,7 +396,7 @@ class ComplainList extends Component {
               height: Dimensions.get('window').height,
             }}>
             <View style={{flex: 1}}>
-              <QRCodeScanner
+              {/* <QRCodeScanner
                 showMarker
                 onRead={this.onSuccess.bind(this)}
                 cameraStyle={{
@@ -430,7 +435,7 @@ class ComplainList extends Component {
                     <View style={styles.bottomOverlay} />
                   </View>
                 }
-              />
+              /> */}
             </View>
           </View>
         </Modal>
@@ -819,12 +824,7 @@ class ComplainList extends Component {
           keyboardVerticalOffset={64}>
           {this.state.loadingData ? (
             <View style={styles.spinnerView}>
-              <Spinner
-                color={Color.primary}
-                isVisible
-                type="ThreeBounce"
-                size={60}
-              />
+              <SpinnerView />
             </View>
           ) : null}
           <FlatList

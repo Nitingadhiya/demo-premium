@@ -6,10 +6,14 @@ import {
   Picker,
   TouchableOpacity,
   Alert,
+  FlatList,
 } from 'react-native';
+import _ from 'lodash';
 import RNOtpVerify from 'react-native-otp-verify';
 import CodeInput from 'react-native-confirmation-code-input';
 import APICaller from '../../utils/api-caller';
+import {MIcon} from '../../common/assets/vector-icon';
+import PListItem from '../../components/product-list';
 import {
   getItemTypeListEndPoint,
   getSystemTypeListEndPoint,
@@ -39,6 +43,9 @@ class PlaceOrder extends Component {
     if (userInfo) {
       this.getUserDetails(userInfo.UserName);
       this.getProductList(userInfo.UserName);
+      this.setState({
+        userInfo,
+      });
     }
     Events.on('updateAddress', 'place order', res => {
       _.merge(this.state.userInfo, res);
@@ -73,7 +80,7 @@ class PlaceOrder extends Component {
     });
   }
 
-  getProductList() {
+  getProductList(UserName) {
     if (!this.state.refreshing) {
       this.setState({loadingData: true});
     }
@@ -97,12 +104,105 @@ class PlaceOrder extends Component {
           loader: false,
           loadingData: false,
         });
+      } else {
+        this.setState({
+          cartListArr: [],
+          totalAmount: 0,
+          subTotalAmount: 0,
+          totalDiscount: 0,
+          filterResult: [],
+          refreshing: false,
+          displayResult: true,
+          loader: false,
+          loadingData: false,
+        });
       }
     });
   }
 
+  removeWishListCart(productNumber, type, systemPackage) {
+    const index = _.findIndex(this.state.cartListArr, {
+      ProductNo: productNumber,
+    });
+    if (
+      this.state.cartListArr.length > 0 &&
+      this.state.cartListArr[index].CartQty === 1
+    ) {
+      Alert.alert(
+        'Remove Item',
+        'Are you sure you want to remove item?',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          {
+            text: 'Ok',
+            onPress: () =>
+              this.removeCartItem(productNumber, type, systemPackage),
+          },
+        ],
+        {cancelable: false},
+      );
+    } else {
+      this.removeCartItem(productNumber, type, systemPackage);
+    }
+  }
+
+  async removeCartItem(productNumber, type, systemPackage) {
+    const index = _.findIndex(this.state.cartListArr, {
+      ProductNo: productNumber,
+    });
+    this.setState({loadingData: true});
+    const userInfo = await Helper.getLocalStorageItem('userInfo');
+    if (!userInfo) return;
+    let packageType = '';
+    if (systemPackage === 'Silver') {
+      packageType = 'S';
+    }
+    if (systemPackage === 'Platinum') {
+      packageType = 'P';
+    }
+    if (systemPackage === 'Gold') {
+      packageType = 'G';
+    }
+    const endPoint = `RemoveWishCart?ProductNo=${productNumber}&Username=${userInfo.UserName}&WishCart=${type}&OrderType=${packageType}`;
+
+    const method = 'GET';
+    APICaller(`${endPoint}`, method).then(json => {
+      console.log(json, 'json');
+      this.setState({loadingData: false});
+      if (json.data.Success === 1 || json.data.Success === '1') {
+        if (this.state.cartListArr[index].CartQty === 1) {
+          this.state.cartListArr.splice(index, 1);
+          let cartItm = JSON.stringify(this.state.cartListArr);
+          this.setState({
+            cartListArr: json.data.Response, //JSON.parse(cartItm),
+            totalAmount: json.data.TotalAmountWithDiscount || 0,
+            subTotalAmount: json.data.TotalAmount || 0,
+            totalDiscount: json.data.TotalDiscount || 0,
+          });
+        } else {
+          this.state.cartListArr[index].CartQty--;
+        }
+      } else {
+        this.setState({
+          loginError: json.data.Message,
+        });
+      }
+      this.setState({loadingData: false});
+    });
+  }
+
+  async onRefresh() {
+    await this.setState({refreshing: true});
+    this.getProductList(this.state.userInfo.UserName);
+  }
+
   render() {
-    const {loadingData, partList} = this.state;
+    const {loadingData, partList, userInfo} = this.state;
+    const {navigation} = this.props;
     return (
       <SafeAreaView style={{flex: 1}}>
         <Header title="Place Order" left="back" />
@@ -150,7 +250,7 @@ class PlaceOrder extends Component {
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  padding: Metrics.ScaleValue(5),
+                  padding: Matrics.ScaleValue(5),
                   justifyContent: 'space-between',
                 }}>
                 <Text style={{fontWeight: 'bold', fontSize: 16}}>
@@ -167,27 +267,27 @@ class PlaceOrder extends Component {
               </View>
               <View
                 style={{
-                  width: Dimensions.get('window').width,
+                  width: Matrics.screenWidth,
                   borderWidth: 1,
                   borderColor: '#ccc',
                   flexDirection: 'row',
                   justifyContent: 'space-between',
                   backgroundColor: '#e5e5e5',
                   alignItems: 'center',
-                  paddingHorizontal: Metrics.ScaleValue(10),
+                  paddingHorizontal: Matrics.ScaleValue(10),
                 }}>
                 <Text style={{fontSize: 14}}>Address</Text>
                 <TouchableOpacity
-                  style={{padding: Metrics.ScaleValue(8)}}
+                  style={{padding: Matrics.ScaleValue(8)}}
                   onPress={() =>
-                    this.props.navigation.navigate('UpdateAddress')
+                    NavigationHelper.navigate(navigation, 'UpdateAddress')
                   }>
                   <Text>Edit</Text>
                 </TouchableOpacity>
               </View>
               <View>
                 {userInfo && (
-                  <View style={{padding: Metrics.ScaleValue(10)}}>
+                  <View style={{padding: Matrics.ScaleValue(10)}}>
                     <Text style={{fontSize: 16}}>
                       <Text style={{fontWeight: 'bold'}}>
                         {userInfo.FirstName} {userInfo.LastName}
@@ -263,7 +363,7 @@ class PlaceOrder extends Component {
               <TouchableOpacity
                 onPress={() => this.proceedPlaceOrder()}
                 style={styles.checkout}>
-                <Icon name="shopping-cart" size={20} color="white" />
+                <MIcon name="shopping-cart" size={20} color="white" />
                 <Text style={styles.checkoutText}> Place Order</Text>
               </TouchableOpacity>
             </View>

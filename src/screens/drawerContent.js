@@ -98,39 +98,39 @@ export function DrawerContent(props: Props) {
           />
           <DrawerItem
             icon={({color, size}) => (
-              <McIcon name="tune" color={color} size={size} />
+              <McIcon name="format-list-bulleted" color={color} size={size} />
             )}
             label="Product List"
             onPress={() => NavigationHelper.navigate(navigation, 'ProductList')}
           />
           <DrawerItem
             icon={({color, size}) => (
-              <McIcon name="tune" color={color} size={size} />
+              <McIcon name="binoculars" color={color} size={size} />
             )}
             label="Wishlist"
             onPress={() => NavigationHelper.navigate(navigation, 'WishList')}
           />
           <DrawerItem
             icon={({color, size}) => (
-              <McIcon name="tune" color={color} size={size} />
+              <McIcon name="shopping" color={color} size={size} />
             )}
             label="Pending order"
             onPress={() => NavigationHelper.navigate(navigation, 'Order')}
           />
           <DrawerItem
             icon={({color, size}) => (
-              <McIcon name="tune" color={color} size={size} />
+              <McIcon name="bell-outline" color={color} size={size} />
             )}
             label="Offer"
             onPress={() => NavigationHelper.navigate(navigation, 'Offer')}
           />
-          <DrawerItem
+          {/* <DrawerItem
             icon={({color, size}) => (
               <McIcon name="bookmark-outline" color={color} size={size} />
             )}
             label="Chat"
             onPress={() => NavigationHelper.navigate(navigation, 'Chat')}
-          />
+          /> */}
           <DrawerItem
             icon={({color, size}) => (
               <McIcon name="bookmark-outline" color={color} size={size} />
@@ -144,13 +144,6 @@ export function DrawerContent(props: Props) {
             icon={({color, size}) => (
               <McIcon name="bookmark-outline" color={color} size={size} />
             )}
-            label="Chat"
-            onPress={() => NavigationHelper.navigate(navigation, 'Chat')}
-          />
-          <DrawerItem
-            icon={({color, size}) => (
-              <McIcon name="bookmark-outline" color={color} size={size} />
-            )}
             label="System Warranty"
             onPress={() =>
               NavigationHelper.navigate(navigation, 'SystemWarranty')
@@ -158,7 +151,7 @@ export function DrawerContent(props: Props) {
           />
           <DrawerItem
             icon={({color, size}) => (
-              <McIcon name="bookmark-outline" color={color} size={size} />
+              <McIcon name="lock" color={color} size={size} />
             )}
             label="Change Password"
             onPress={() =>
@@ -179,10 +172,13 @@ export function DrawerContent(props: Props) {
               <McIcon name="bookmark-outline" color={color} size={size} />
             )}
             label="Logout"
-            onPress={() => NavigationHelper.navigate(navigation, 'Logout')}
+            onPress={async () => {
+              await Helper.removeLocalStorage('userInfo');
+              NavigationHelper.reset(navigation, 'Splash');
+            }}
           />
         </Drawer.Section>
-        <Drawer.Section title="Preferences">
+        {/* <Drawer.Section title="Preferences">
           <TouchableRipple onPress={toggleTheme}>
             <View style={styles.preference}>
               <Text>Dark Theme</Text>
@@ -199,7 +195,7 @@ export function DrawerContent(props: Props) {
               </View>
             </View>
           </TouchableRipple>
-        </Drawer.Section>
+        </Drawer.Section> */}
       </Animated.View>
     </DrawerContentScrollView>
   );

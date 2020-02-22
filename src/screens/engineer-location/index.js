@@ -119,8 +119,8 @@ class ServicePackage extends Component {
 
   render() {
     const INIT_REGION = {
-      latitude: 41.8962667,
-      longitude: 11.3340056,
+      latitude: 21.2266,
+      longitude: 72.8312,
       latitudeDelta: 12,
       longitudeDelta: 12,
     };
@@ -144,16 +144,16 @@ class ServicePackage extends Component {
             renderCluster={this.renderCluster}
           />
         </View>
-        {/* <View style={styles.controlBar}>
+        <View style={styles.controlBar}>
           <TouchableOpacity style={styles.button} onPress={() => this.reload()}>
             <Text style={styles.text}>Reload</Text>
           </TouchableOpacity>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.button}
             onPress={() => this.loadMore()}>
             <Text style={styles.text}>Load more</Text>
-          </TouchableOpacity>
-        </View> */}
+          </TouchableOpacity> */}
+        </View>
       </SafeAreaView>
     );
   }
@@ -184,8 +184,7 @@ const styles = StyleSheet.create({
   },
   controlBar: {
     top: 58,
-    left: 25,
-    right: 25,
+    right: 10,
     height: 40,
     borderRadius: 20,
     position: 'absolute',
@@ -198,6 +197,23 @@ const styles = StyleSheet.create({
   button: {
     paddingVertical: 8,
     paddingHorizontal: 20,
+  },
+  clusterContainer: {
+    width: 30,
+    height: 30,
+    padding: 6,
+    borderWidth: 1,
+    borderRadius: 15,
+    alignItems: 'center',
+    borderColor: '#65bc46',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+  },
+  clusterText: {
+    fontSize: 13,
+    color: '#65bc46',
+    fontWeight: '500',
+    textAlign: 'center',
   },
 });
 

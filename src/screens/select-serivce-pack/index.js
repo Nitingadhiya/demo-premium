@@ -96,7 +96,9 @@ class ServicePackage extends Component {
   // ------------>>>LifeCycle Methods------------->>>
 
   componentDidMount() {
-    this.params = this.props.navigation.state.params;
+    const {route} = this.props;
+    this.params = route.params;
+    console.log(this.props, 'parm');
     this.setState({
       priceRate: this.params.item.PlatinumRate,
       onlineDiscount: this.params.item.OnlineDiscount,
@@ -269,7 +271,7 @@ class ServicePackage extends Component {
                         : 'rgba(255,0,0,0.5)',
                     },
                   ]}>
-                  <Icon
+                  <MIcon
                     name={res.silver ? 'check' : 'close'}
                     size={Matrics.ScaleValue(25)}
                     color={'black'}
@@ -285,7 +287,7 @@ class ServicePackage extends Component {
                         : 'rgba(255,0,0,0.5)',
                     },
                   ]}>
-                  <Icon
+                  <MIcon
                     name={res.gold ? 'check' : 'close'}
                     size={Matrics.ScaleValue(25)}
                     color={'black'}
@@ -301,7 +303,7 @@ class ServicePackage extends Component {
                         : 'rgba(255,0,0,0.5)',
                     },
                   ]}>
-                  <Icon
+                  <MIcon
                     name={res.platinum ? 'check' : 'close'}
                     size={Matrics.ScaleValue(25)}
                     color={'black'}
@@ -321,7 +323,7 @@ class ServicePackage extends Component {
                   style={styles.touchRadioButton}
                   disabled={this.params && !this.params.item.IsSilver}>
                   {this.params && this.params.item.IsSilver ? (
-                    <Icon
+                    <MIcon
                       name={
                         packageSelect === 'silver'
                           ? 'radio-button-checked'
@@ -348,7 +350,7 @@ class ServicePackage extends Component {
                   style={styles.touchRadioButton}
                   disabled={this.params && !this.params.item.IsGold}>
                   {this.params && this.params.item.IsGold ? (
-                    <Icon
+                    <MIcon
                       name={
                         packageSelect === 'gold'
                           ? 'radio-button-checked'
@@ -375,7 +377,7 @@ class ServicePackage extends Component {
                   style={styles.touchRadioButton}
                   disabled={this.params && !this.params.item.IsPlatinum}>
                   {this.params && this.params.item.IsPlatinum ? (
-                    <Icon
+                    <MIcon
                       name={
                         packageSelect === 'platinum'
                           ? 'radio-button-checked'

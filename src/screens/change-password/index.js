@@ -16,8 +16,9 @@ import {
   AsyncStorage,
   Alert,
 } from 'react-native';
-
+import {changePasswordEndPoint} from '../../config/api-endpoint';
 import {Color, Matrics} from '../../common/styles';
+import {MIcon, McIcon} from '../../common/assets/vector-icon';
 import APICaller from '../../utils/api-caller';
 import {TextInputView, SpinnerView, Header} from '../../common/components';
 
@@ -62,10 +63,17 @@ class ChangePassword extends Component {
       loadingData: true,
       userNameError: null,
     });
-    const endPoint = `ChangePassword?Username=${this.state.UserName}&OldPassword=${oldPassword}&NewPassword=${newPassword}`;
-    const method = 'GET';
-    APICaller(`${endPoint}`, method).then(json => {
-      console.log(json);
+    APICaller(
+      changePasswordEndPoint(this.state.UserName, oldPassword, newPassword),
+      'GET',
+    ).then(json => {
+      console.log(json, '**********');
+      if (json.status !== 200) {
+        this.setState({
+          loadingData: false,
+        });
+        Alert.alert('Alert', `Something went to wrong - ${json.status}`);
+      }
       if (json.data.Success === '1') {
         Alert.alert('Alert', 'Successfully password updated.');
       } else {
@@ -97,7 +105,7 @@ class ChangePassword extends Component {
     const {nPassword, oPassword} = this.state;
     return (
       <SafeAreaView style={{flex: 1}}>
-        <Header title={'Change Password'} left="back" />
+        <Header title={'Change Password'} left="menu" />
         <KeyboardAvoidingView style={{flex: 1}}>
           <View style={styles.container}>
             <View style={styles.textBoxView}>
@@ -119,7 +127,7 @@ class ChangePassword extends Component {
                 <TouchableOpacity
                   style={styles.passwordVisible}
                   onPress={() => this.passwordVisible('oPasswordSecure')}>
-                  <MIcon
+                  <McIcon
                     name={this.state.passwordSecure ? 'eye' : 'eye-off'}
                     size={22}
                     color={Color.lightGray}
@@ -144,7 +152,7 @@ class ChangePassword extends Component {
                 <TouchableOpacity
                   style={styles.passwordVisible}
                   onPress={() => this.passwordVisible('nPasswordSecure')}>
-                  <MIcon
+                  <McIcon
                     name={this.state.passwordSecure ? 'eye' : 'eye-off'}
                     size={22}
                     color={Color.lightGray}

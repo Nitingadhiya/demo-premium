@@ -8,13 +8,18 @@ import {
   KeyboardAvoidingView,
   TouchableOpacity,
   TextInput,
+  Alert,
   LayoutAnimation,
 } from 'react-native';
 import _ from 'lodash';
 import {Appbar, Avatar, useTheme, Badge} from 'react-native-paper';
 import CodeInput from 'react-native-confirmation-code-input';
 import APICaller from '../../utils/api-caller';
-import {fetchProductListEndPoint} from '../../config/api-endpoint';
+import {
+  fetchProductListEndPoint,
+  insertWishCartEndPoint,
+  removeWishCartEndPoint,
+} from '../../config/api-endpoint';
 import {MIcon} from '../../common/assets/vector-icon';
 import styles from './styles';
 import {Matrics, Color} from '../../common/styles';
@@ -30,6 +35,9 @@ class ProductList extends Component {
     searchMargin: -50,
     productItemList: null,
     filterResult: null,
+    badge: null,
+    refreshing: false,
+    searchText: null,
   };
 
   componentDidMount() {
@@ -181,16 +189,64 @@ class ProductList extends Component {
     });
   }
 
+  async addWishListCart(item, type) {
+    const {navigation} = this.props;
+    if (type === 'CART') {
+      NavigationHelper.navigate(navigation, 'ServicePackage', {item});
+      return;
+    }
+
+    this.setState({loadingData: true});
+    const userInfo = await Helper.getLocalStorageItem('userInfo');
+    if (!userInfo) return;
+    APICaller(
+      insertWishCartEndPoint(item.ProductNo, userInfo.UserName, type),
+      'GET',
+    ).then(json => {
+      console.log(json);
+      if (json.data.Success === 1 || json.data.Success === '1') {
+        //const cartCount = json.data.Response.length;
+        this.setState({loadingData: false});
+      }
+    });
+  }
+
+  async removeWishListCart(item, type) {
+    this.setState({loadingData: true});
+    const userInfo = await Helper.getLocalStorageItem('userInfo');
+    if (!userInfo) return;
+    APICaller(
+      removeWishCartEndPoint(item.ProductNo, userInfo.UserName, type),
+      'GET',
+    ).then(json => {
+      if (json.status !== 200) {
+        this.setState({loadingData: false});
+        Alert.alert(
+          `Error-${json.status}`,
+          'Server error, something went to wrong',
+        );
+        return;
+      }
+      if (json.data.Success === 1 || json.data.Success === '1') {
+        let prd = this.state.productItemList;
+        const index = _.findIndex(prd, {ProductNo: productNumber});
+        console.log(index);
+        this.setState({loadingData: false});
+      }
+    });
+  }
+
   async onRefresh() {
     // global.categoryFilter = '';
     // this.state.searchText = '';
     // await this.setState({refreshing: true});
-    // if (this.state.searchText) {
-    //   this.getSearchResult(this.state.searchText);
-    //   this.setState({refreshing: false});
-    // } else {
-    //   this.getProductList();
-    // }
+    if (this.state.searchText) {
+      //this.fetchProductList(this.state.searchText);
+      this.setState({refreshing: false});
+    } else {
+      console.log('Check');
+      this.fetchProductList(this.state.userInfo.UserName);
+    }
   }
 
   noItemFound = () => {
@@ -218,20 +274,23 @@ class ProductList extends Component {
   }
 
   render() {
-    const {productItemList} = this.state;
+    const {productItemList, badge} = this.state;
     const {navigation} = this.props;
     return (
       <SafeAreaView style={styles.safeView}>
-        <Appbar.Header>
+        <Appbar.Header style={{backgroundColor: Color.primary}}>
           <Appbar.Action icon="menu" onPress={() => navigation.openDrawer()} />
           <Appbar.Content title={'Product'} />
           <Appbar.Action icon="magnify" onPress={() => this.searchBarOpen()} />
-          <Appbar.Action icon="cart" onPress={() => this.searchBarOpen()} />
+          <Appbar.Action
+            icon="cart"
+            onPress={() => NavigationHelper.navigate(navigation, 'PlaceOrder')}
+          />
           <Badge
             style={{position: 'absolute', zIndex: 1, right: 5, top: 10}}
             theme={Color.lightGray}
             size={18}>
-            3
+            {badge}
           </Badge>
         </Appbar.Header>
         <KeyboardAvoidingView
@@ -286,7 +345,7 @@ class ProductList extends Component {
             showsVerticalScrollIndicator={false}
             style={{flex: 1}}
             extraData={this.state}
-            //onRefresh={() => this.onRefresh()}
+            onRefresh={() => this.onRefresh()}
             refreshing={this.state.refreshing}
             renderItem={({item}) => (
               <View
@@ -300,7 +359,7 @@ class ProductList extends Component {
                   productDetails={() => this.productDetails(item)}
                   addWishListCart={() => this.addWishListCart(item, 'CART')}
                   removeWishListCart={() =>
-                    this.removeWishListCart(item.ProductNo, 'WISH')
+                    this.removeWishListCart(item, 'WISH')
                   }
                   addWishList={() => this.addWishListCart(item, 'WISH')}
                   userInfo={this.state.userInfo}

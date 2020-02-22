@@ -18,11 +18,13 @@ import {
   AsyncStorage,
   KeyboardAvoidingView,
 } from 'react-native';
-import Events from '../util/events';
+import _ from 'lodash';
+import Events from '../../utils/events';
 import {Color, Matrics} from '../../common/styles';
 import {TextInputView, Header} from '../../common/components';
-import MIcon from '../../common/assets/vector-icon';
+import {MIcon} from '../../common/assets/vector-icon';
 import APICaller from '../../utils/api-caller';
+import Helper from '../../utils/helper';
 // CONSTANTS
 const window = Dimensions.get('window');
 let self;
@@ -136,7 +138,6 @@ class UpdateAddress extends Component {
   }
 
   async updateAddressFn() {
-    setLoader({loader: true});
     const endPoint = 'UpdateAddress';
     const method = 'Post';
     const body = {
@@ -163,15 +164,14 @@ class UpdateAddress extends Component {
         result.City = this.state.City;
         result.Pincode = this.state.Pincode;
         result.State = this.state.Divison;
-        AsyncStorage.setItem('userInfo', JSON.stringify(result));
+        Helper.setLocalStorageItem('userInfo', result);
+        //AsyncStorage.setItem('userInfo', JSON.stringify(result));
         this.props.navigation.goBack();
       }
-      setLoader({loader: false});
     });
   }
 
   getLandMark() {
-    setLoader({loader: true});
     const endPoint = `GetLandmarks`;
     const method = 'GET';
     APICaller(`${endPoint}`, method).then(json => {
@@ -185,7 +185,6 @@ class UpdateAddress extends Component {
         });
         this.setState({landmarkList: arr});
       }
-      setLoader({loader: false});
     });
   }
 
@@ -515,6 +514,11 @@ class UpdateAddress extends Component {
               />
             </View>
           </View>
+          <TouchableOpacity
+            onPress={() => this.updateAddressFn()}
+            style={styles.checkout}>
+            <Text style={styles.checkoutText}> Save</Text>
+          </TouchableOpacity>
         </KeyboardAvoidingView>
       </SafeAreaView>
     );
@@ -536,70 +540,70 @@ const styles = StyleSheet.create({
     flex: 3,
     flexDirection: 'column',
     justifyContent: 'space-around',
-    paddingLeft: Metrics.ScaleValue(10),
+    paddingLeft: Matrics.ScaleValue(10),
   },
   textStyle: {
-    fontSize: Metrics.ScaleValue(18),
+    fontSize: Matrics.ScaleValue(18),
     fontWeight: 'bold',
     color: Color.black,
   },
   textStyle1: {
-    fontSize: Metrics.ScaleValue(15),
+    fontSize: Matrics.ScaleValue(15),
     color: Color.lightGray,
   },
   textStyleLocation: {
-    fontSize: Metrics.ScaleValue(13),
+    fontSize: Matrics.ScaleValue(13),
     color: Color.lightGray,
   },
   viewStyle1: {
     justifyContent: 'center',
     // backgroundColor: Colors.VERY_PALE_ORANGE,
-    width: Metrics.ScaleValue(100),
+    width: Matrics.ScaleValue(100),
     alignSelf: 'center',
   },
   imageStyle: {
     width: window.width,
-    height: Metrics.ScaleValue(265),
+    height: Matrics.ScaleValue(265),
   },
   textStyle2: {
-    fontSize: Metrics.ScaleValue(19),
+    fontSize: Matrics.ScaleValue(19),
     color: Color.black,
     fontWeight: 'bold',
   },
   textStyle3: {
-    fontSize: Metrics.ScaleValue(16),
-    paddingTop: Metrics.ScaleValue(8),
+    fontSize: Matrics.ScaleValue(16),
+    paddingTop: Matrics.ScaleValue(8),
     color: Color.lightGray,
   },
   viewStyle2: {
     borderBottomWidth: 1,
     borderBottomColor: Color.silver,
-    paddingBottom: Metrics.ScaleValue(10),
+    paddingBottom: Matrics.ScaleValue(10),
   },
   textStyle4: {
-    fontSize: Metrics.ScaleValue(15),
-    marginTop: Metrics.ScaleValue(8),
+    fontSize: Matrics.ScaleValue(15),
+    marginTop: Matrics.ScaleValue(8),
     color: Color.black,
-    paddingTop: Metrics.ScaleValue(5),
+    paddingTop: Matrics.ScaleValue(5),
   },
   textStyle5: {
-    fontSize: Metrics.ScaleValue(15),
-    marginTop: Metrics.ScaleValue(8),
+    fontSize: Matrics.ScaleValue(15),
+    marginTop: Matrics.ScaleValue(8),
     color: Color.lightGray,
-    padding: Metrics.ScaleValue(5),
-    paddingRight: Metrics.ScaleValue(0),
+    padding: Matrics.ScaleValue(5),
+    paddingRight: Matrics.ScaleValue(0),
   },
   textStyle6: {
-    fontSize: Metrics.ScaleValue(17),
+    fontSize: Matrics.ScaleValue(17),
     color: Color.black,
     flex: 1,
   },
   textStyle7: {
-    fontSize: Metrics.ScaleValue(14),
+    fontSize: Matrics.ScaleValue(14),
     color: Color.lightGray,
   },
   textStyle8: {
-    fontSize: Metrics.ScaleValue(15),
+    fontSize: Matrics.ScaleValue(15),
     color: Color.lightGray,
   },
   textinputStyle: {
@@ -607,28 +611,28 @@ const styles = StyleSheet.create({
     backgroundColor: Color.white,
     fontWeight: 'bold',
     borderColor: Color.lightGray,
-    height: Metrics.ScaleValue(40),
+    height: Matrics.ScaleValue(40),
     borderWidth: 1,
-    borderRadius: Metrics.ScaleValue(5),
+    borderRadius: Matrics.ScaleValue(5),
     justifyContent: 'space-between',
   },
   viewCommentAll: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingBottom: Metrics.ScaleValue(15),
+    paddingBottom: Matrics.ScaleValue(15),
   },
   commentSettingButton: {
-    paddingHorizontal: Metrics.ScaleValue(12),
-    paddingVertical: Metrics.ScaleValue(6),
+    paddingHorizontal: Matrics.ScaleValue(12),
+    paddingVertical: Matrics.ScaleValue(6),
   },
   userCommentView: {
     flexDirection: 'row',
-    paddingTop: Metrics.ScaleValue(20),
-    paddingBottom: Metrics.ScaleValue(20),
+    paddingTop: Matrics.ScaleValue(20),
+    paddingBottom: Matrics.ScaleValue(20),
   },
   sendCommentButton: {
     alignSelf: 'center',
-    marginRight: Metrics.ScaleValue(15),
+    marginRight: Matrics.ScaleValue(15),
   },
   commentSettingButtonView: {
     marginRight: -12,
@@ -721,20 +725,29 @@ const styles = StyleSheet.create({
   },
   offerName: {fontWeight: 'bold', fontSize: 14},
   userView: {
-    height: Metrics.ScaleValue(120),
+    height: Matrics.ScaleValue(120),
     width: Dimensions.get('window').width,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 20,
   },
   userImage: {
-    height: Metrics.ScaleValue(120),
-    width: Metrics.ScaleValue(120),
-    borderRadius: Metrics.ScaleValue(120) / 2,
+    height: Matrics.ScaleValue(120),
+    width: Matrics.ScaleValue(120),
+    borderRadius: Matrics.ScaleValue(120) / 2,
+  },
+  checkout: {
+    height: 45,
+    width: Matrics.screenWidth,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Color.primary,
+    flexDirection: 'row',
+  },
+  checkoutText: {
+    color: '#fff',
+    fontSize: 16,
   },
 });
 
-const mapStateToProps = data => ({
-  landmarkListProps: data || null,
-});
-export default connect(mapStateToProps, null)(UpdateAddress);
+export default UpdateAddress;

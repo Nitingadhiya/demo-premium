@@ -8,6 +8,10 @@ import {useIsFocused, RouteProp} from '@react-navigation/native';
 import overlay from '../overlay';
 import {Feed} from '../feed';
 import Dashboard from '../tab/engineer/home';
+import ComplaintList from '../complaint-list';
+import WishList from '../wish-list';
+import Order from '../order';
+import Offer from '../offer';
 import {Message} from '../message';
 import {Notifications} from '../notifications';
 import {StackNavigatorParamlist} from '../types';
@@ -66,16 +70,16 @@ export const EngineerBottomTabs = (props: Props) => {
         />
         <Tab.Screen
           name="ComplaintList"
-          component={Feed}
+          component={ComplaintList}
           options={{
             tabBarIcon: 'format-list-bulleted',
-            tabBarLabel: 'Engineer',
+            tabBarLabel: 'Complaint',
             tabBarColor,
           }}
         />
         <Tab.Screen
           name="WishList"
-          component={Feed}
+          component={WishList}
           options={{
             tabBarIcon: 'binoculars',
             tabBarLabel: 'Wishlist',
@@ -84,7 +88,7 @@ export const EngineerBottomTabs = (props: Props) => {
         />
         <Tab.Screen
           name="Order"
-          component={Feed}
+          component={Order}
           options={{
             tabBarIcon: 'shopping',
             tabBarLabel: 'Order',
@@ -93,8 +97,8 @@ export const EngineerBottomTabs = (props: Props) => {
         />
 
         <Tab.Screen
-          name="Notifications"
-          component={Notifications}
+          name="Offer"
+          component={Offer}
           options={{
             tabBarIcon: 'bell-outline',
             tabBarLabel: 'Offer',
