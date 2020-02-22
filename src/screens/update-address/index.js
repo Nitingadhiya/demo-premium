@@ -62,35 +62,6 @@ class UpdateAddress extends Component {
   };
   // --->>>Specify Navigation Properties for screen------>>>
 
-  static navigationOptions = ({navigation}) => ({
-    //  header: null
-    title: 'Update Address',
-    headerStyle: {borderBottomWidth: 1},
-    headerTitleStyle: {
-      fontSize: Metrics.ScaleValue(20),
-      color: Colors.BLACK,
-      flex: 1,
-      textAlign: 'center',
-      alignSelf: 'center',
-    },
-    headerTintColor: Colors.BLACK,
-    headerLeft: (
-      <TouchableOpacity
-        style={styles.headerTitleView}
-        onPress={() => navigation.goBack()}>
-        <Icon name="keyboard-arrow-left" size={40} />
-      </TouchableOpacity>
-    ),
-    headerRight: (
-      <TouchableOpacity
-        style={styles.headerTitleView}
-        onPress={() => self.updateAddressFn()}
-        style={{paddingRight: 10}}>
-        <Text style={{fontSize: 16}}>Save</Text>
-      </TouchableOpacity>
-    ),
-  });
-
   // ------------>>>LifeCycle Methods------------->>>
   componentDidMount() {
     self = this;
@@ -570,15 +541,15 @@ const styles = StyleSheet.create({
   textStyle: {
     fontSize: Metrics.ScaleValue(18),
     fontWeight: 'bold',
-    color: Colors.BLACK,
+    color: Color.black,
   },
   textStyle1: {
     fontSize: Metrics.ScaleValue(15),
-    color: Colors.GRAY,
+    color: Color.lightGray,
   },
   textStyleLocation: {
     fontSize: Metrics.ScaleValue(13),
-    color: Colors.GRAY,
+    color: Color.lightGray,
   },
   viewStyle1: {
     justifyContent: 'center',
@@ -592,50 +563,50 @@ const styles = StyleSheet.create({
   },
   textStyle2: {
     fontSize: Metrics.ScaleValue(19),
-    color: Colors.BLACK,
+    color: Color.black,
     fontWeight: 'bold',
   },
   textStyle3: {
     fontSize: Metrics.ScaleValue(16),
     paddingTop: Metrics.ScaleValue(8),
-    color: Colors.GRAY,
+    color: Color.lightGray,
   },
   viewStyle2: {
     borderBottomWidth: 1,
-    borderBottomColor: Colors.SILVER,
+    borderBottomColor: Color.silver,
     paddingBottom: Metrics.ScaleValue(10),
   },
   textStyle4: {
     fontSize: Metrics.ScaleValue(15),
     marginTop: Metrics.ScaleValue(8),
-    color: Colors.BLACK,
+    color: Color.black,
     paddingTop: Metrics.ScaleValue(5),
   },
   textStyle5: {
     fontSize: Metrics.ScaleValue(15),
     marginTop: Metrics.ScaleValue(8),
-    color: Colors.GRAY,
+    color: Color.lightGray,
     padding: Metrics.ScaleValue(5),
     paddingRight: Metrics.ScaleValue(0),
   },
   textStyle6: {
     fontSize: Metrics.ScaleValue(17),
-    color: Colors.BLACK,
+    color: Color.black,
     flex: 1,
   },
   textStyle7: {
     fontSize: Metrics.ScaleValue(14),
-    color: Colors.GRAY,
+    color: Color.lightGray,
   },
   textStyle8: {
     fontSize: Metrics.ScaleValue(15),
-    color: Colors.GRAY,
+    color: Color.lightGray,
   },
   textinputStyle: {
     flexDirection: 'row',
-    backgroundColor: Colors.WHITE,
+    backgroundColor: Color.white,
     fontWeight: 'bold',
-    borderColor: Colors.GRAY,
+    borderColor: Color.lightGray,
     height: Metrics.ScaleValue(40),
     borderWidth: 1,
     borderRadius: Metrics.ScaleValue(5),
@@ -692,7 +663,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginHorizontal: 10,
-    backgroundColor: Colors.APP_COLOR,
+    backgroundColor: Color.primary,
   },
   protectedSubView: {
     borderWidth: 3,

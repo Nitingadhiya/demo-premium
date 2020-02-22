@@ -16,7 +16,7 @@ import {
   addSystemEndPoint,
 } from '../../config/api-endpoint';
 import styles from './styles';
-import {Matrics} from '../../common/styles';
+import {Matrics, Color} from '../../common/styles';
 import Events from '../../utils/events';
 import Helper from '../../utils/helper';
 import NavigationHelper from '../../utils/navigation-helper';
@@ -160,7 +160,7 @@ class PlaceOrder extends Component {
                   style={{
                     fontWeight: 'bold',
                     fontSize: 16,
-                    color: Colors.APP_COLOR,
+                    color: Color.primary,
                   }}>
                   Cash on Delivery
                 </Text>
@@ -277,7 +277,7 @@ class PlaceOrder extends Component {
             <TouchableOpacity
               onPress={() => this.props.navigation.navigate('List')}
               style={{
-                backgroundColor: Colors.APP_COLOR,
+                backgroundColor: Color.primary,
                 width: '75%',
                 height: 45,
                 borderRadius: 10,

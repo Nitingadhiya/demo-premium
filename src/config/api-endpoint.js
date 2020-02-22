@@ -33,6 +33,8 @@ const getWishlistEndPoint = userName =>
   `GetProductList?ProductNo=&Username=${userName}&WishCart=WISH`;
 const getOrderListEndPoint = userName => `GetOrderList?Username=${userName}`;
 const getUserProfileEndPoint = userName => `UserProfile?Username=${userName}`;
+const getLocationListEndPoint = 'GetLocationList';
+const updateLatLongEndPoint = 'UpdateLatLong';
 
 module.exports = {
   checkVersionEndPoint,
@@ -60,4 +62,6 @@ module.exports = {
   getWishlistEndPoint,
   getOrderListEndPoint,
   getUserProfileEndPoint,
+  getLocationListEndPoint,
+  updateLatLongEndPoint,
 };

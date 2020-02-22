@@ -139,7 +139,7 @@ class MyProfile extends Component {
               <TouchableOpacity
                 onPress={() => this.savePress()}
                 style={{padding: 10}}>
-                <MIcon name={'checkmark'} size={25} color={Colors.darkPink} />
+                <MIcon name={'checkmark'} size={25} color={Color.darkPink} />
               </TouchableOpacity>
             )}
           </View>

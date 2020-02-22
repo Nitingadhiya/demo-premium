@@ -8,7 +8,9 @@ import {
   SafeAreaView,
 } from 'react-native';
 import {VersionNumber} from '../../../../package';
+import axios from 'axios';
 import BackgroundJob from 'react-native-background-job';
+import BackgroundServiceHelper from '../../../../utils/background-job';
 import Geolocation from 'react-native-geolocation-service';
 import APICaller from '../../../../utils/api-caller';
 import {userDashboardEndPoint} from '../../../../config/api-endpoint';
@@ -24,48 +26,7 @@ import {
 import TeamComplaintOverview from '../../../../components/team-complaints-overview';
 import TeamTasksOverview from '../../../../components/team-tasks-overview';
 
-const everRunningJobKey = 'everRunningJobKey';
-
-BackgroundJob.register({
-  jobKey: everRunningJobKey,
-  job: () => {
-    console.log(
-      `Background Job fired*************************!. Key = ${everRunningJobKey}`,
-    );
-    Geolocation.watchPosition(
-      position => {
-        //this.setState({location: position, loading: false});
-        axios
-          .post(
-            'http://appservices.premiumitware.com/AndroidService.svc/UpdateLatLong',
-            JSON.stringify({
-              UserName: '10001',
-              Latitude: position.coords.latitude,
-              Longitude: position.coords.longitude,
-            }),
-          )
-          .then(function(response) {
-            console.log(response);
-          })
-          .catch(function(error) {
-            console.log(error);
-          });
-        console.log(position);
-      },
-      error => {
-        this.setState({location: error, loading: false});
-        console.log(error);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 10000,
-        distanceFilter: 10,
-        forceRequestLocation: true,
-      },
-    );
-  },
-});
+BackgroundServiceHelper.BackgroundServiceJob();
 
 export default class Dashboard extends Component {
   state = {
@@ -77,6 +38,7 @@ export default class Dashboard extends Component {
   };
 
   componentDidMount() {
+    this.cancelAllJob();
     this.getUserInfo();
     Events.on('updateAvailable', 'Updates', res => {
       this.setState({
@@ -87,13 +49,29 @@ export default class Dashboard extends Component {
     this.backgroundJobMethod();
   }
 
+  cancelAllJob() {
+    BackgroundJob.cancelAll()
+      .then(() => console.log('Success'))
+      .catch(err => console.log(err));
+  }
+
   backgroundJobMethod() {
     BackgroundJob.schedule({
-      jobKey: everRunningJobKey,
-      period: 1000,
+      jobKey: BackgroundServiceHelper.everRunningJobKey(),
+      notificationTitle: 'Notification title',
+      notificationText: 'Notification text',
+      period: 20000,
       exact: true,
+      networkType: BackgroundJob.NETWORK_TYPE_ANY,
+      allowExecutionInForeground: true,
       allowWhileIdle: true,
     });
+    // BackgroundJob.schedule({
+    //   jobKey: everRunningJobKey,
+    //   period: 1000,
+    //   exact: true,
+    //   allowWhileIdle: true,
+    // });
   }
 
   async getUserInfo() {
@@ -101,6 +79,7 @@ export default class Dashboard extends Component {
     this.setState({
       userInfo,
     });
+    global.userInfo = userInfo;
     this.userDashboard(userInfo.UserName);
   }
 
@@ -161,17 +140,7 @@ export default class Dashboard extends Component {
         {updateAvailable ? <UpdateAvailableView /> : null}
         <TouchableOpacity
           style={styles.button}
-          onPress={() => {
-            BackgroundJob.schedule({
-              jobKey: everRunningJobKey,
-              notificationTitle: 'Notification title',
-              notificationText: 'Notification text',
-              period: 20000,
-              exact: true,
-              networkType: BackgroundJob.NETWORK_TYPE_ANY,
-              allowExecutionInForeground: true,
-            });
-          }}>
+          onPress={() => this.backgroundJobMethod()}>
           <Text>Schedule everRunning job</Text>
         </TouchableOpacity>
         <ScrollView

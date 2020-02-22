@@ -30,6 +30,8 @@
     "react-native-gesture-handler": "^1.5.6",
     "react-native-image-page": "^0.5.0",
     "react-native-looped-carousel": "^0.1.13",
+    "react-native-maps": "0.26.1",
+    "react-native-maps-super-cluster": "^1.6.0",
     "react-native-otp-verify": "^1.0.3",
     "react-native-paper": "^3.6.0",
     "react-native-permissions": "^2.0.9",

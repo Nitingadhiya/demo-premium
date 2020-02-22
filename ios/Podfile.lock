@@ -253,6 +253,8 @@ PODS:
     - React
   - react-native-camera/RN (3.18.0):
     - React
+  - react-native-maps (0.26.1):
+    - React
   - react-native-safe-area-context (0.7.2):
     - React
   - react-native-spinkit (1.4.1):
@@ -335,6 +337,7 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - react-native-camera (from `../node_modules/react-native-camera`)
+  - react-native-maps (from `../node_modules/react-native-maps`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-spinkit (from `../node_modules/react-native-spinkit`)
   - react-native-version-number (from `../node_modules/react-native-version-number`)
@@ -407,6 +410,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   react-native-camera:
     :path: "../node_modules/react-native-camera"
+  react-native-maps:
+    :path: "../node_modules/react-native-maps"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-spinkit:
@@ -484,6 +489,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: d5525f9ed5f782fdbacb64b9b01a43a9323d2386
   React-jsinspector: fa0ecc501688c3c4c34f28834a76302233e29dc0
   react-native-camera: 36536dd86a41261622967ccf3e19fb63d7dd09e3
+  react-native-maps: 6e499eee4eabf422ba8b6f94e993cc768bf35153
   react-native-safe-area-context: d227bd5ef6776683c330f44187351dc138b2a4cb
   react-native-spinkit: da294fd828216ad211fe36a5c14c1e09f09e62db
   react-native-version-number: 15563dc4145a94aabfc1faab2a9af10174a4204e
