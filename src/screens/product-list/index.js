@@ -38,6 +38,7 @@ class ProductList extends Component {
     badge: null,
     refreshing: false,
     searchText: null,
+    message: null,
   };
 
   componentDidMount() {
@@ -49,12 +50,12 @@ class ProductList extends Component {
     this.setState({
       userInfo,
     });
-    this.fetchProductList(userInfo.UserName);
+    const userName = userInfo ? userInfo.UserName : '';
+    this.fetchProductList(userName);
   }
 
   searchBarOpen() {
     LayoutAnimation.spring();
-    console.log(this.state);
     if (this.state.searchMargin < 0) {
       this.secondTextInput.focus();
       this.setState({searchMargin: 0, he: this.state.he + 15});
@@ -185,6 +186,11 @@ class ProductList extends Component {
           refreshing: false,
           loadingData: false,
         });
+      } else {
+        this.setState({
+          loadingData: false,
+          message: _.get(json, 'data.Message', ''),
+        });
       }
     });
   }
@@ -250,7 +256,8 @@ class ProductList extends Component {
   }
 
   noItemFound = () => {
-    if (!this.state.displayResult) {
+    const {message} = this.state;
+    if (this.state.loadingData) {
       return <View />;
     }
     return (
@@ -261,7 +268,9 @@ class ProductList extends Component {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <Text style={{color: 'grey', fontSize: 16}}>No items found</Text>
+        <Text style={{color: 'grey', fontSize: 16}}>
+          {message || 'No items found'}
+        </Text>
       </View>
     );
   };
@@ -274,24 +283,37 @@ class ProductList extends Component {
   }
 
   render() {
-    const {productItemList, badge} = this.state;
+    const {productItemList, badge, userInfo} = this.state;
     const {navigation} = this.props;
     return (
       <SafeAreaView style={styles.safeView}>
         <Appbar.Header style={{backgroundColor: Color.primary}}>
-          <Appbar.Action icon="menu" onPress={() => navigation.openDrawer()} />
+          {userInfo && userInfo.UserName ? (
+            <Appbar.Action
+              icon={'menu'}
+              onPress={() => navigation.openDrawer()}
+            />
+          ) : (
+            <Appbar.BackAction onPress={() => navigation.goBack()} />
+          )}
           <Appbar.Content title={'Product'} />
           <Appbar.Action icon="magnify" onPress={() => this.searchBarOpen()} />
-          <Appbar.Action
-            icon="cart"
-            onPress={() => NavigationHelper.navigate(navigation, 'PlaceOrder')}
-          />
-          <Badge
-            style={{position: 'absolute', zIndex: 1, right: 5, top: 10}}
-            theme={Color.lightGray}
-            size={18}>
-            {badge}
-          </Badge>
+          {userInfo && userInfo.UserName ? (
+            <Appbar.Action
+              icon="cart"
+              onPress={() =>
+                NavigationHelper.navigate(navigation, 'PlaceOrder')
+              }
+            />
+          ) : null}
+          {userInfo && userInfo.UserName ? (
+            <Badge
+              style={{position: 'absolute', zIndex: 1, right: 5, top: 10}}
+              theme={Color.lightGray}
+              size={18}>
+              {badge}
+            </Badge>
+          ) : null}
         </Appbar.Header>
         <KeyboardAvoidingView
           style={{flex: 1}}
@@ -336,7 +358,11 @@ class ProductList extends Component {
               </TouchableOpacity>
             </Animated.View>
           </View>
-          {this.state.loadingData ? <SpinnerView /> : null}
+          {this.state.loadingData ? (
+            <View style={styles.spinnerView}>
+              <SpinnerView />
+            </View>
+          ) : null}
           <FlatList
             data={productItemList}
             keyboardShouldPersistTaps="handled"

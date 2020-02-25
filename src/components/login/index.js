@@ -8,6 +8,7 @@ import styles from './styles';
 import Helper from '../../utils/helper';
 import APICaller from '../../utils/api-caller';
 import {userLoginEndPoint} from '../../config/api-endpoint';
+import Events from '../../utils/events';
 import NavigationHelper from '../../utils/navigation-helper';
 
 class LoginComponent extends Component {
@@ -94,6 +95,8 @@ class LoginComponent extends Component {
       this.setState({loadingData: false});
       if (json.data.Success === '1') {
         const userInfo = json.data.Response;
+        global.userInfo = userInfo;
+        Events.trigger('userInfo-drawer', userInfo);
         await Helper.setLocalStorageItem('userInfo', userInfo);
         Helper.registerWithtoken(global.fcmToken);
         // global.LoginType = userInfo.LoginType;

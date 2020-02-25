@@ -110,7 +110,11 @@ export default class Dashboard extends Component {
     return (
       <SafeAreaView style={styles.safeView}>
         <Header title="Dashboard" left="menu" />
-        {loadingData ? <SpinnerView /> : null}
+        {loadingData ? (
+          <View style={styles.spinnerView}>
+            <SpinnerView />
+          </View>
+        ) : null}
         {updateAvailable ? <UpdateAvailableView /> : null}
         <ScrollView
           style={{flex: 1}}

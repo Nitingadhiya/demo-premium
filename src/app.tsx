@@ -39,7 +39,13 @@ const App: () => React$Node = () => {
     <PaperProvider>
       <NavigationContainer>
         <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
-          <Drawer.Screen name="Home" component={StackNavigator} />
+          <Drawer.Screen
+            name="Home"
+            component={StackNavigator}
+            options={{
+              gestureEnabled: false,
+            }}
+          />
         </Drawer.Navigator>
       </NavigationContainer>
     </PaperProvider>

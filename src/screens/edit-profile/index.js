@@ -18,13 +18,15 @@ import {
   AsyncStorage,
   KeyboardAvoidingView,
 } from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import _ from 'lodash';
+import DatePicker from 'react-native-datepicker';
 // import ImagePicker from 'react-native-image-crop-picker';
 import Events from '../../utils/events';
 // import DatePicker from 'react-native-datepicker';
 
 import {Images, Color, Matrics} from '../../common/styles';
-import {TextInputView} from '../../common/components';
+import {TextInputView, Header} from '../../common/components';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import APICaller from '../../utils/api-caller';
 // CONSTANTS
@@ -140,7 +142,6 @@ export default class EditProfile extends Component {
   }
 
   async updateEditProfile() {
-    setLoader({loader: true});
     if (!this.state.FirstName) {
       this.setState({
         validationMsg: 'Please Enter First Name',
@@ -237,7 +238,6 @@ export default class EditProfile extends Component {
   }
 
   getLandMark() {
-    setLoader({loader: true});
     const endPoint = `GetLandmarks`;
     const method = 'GET';
     APICaller(`${endPoint}`, method).then(json => {
@@ -724,7 +724,7 @@ export default class EditProfile extends Component {
           </View>
         </Modal>
 
-        <KeyboardAvoidingView style={{flex: 1}}>
+        <KeyboardAwareScrollView style={{flex: 1}}>
           <View style={{flex: 1}}>
             <View style={styles.userView}>
               <View
@@ -1032,7 +1032,7 @@ export default class EditProfile extends Component {
               </View>
             </View>
           </View>
-        </KeyboardAvoidingView>
+        </KeyboardAwareScrollView>
       </SafeAreaView>
     );
   }

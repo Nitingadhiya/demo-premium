@@ -8,10 +8,6 @@ import {
   SafeAreaView,
 } from 'react-native';
 import {VersionNumber} from '../../../../package';
-import axios from 'axios';
-import BackgroundJob from 'react-native-background-job';
-import BackgroundServiceHelper from '../../../../utils/background-job';
-import Geolocation from 'react-native-geolocation-service';
 import APICaller from '../../../../utils/api-caller';
 import {userDashboardEndPoint} from '../../../../config/api-endpoint';
 import Helper from '../../../../utils/helper';
@@ -26,8 +22,6 @@ import {
 import TeamComplaintOverview from '../../../../components/team-complaints-overview';
 import TeamTasksOverview from '../../../../components/team-tasks-overview';
 
-BackgroundServiceHelper.BackgroundServiceJob();
-
 export default class Dashboard extends Component {
   state = {
     loadingData: false,
@@ -38,7 +32,6 @@ export default class Dashboard extends Component {
   };
 
   componentDidMount() {
-    this.cancelAllJob();
     this.getUserInfo();
     Events.on('updateAvailable', 'Updates', res => {
       this.setState({
@@ -46,32 +39,6 @@ export default class Dashboard extends Component {
       });
     });
     Helper.checkUpdateAvailable();
-    this.backgroundJobMethod();
-  }
-
-  cancelAllJob() {
-    BackgroundJob.cancelAll()
-      .then(() => console.log('Success'))
-      .catch(err => console.log(err));
-  }
-
-  backgroundJobMethod() {
-    BackgroundJob.schedule({
-      jobKey: BackgroundServiceHelper.everRunningJobKey(),
-      notificationTitle: 'Notification title',
-      notificationText: 'Notification text',
-      period: 20000,
-      exact: true,
-      networkType: BackgroundJob.NETWORK_TYPE_ANY,
-      allowExecutionInForeground: true,
-      allowWhileIdle: true,
-    });
-    // BackgroundJob.schedule({
-    //   jobKey: everRunningJobKey,
-    //   period: 1000,
-    //   exact: true,
-    //   allowWhileIdle: true,
-    // });
   }
 
   async getUserInfo() {
@@ -138,11 +105,11 @@ export default class Dashboard extends Component {
         <Header title="Dashboard" left="menu" />
         {loadingData ? <SpinnerView /> : null}
         {updateAvailable ? <UpdateAvailableView /> : null}
-        {/* <TouchableOpacity
+        <TouchableOpacity
           style={styles.button}
           onPress={() => this.backgroundJobMethod()}>
           <Text>Schedule everRunning job</Text>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
         <ScrollView
           style={{flex: 1}}
           refreshControl={

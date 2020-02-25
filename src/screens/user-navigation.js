@@ -19,6 +19,10 @@ import Helper from '../utils/helper';
 import enableFontPatch from '../utils/enableFontPatch';
 import Register from './register';
 import OTPScreen from './otp';
+import BackgroundJob from 'react-native-background-job';
+import BackgroundServiceHelper from '../utils/background-job';
+
+BackgroundServiceHelper.BackgroundServiceJob();
 
 type Props = {
   route: RouteProp<StackNavigatorParamlist, 'Splash'>,
@@ -31,21 +35,49 @@ export default class UserNavigation extends React.Component {
     userInfo: null,
   };
   async componentDidMount() {
+    this.cancelAllJob();
     const data = await Helper.getLocalStorageItem('userInfo');
-    console.log(data, 'data');
     if (data) {
       this.setState({userInfo: data});
+      if (data.LoginType === '2' || data.LoginType === '3') {
+        this.backgroundJobMethod();
+      }
     }
   }
 
   tabBarBottom() {
     const {userInfo} = this.state;
-    if (!userInfo) return AdminBottomTabs;
+    if (!userInfo) return CustomerBottomTabs;
     if (userInfo.LoginType === '1') return AdminBottomTabs;
     if (userInfo.LoginType === '2') return ManagerBottomTabs;
     if (userInfo.LoginType === '3') return EngineerBottomTabs;
     if (userInfo.LoginType === '4') return CustomerBottomTabs;
     if (userInfo.LoginType === '4') return DealerBottomTabs;
+  }
+
+  cancelAllJob() {
+    BackgroundJob.cancelAll()
+      .then(() => console.log('Success'))
+      .catch(err => console.log(err));
+  }
+
+  backgroundJobMethod() {
+    BackgroundJob.schedule({
+      jobKey: BackgroundServiceHelper.everRunningJobKey(),
+      notificationTitle: 'Notification title',
+      notificationText: 'Notification text',
+      period: 20000,
+      exact: true,
+      networkType: BackgroundJob.NETWORK_TYPE_ANY,
+      allowExecutionInForeground: true,
+      allowWhileIdle: true,
+    });
+    // BackgroundJob.schedule({
+    //   jobKey: everRunningJobKey,
+    //   period: 1000,
+    //   exact: true,
+    //   allowWhileIdle: true,
+    // });
   }
 
   render() {

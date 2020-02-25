@@ -7,6 +7,7 @@ export default styles = {
     backgroundColor: Color.white,
     margin: 10,
     borderRadius: 5,
+    alignItems: 'center',
   },
   font16Center: {fontSize: 16, textAlign: 'center'},
   bodyView: {

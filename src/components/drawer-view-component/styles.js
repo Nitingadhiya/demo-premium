@@ -5,9 +5,8 @@ export default styles = {
     borderColor: Color.paleGreyTwo,
     padding: 5,
     backgroundColor: Color.white,
-    margin: 10,
+    margin: 5,
     borderRadius: 5,
-    alignItems: 'center',
   },
   font16Center: {fontSize: 16, textAlign: 'center'},
   bodyView: {

@@ -19,7 +19,7 @@ import {
   useTheme,
 } from 'react-native-paper';
 import Animated from 'react-native-reanimated';
-
+import DrawerViewComponent from '../components/drawer-view-component';
 import {PreferencesContext} from '../context/preferencesContext';
 import {MIcon, McIcon} from '../common/assets/vector-icon';
 import NavigationHelper from '../utils/navigation-helper';
@@ -50,134 +50,7 @@ export function DrawerContent(props: Props) {
             transform: [{translateX}],
           },
         ]}>
-        {/* <View style={styles.userInfoSection}>
-          <TouchableOpacity
-            style={{marginLeft: 10}}
-            onPress={() => {
-              props.navigation.toggleDrawer();
-            }}>
-            <Avatar.Image
-              source={{
-                uri:
-                  'https://pbs.twimg.com/profile_images/952545910990495744/b59hSXUd_400x400.jpg',
-              }}
-              size={50}
-            />
-          </TouchableOpacity>
-          <Title style={styles.title}>user name</Title>
-          <Caption style={styles.caption}>@trensik</Caption>
-          <View style={styles.row}>
-            <View style={styles.section}>
-              <Paragraph style={[styles.paragraph, styles.caption]}>
-                202
-              </Paragraph>
-              <Caption style={styles.caption}>Obserwuje</Caption>
-            </View>
-            <View style={styles.section}>
-              <Paragraph style={[styles.paragraph, styles.caption]}>
-                159
-              </Paragraph>
-              <Caption style={styles.caption}>Obserwujący</Caption>
-            </View>
-          </View>
-        </View> */}
-        <Drawer.Section style={styles.drawerSection}>
-          <DrawerItem
-            icon={({color, size}) => (
-              <McIcon name="home" color={color} size={size} />
-            )}
-            label="Home"
-            onPress={() => NavigationHelper.navigate(navigation, 'Dashboard')}
-          />
-          <DrawerItem
-            icon={({color, size}) => (
-              <McIcon name="account-outline" color={color} size={size} />
-            )}
-            label="Profile"
-            onPress={() => NavigationHelper.navigate(navigation, 'MyProfile')}
-          />
-          <DrawerItem
-            icon={({color, size}) => (
-              <McIcon name="format-list-bulleted" color={color} size={size} />
-            )}
-            label="Product List"
-            onPress={() => NavigationHelper.navigate(navigation, 'ProductList')}
-          />
-          <DrawerItem
-            icon={({color, size}) => (
-              <McIcon name="binoculars" color={color} size={size} />
-            )}
-            label="Wishlist"
-            onPress={() => NavigationHelper.navigate(navigation, 'WishList')}
-          />
-          <DrawerItem
-            icon={({color, size}) => (
-              <McIcon name="shopping" color={color} size={size} />
-            )}
-            label="Pending order"
-            onPress={() => NavigationHelper.navigate(navigation, 'Order')}
-          />
-          <DrawerItem
-            icon={({color, size}) => (
-              <McIcon name="bell-outline" color={color} size={size} />
-            )}
-            label="Offer"
-            onPress={() => NavigationHelper.navigate(navigation, 'Offer')}
-          />
-          {/* <DrawerItem
-            icon={({color, size}) => (
-              <McIcon name="bookmark-outline" color={color} size={size} />
-            )}
-            label="Chat"
-            onPress={() => NavigationHelper.navigate(navigation, 'Chat')}
-          /> */}
-          <DrawerItem
-            icon={({color, size}) => (
-              <McIcon name="bookmark-outline" color={color} size={size} />
-            )}
-            label="Engineer Location"
-            onPress={() =>
-              NavigationHelper.navigate(navigation, 'EngineerLocation')
-            }
-          />
-          <DrawerItem
-            icon={({color, size}) => (
-              <McIcon name="bookmark-outline" color={color} size={size} />
-            )}
-            label="System Warranty"
-            onPress={() =>
-              NavigationHelper.navigate(navigation, 'SystemWarranty')
-            }
-          />
-          <DrawerItem
-            icon={({color, size}) => (
-              <McIcon name="lock" color={color} size={size} />
-            )}
-            label="Change Password"
-            onPress={() =>
-              NavigationHelper.navigate(navigation, 'ChangePassword')
-            }
-          />
-          <DrawerItem
-            icon={({color, size}) => (
-              <McIcon name="bookmark-outline" color={color} size={size} />
-            )}
-            label="System Verify"
-            onPress={() =>
-              NavigationHelper.navigate(navigation, 'SystemVerify')
-            }
-          />
-          <DrawerItem
-            icon={({color, size}) => (
-              <McIcon name="bookmark-outline" color={color} size={size} />
-            )}
-            label="Logout"
-            onPress={async () => {
-              await Helper.removeLocalStorage('userInfo');
-              NavigationHelper.reset(navigation, 'Splash');
-            }}
-          />
-        </Drawer.Section>
+        <DrawerViewComponent navigation={navigation} />
         {/* <Drawer.Section title="Preferences">
           <TouchableRipple onPress={toggleTheme}>
             <View style={styles.preference}>

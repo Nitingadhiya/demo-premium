@@ -20,12 +20,10 @@ import {
   SpinnerView,
   Header,
 } from '../../../../common/components';
-import AdminTabel from '../../../../components/admin-table';
 import TeamComplaintOverview from '../../../../components/team-complaints-overview';
 import TeamTasksOverview from '../../../../components/team-tasks-overview';
 import ComplaintOptionsModal from '../../../../components/complaint-options-modal';
 import ComplaintWithQRCode from '../../../../components/complaint-with-qr-code';
-import NavigationHelper from '../../../../utils/navigation-helper';
 
 export default class Dashboard extends Component {
   state = {

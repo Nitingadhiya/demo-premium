@@ -21,6 +21,7 @@ import {generateRandomPoints, generateRandomPoint} from '../../generator';
 import {Marker, Callout} from 'react-native-maps';
 import ClusteredMapView from 'react-native-maps-super-cluster';
 import {SpinnerView, Header} from '../../common/components';
+import Helper from '../../utils/helper';
 
 let self;
 const italyCenterLatitude = 41.8962667,
@@ -36,15 +37,26 @@ class ServicePackage extends Component {
     self = this;
     //this.reload();
     this.getMarkerPoint();
+    setInterval(() => {
+      this.getMarkerPoint();
+    }, 90000);
   }
 
-  getMarkerPoint() {
+  componentWillUnmount() {
+    clearInterval();
+  }
+
+  async getMarkerPoint() {
+    const userInfo = await Helper.getLocalStorageItem('userInfo');
+    if (!userInfo) return;
     const body = {
-      LoginType: '1',
+      LoginType: userInfo.LoginType,
     };
+    this.setState({
+      loadingData: true,
+    });
     APICaller(getLocationListEndPoint, 'POST', JSON.stringify(body)).then(
       json => {
-        console.log(json, 'json*******************');
         const data = json.data.Response;
         let markerPin = [];
         data.map(res => {
@@ -53,8 +65,7 @@ class ServicePackage extends Component {
             location: {latitude: res.Latitude, longitude: res.Longitude},
           });
         });
-        this.setState({pins: markerPin});
-        console.log('***************', markerPin);
+        this.setState({pins: markerPin, loadingData: false});
         // { id: 'pin86',
         // location: { latitude: 43.759953662747066, longitude: 11.988450525880259 } },
       },
@@ -146,7 +157,7 @@ class ServicePackage extends Component {
         </View>
         <View style={styles.controlBar}>
           <TouchableOpacity style={styles.button} onPress={() => this.reload()}>
-            <Text style={styles.text}>Reload</Text>
+            <Text style={styles.refreshText}>Refresh</Text>
           </TouchableOpacity>
           {/* <TouchableOpacity
             style={styles.button}
@@ -193,10 +204,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     backgroundColor: 'white',
     justifyContent: 'space-between',
+    marginTop: 10,
   },
   button: {
-    paddingVertical: 8,
-    paddingHorizontal: 20,
+    height: 40,
+    justifyContent: 'center',
+    paddingHorizontal: 5,
   },
   clusterContainer: {
     width: 30,
@@ -214,6 +227,9 @@ const styles = StyleSheet.create({
     color: '#65bc46',
     fontWeight: '500',
     textAlign: 'center',
+  },
+  refreshText: {
+    fontWeight: 'bold',
   },
 });
 

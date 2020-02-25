@@ -27,7 +27,7 @@ import ProductDetails from './product-details';
 import MyProfile from './my-profile';
 import Parts from './parts';
 import PlaceOrder from './placeOrder';
-import EngineerLocation from './engineer-location';
+import TeamLocation from './team-location';
 import {SystemVerify} from './system-verify';
 import ChangePassword from './change-password';
 import ServicePackage from './select-serivce-pack';
@@ -35,6 +35,7 @@ import ComplainList from './complaint-list';
 import EditProfile from './edit-profile';
 import OrderReady from './order-ready';
 import UpdateAddress from './update-address';
+import ProductList from '../screens/product-list';
 // import SignCapture from './signature-capture';
 
 type Props = {
@@ -57,6 +58,7 @@ export default class Splash extends React.Component {
     const data = await Helper.getLocalStorageItem('userInfo');
     console.log(data, 'data');
     if (data) {
+      global.userInfo = data;
       this.setState({userInfo: data, loading: false});
     } else {
       this.setState({loading: false});
@@ -158,6 +160,12 @@ export default class Splash extends React.Component {
 
         <Stack.Screen name="UserNavigation" component={UserNavigation} />
         <Stack.Screen
+          name="ProductList"
+          component={ProductList}
+          options={{headerTitle: 'Tweet'}}
+        />
+
+        <Stack.Screen
           name="Register"
           component={Register}
           options={{headerTitle: 'Register'}}
@@ -205,8 +213,8 @@ export default class Splash extends React.Component {
           options={{headerTitle: 'Place Order'}}
         />
         <Stack.Screen
-          name="EngineerLocation"
-          component={EngineerLocation}
+          name="TeamLocation"
+          component={TeamLocation}
           options={{headerTitle: 'Location'}}
         />
         <Stack.Screen

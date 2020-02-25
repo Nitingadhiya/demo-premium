@@ -8,6 +8,11 @@ const BackgroundServiceHelper = {
   everRunningJobKey() {
     return 'everRunningJobKey';
   },
+  cancelAllJob() {
+    BackgroundJob.cancelAll()
+      .then(() => console.log('Success'))
+      .catch(err => console.log(err));
+  },
   BackgroundServiceJob() {
     BackgroundJob.register({
       jobKey: BackgroundServiceHelper.everRunningJobKey(),
@@ -15,7 +20,15 @@ const BackgroundServiceHelper = {
         console.log(
           `Background Job fired*************************!. Key = ${BackgroundServiceHelper.everRunningJobKey()}`,
         );
+        console.log(global.userInfo, 'global.userInfo');
         if (!global.userInfo) return;
+        if (
+          global.userInfo.LoinType === '4' ||
+          global.userInfo.LoinType === '1' ||
+          global.userInfo.LoinType === '5'
+        ) {
+          BackgroundServiceHelper.cancelAllJob();
+        }
         Geolocation.getCurrentPosition(
           position => {
             const body = JSON.stringify({
