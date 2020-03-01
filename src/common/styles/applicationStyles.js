@@ -254,5 +254,9 @@ const ApplicationStyles = {
     fontFamily: Fonts.type.Rubik,
     color: Color.black30,
   },
+  font16: {
+    fontSize: 16,
+  },
+  fontBold16: {fontWeight: 'bold', fontSize: 16},
 };
 export default ApplicationStyles;

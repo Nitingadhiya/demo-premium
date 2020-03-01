@@ -13,40 +13,45 @@ import {
   Dimensions,
   ImageBackground,
 } from 'react-native';
+import styles from './styles';
 import SignatureCapture from 'react-native-signature-capture';
-import {Header} from '../../common/components';
+import {
+  getPolicyEndPoint,
+  uploadSignatureEndPoint,
+} from '../../config/api-endpoint';
+import {Header, SpinnerView} from '../../common/components';
 import {Images, Color, Matrics} from '../../common/styles';
 import APICaller from '../../utils/api-caller';
-import Events from '../util/events';
+import Events from '../../utils/events';
+import NavigationHelper from '../../utils/navigation-helper';
+import Helper from '../../utils/helper';
 
 class SignCapture extends Component {
   state = {
     loading: false,
     signature: null,
-    UserName: null,
+    userInfo: null,
     policyResponse: [],
+    agreeTerms: false,
   };
 
   componentDidMount() {
     this.getTermsCondition();
-    const params = this.props.navigation.state.params;
-    if (params) {
-      this.setState({
-        signature: params.signature,
-      });
-    }
-    AsyncStorage.getItem('userInfo').then(res => {
-      const result = JSON.parse(res);
-      if (result) {
-        const {UserName} = result;
-        this.setState({
-          UserName,
-        });
-      }
-    });
+    this.getUserInfo();
   }
 
-  // ----------->>>Render Method-------------->>>
+  async getUserInfo() {
+    const userInfo = await Helper.getLocalStorageItem('userInfo');
+    const {route} = this.props;
+    if (route.params) {
+      this.setState({
+        signature: route.params.signature,
+        systemTag: route.params.systemTag,
+        userInfo,
+      });
+    }
+  }
+
   saveSign = _ => {
     this.refs.sign.saveImage();
   };
@@ -56,49 +61,46 @@ class SignCapture extends Component {
   };
 
   _onSaveEvent = result => {
-    let systemTag = '';
-    const params = this.props.navigation.state.params;
-    if (params) {
-      systemTag = params.systemTag;
-    }
     this.setState({
       loadingData: true,
     });
-    const {UserName} = this.state;
-    if (!UserName) {
+    const {userInfo} = this.state;
+    if (!userInfo) {
       Alert.alert('Invalid username');
       return;
     }
-    // result.encoded - for the base64 encoded png
-    // result.pathName - for the file path name
+
     const endPoint = 'UploadSignatureImage';
-    const body = {FileContents: result.encoded, FileName: `${systemTag}.jpg`};
-    const method = 'POST';
-    APICaller(`${endPoint}`, method, JSON.stringify(body)).then(json => {
-      this.setState({
-        loading: false,
-      });
-      if (json.data.Success === '1') {
-        Events.trigger('refreshDashboard', 'refresh');
-        this.props.navigation.navigate('Home');
-      } else {
-        Alert.alert(json.data.Message);
-      }
-    });
+    const body = {
+      FileContents: result.encoded,
+      FileName: `${this.state.systemTag}.jpg`,
+    };
+
+    APICaller(uploadSignatureEndPoint, 'POST', JSON.stringify(body)).then(
+      json => {
+        this.setState({
+          loading: false,
+        });
+        if (json.data.Success === '1') {
+          Events.trigger('refreshDashboard', 'refresh');
+          NavigationHelper.navigate(this.props.navigation, 'Dashboard');
+        } else {
+          Alert.alert(json.data.Message);
+        }
+      },
+    );
   };
 
   _onDragEvent = _ => {
     // This callback will be called when the user enters signature
-    console.log('dragged');
+    //console.log('dragged');
   };
 
   getTermsCondition() {
-    const endPoint = 'GetPolicyList';
-    const method = 'GET';
     this.setState({
       loading: true,
     });
-    APICaller(`${endPoint}`, method).then(json => {
+    APICaller(getPolicyEndPoint, 'GET').then(json => {
       this.setState({
         loading: false,
       });
@@ -113,58 +115,43 @@ class SignCapture extends Component {
   }
 
   render() {
+    const {signature, loading, policyResponse, agreeTerms} = this.state;
     return (
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={styles.signature}>
         <Header title="Signature Capture" left="back" />
-        {this.state.loading ? (
+        {loading ? (
           <View style={styles.spinnerView}>
-            <Spinner
-              color={Color.primary}
-              isVisible
-              type="ThreeBounce"
-              size={60}
-            />
+            <SpinnerView />
           </View>
         ) : null}
-        {this.state.signature ? (
-          <ScrollView style={{flex: 1}}>
-            <View
-              style={{
-                flex: 1,
-                padding: 10,
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: '#f5f5f5',
-              }}>
-              {this.state.policyResponse &&
-                this.state.policyResponse.map((res, index) => (
+        {signature ? (
+          <ScrollView style={styles.signature}>
+            <View style={styles.policyView}>
+              {policyResponse &&
+                policyResponse.map((res, index) => (
                   <View>
-                    <Text style={{fontSize: 16}}>
-                      <Text style={{fontWeight: 'bold', fontSize: 16}}>
-                        {index + 1}){' '}
-                      </Text>
+                    <Text style={styles.font16}>
+                      <Text style={styles.fontBold16}>{index + 1}) </Text>
                       {res.Description}
                     </Text>
                   </View>
                 ))}
               <ImageBackground
-                source={{uri: this.state.signature}}
+                source={{uri: signature}}
                 resizeMode={'stretch'}
-                style={{height: 120, width: 200}}
+                style={styles.signatureImage}
               />
             </View>
           </ScrollView>
         ) : (
-          <ScrollView style={{flex: 1, padding: 10}}>
-            {!this.state.agreeTerms ? (
-              <View style={{flex: 1, marginBottom: 20}}>
+          <ScrollView style={styles.scrollView}>
+            {!agreeTerms ? (
+              <View style={styles.agreeTermsView}>
                 {this.state.policyResponse &&
                   this.state.policyResponse.map((res, index) => (
                     <View>
-                      <Text style={{fontSize: 16}}>
-                        <Text style={{fontWeight: 'bold', fontSize: 16}}>
-                          {index + 1}){' '}
-                        </Text>
+                      <Text style={styles.font16}>
+                        <Text style={styles.fontBold16}>{index + 1}) </Text>
                         {res.Description}
                       </Text>
                     </View>
@@ -172,28 +159,13 @@ class SignCapture extends Component {
 
                 <TouchableOpacity
                   onPress={() => this.setState({agreeTerms: true})}
-                  style={{
-                    width: 100,
-                    height: 40,
-                    alignSelf: 'center',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    backgroundColor: Color.primary,
-                  }}>
-                  <Text style={{color: '#fff', fontSize: 14}}>Agree</Text>
+                  style={styles.agreeBtn}>
+                  <Text style={styles.agreeText}>Agree</Text>
                 </TouchableOpacity>
               </View>
             ) : (
-              <View style={{flex: 1, flexDirection: 'column'}}>
-                <Text
-                  style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    textAlign: 'center',
-                    lineHeight: 20,
-                  }}>
-                  Add your Signature here
-                </Text>
+              <View style={styles.addSignView}>
+                <Text style={styles.addSignText}>Add your Signature here</Text>
                 <View
                   style={{
                     borderWidth: 1,
@@ -234,40 +206,8 @@ class SignCapture extends Component {
             )}
           </ScrollView>
         )}
-        {/*         
-        <WebView
-        source={{uri: 'http://premiumsales.in/Home/CreatePayment?mobilenumber=9727782497&email=arkeshkorat404@gmail.com&amount=10'}}
-        style={{flex: 1 }}
-      /> */}
       </SafeAreaView>
     );
   }
 }
 export default SignCapture;
-//= =====STYLES DECLARATION======//
-const styles = StyleSheet.create({
-  signature: {
-    flex: 1,
-  },
-  buttonStyle: {
-    width: '45%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 40,
-    backgroundColor: '#eeeeee',
-    marginHorizontal: '2.5%',
-    backgroundColor: Color.primary,
-  },
-  textBtn: {
-    color: '#fff',
-    fontSize: 14,
-  },
-  spinnerView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignSelf: 'center',
-    position: 'absolute',
-    zIndex: 1,
-    top: '40%',
-  },
-});

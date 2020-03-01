@@ -6,6 +6,7 @@ import {
   View,
   Text,
   KeyboardAvoidingView,
+  Alert,
 } from 'react-native';
 import RadioForm from 'react-native-simple-radio-button';
 import CityListModal from '../../components/city-list-modal';

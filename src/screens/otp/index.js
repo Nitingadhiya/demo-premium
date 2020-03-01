@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {SafeAreaView, View, Text} from 'react-native';
+import {SafeAreaView, View, Text, Alert} from 'react-native';
 import RNOtpVerify from 'react-native-otp-verify';
 import CodeInput from 'react-native-confirmation-code-input';
 import APICaller from '../../utils/api-caller';
@@ -60,12 +60,12 @@ class OTPScreen extends Component {
         if (json.data.Success === 1 || json.data.Success === '1') {
           const userInfo = json.data.Response;
           Helper.setLocalStorageItem('userInfo', userInfo);
-          NavigationHelper.reset(this.props.navigation, 'FeedList');
+          NavigationHelper.reset(this.props.navigation, 'Dashboard');
           // Events.trigger('refreshMenu');
           // Events.trigger('appRouteRefresh', userInfo);
           // this.props.navigation.navigate('Home');
         } else {
-          NavigationHelper.reset(this.props.navigation, 'FeedList');
+          NavigationHelper.reset(this.props.navigation, 'Dashboard');
           Alert.alert('Failed', json.data.Message);
           this.setState({
             loginError: json.data.Message,
@@ -76,14 +76,14 @@ class OTPScreen extends Component {
   }
   render() {
     return (
-      <SafeAreaView
-        style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+      <SafeAreaView style={{flex: 1}}>
         <Header title="Verify otp" left="back" />
         <View
           style={{
             justifyContent: 'center',
             height: Matrics.height,
             alignItems: 'center',
+            flex: 1,
           }}>
           <CodeInput
             ref="codeInputRef2"

@@ -10,13 +10,16 @@ import {Appbar} from 'react-native-paper';
 import RNOtpVerify from 'react-native-otp-verify';
 import CodeInput from 'react-native-confirmation-code-input';
 import APICaller from '../../utils/api-caller';
-import {validateOtpEndPoint} from '../../config/api-endpoint';
+import {
+  validateOtpEndPoint,
+  forgotPasswordendPoint,
+} from '../../config/api-endpoint';
 import styles from './styles';
 import {Matrics, Color} from '../../common/styles';
 import Events from '../../utils/events';
 import Helper from '../../utils/helper';
 import NavigationHelper from '../../utils/navigation-helper';
-import {TextInputView} from '../../common/components';
+import {TextInputView, Header, SpinnerView} from '../../common/components';
 import {MIcon} from '../../common/assets/vector-icon';
 
 class ForgotPassword extends Component {
@@ -82,9 +85,38 @@ class ForgotPassword extends Component {
       },
     );
   }
+
+  forgotPasswordMethod() {
+    if (this.state.userName === null) {
+      this.setState({userNameError: 'Please enter username'});
+      return;
+    }
+    if (this.state.userName < 4) {
+      this.setState({userNameError: 'Please enter correct username'});
+      return;
+    }
+    this.setState({
+      loadingData: true,
+    });
+
+    APICaller(forgotPasswordendPoint(this.state.userName), 'GET').then(json => {
+      if (json.data.Success === '1') {
+        NavigationHelper.navigate(this.props.navigation, 'Login');
+        Alert.alert('Alert', json.data.Message);
+      } else {
+        this.setState({
+          userNameError: json.data.Message || 'something went to wrong',
+        });
+      }
+      this.setState({
+        loadingData: false,
+      });
+    });
+  }
+
   render() {
     const {userName, userNameError, loadingData} = this.state;
-    const {navigation} = this.props;
+
     return (
       <SafeAreaView style={{flex: 1}}>
         <Header title={'Forgot Password'} left="back" />
@@ -116,7 +148,7 @@ class ForgotPassword extends Component {
                 ) : (
                   <TouchableOpacity
                     style={styles.touchableLogin}
-                    onPress={() => this.forgotPassword()}>
+                    onPress={() => this.forgotPasswordMethod()}>
                     <Text style={styles.loginText}>Send</Text>
                   </TouchableOpacity>
                 )}

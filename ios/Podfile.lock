@@ -257,6 +257,8 @@ PODS:
     - React
   - react-native-safe-area-context (0.7.2):
     - React
+  - react-native-signature-capture (0.4.10):
+    - React
   - react-native-spinkit (1.4.1):
     - React
   - react-native-version-number (0.3.6):
@@ -349,6 +351,7 @@ DEPENDENCIES:
   - react-native-camera (from `../node_modules/react-native-camera`)
   - react-native-maps (from `../node_modules/react-native-maps`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - react-native-signature-capture (from `../node_modules/react-native-signature-capture`)
   - react-native-spinkit (from `../node_modules/react-native-spinkit`)
   - react-native-version-number (from `../node_modules/react-native-version-number`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -426,6 +429,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-maps"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-signature-capture:
+    :path: "../node_modules/react-native-signature-capture"
   react-native-spinkit:
     :path: "../node_modules/react-native-spinkit"
   react-native-version-number:
@@ -505,6 +510,7 @@ SPEC CHECKSUMS:
   react-native-camera: 36536dd86a41261622967ccf3e19fb63d7dd09e3
   react-native-maps: 6e499eee4eabf422ba8b6f94e993cc768bf35153
   react-native-safe-area-context: d227bd5ef6776683c330f44187351dc138b2a4cb
+  react-native-signature-capture: 6dae6c8c9f085536d4ba305e15c01f0a3a49373e
   react-native-spinkit: da294fd828216ad211fe36a5c14c1e09f09e62db
   react-native-version-number: 15563dc4145a94aabfc1faab2a9af10174a4204e
   React-RCTActionSheet: 600b4d10e3aea0913b5a92256d2719c0cdd26d76

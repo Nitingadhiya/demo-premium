@@ -25,7 +25,7 @@ class SystemCardView extends Component {
 
   navigateSignature(systemTag, signature) {
     const {navigation} = this.props;
-    NavigationHelper.navigate(navigation, 'SignCapture', {
+    NavigationHelper.navigate(navigation, 'SignatureCapture', {
       systemTag,
       signature,
     });
