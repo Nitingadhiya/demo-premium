@@ -36,7 +36,7 @@ import EditProfile from './edit-profile';
 import OrderReady from './order-ready';
 import UpdateAddress from './update-address';
 import ProductList from '../screens/product-list';
-// import SignCapture from './signature-capture';
+import SignCapture from './signature-capture';
 
 type Props = {
   route: RouteProp<StackNavigatorParamlist, 'Splash'>,
@@ -160,7 +160,7 @@ export default class Splash extends React.Component {
 
         <Stack.Screen name="UserNavigation" component={UserNavigation} />
         <Stack.Screen
-          name="ProductList"
+          name="ProductListScreen"
           component={ProductList}
           options={{headerTitle: 'Tweet'}}
         />
@@ -252,11 +252,11 @@ export default class Splash extends React.Component {
           component={UpdateAddress}
           options={{headerTitle: 'Update address'}}
         />
-        {/* <Stack.Screen
+        <Stack.Screen
           name="SignatureCapture"
           component={SignCapture}
           options={{headerTitle: 'Signature Capture'}}
-        /> */}
+        />
         {/* <Stack.Screen
           name="Details"
           component={Details}

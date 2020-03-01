@@ -5,23 +5,20 @@ import {
   View,
   Image,
   StyleSheet,
-  Alert,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   TextInput,
   Dimensions,
   FlatList,
   SafeAreaView,
-  ScrollView,
   Modal,
   Picker,
   AsyncStorage,
-  KeyboardAvoidingView,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {Appbar} from 'react-native-paper';
 import _ from 'lodash';
 import DatePicker from 'react-native-datepicker';
-// import ImagePicker from 'react-native-image-crop-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 import Events from '../../utils/events';
 // import DatePicker from 'react-native-datepicker';
 
@@ -29,6 +26,10 @@ import {Images, Color, Matrics} from '../../common/styles';
 import {TextInputView, Header} from '../../common/components';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import APICaller from '../../utils/api-caller';
+import styles from './styles';
+import Helper from '../../utils/helper';
+import NavigationHelper from '../../utils/navigation-helper';
+
 // CONSTANTS
 const window = Dimensions.get('window');
 let self;
@@ -70,67 +71,122 @@ export default class EditProfile extends Component {
     validationMsg: '',
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     self = this;
     this.year = 2015;
     this.month = 1;
     this.day = 27;
-
-    AsyncStorage.getItem('userInfo').then(res => {
-      const result = JSON.parse(res);
-      if (result) {
-        const {
-          FirstName,
-          LastName,
-          MobileNo,
-          Landmark,
-          UserName,
-          Coins,
-          Gold,
-          Silver,
-          UserImage,
-          EmailId,
-          Gender,
-          CompanyName,
-          Area,
-          Road,
-          City,
-          State,
-          DateOfBirth,
-          Pincode,
-          GSTNo,
-          Home,
-          BusinessType,
-        } = result;
-        this.setState({
-          areaText: Area,
-          roadText: Road,
-          City,
-          Divison: State,
-          landmarkText: Landmark,
-          Pincode,
-          DateOfBirth,
-          FirstName,
-          LastName,
-          MobileNo,
-          Coins,
-          Gold,
-          Silver,
-          UserImage,
-          UserName,
-          EmailId,
-          Gender,
-          CompanyName,
-          GSTNo,
-          Address: Home,
-          BusinessType,
-        });
-      }
-    });
+    this.getUserInfo();
+    // AsyncStorage.getItem('userInfo').then(res => {
+    //   const result = JSON.parse(res);
+    //   if (result) {
+    //     const {
+    //       FirstName,
+    //       LastName,
+    //       MobileNo,
+    //       Landmark,
+    //       UserName,
+    //       Coins,
+    //       Gold,
+    //       Silver,
+    //       UserImage,
+    //       EmailId,
+    //       Gender,
+    //       CompanyName,
+    //       Area,
+    //       Road,
+    //       City,
+    //       State,
+    //       DateOfBirth,
+    //       Pincode,
+    //       GSTNo,
+    //       Home,
+    //       BusinessType,
+    //     } = result;
+    //     this.setState({
+    //       areaText: Area,
+    //       roadText: Road,
+    //       City,
+    //       Divison: State,
+    //       landmarkText: Landmark,
+    //       Pincode,
+    //       DateOfBirth,
+    //       FirstName,
+    //       LastName,
+    //       MobileNo,
+    //       Coins,
+    //       Gold,
+    //       Silver,
+    //       UserImage,
+    //       UserName,
+    //       EmailId,
+    //       Gender,
+    //       CompanyName,
+    //       GSTNo,
+    //       Address: Home,
+    //       BusinessType,
+    //     });
+    //   }
+    // });
 
     this.getLandMark();
     this.getArea();
     this.getRoad();
+  }
+
+  async getUserInfo() {
+    const userInfo = await Helper.getLocalStorageItem('userInfo');
+    this.setState({
+      userInfo,
+    });
+    if (userInfo) {
+      const {
+        FirstName,
+        LastName,
+        MobileNo,
+        Landmark,
+        UserName,
+        Coins,
+        Gold,
+        Silver,
+        UserImage,
+        EmailId,
+        Gender,
+        CompanyName,
+        Area,
+        Road,
+        City,
+        State,
+        DateOfBirth,
+        Pincode,
+        GSTNo,
+        Home,
+        BusinessType,
+      } = userInfo;
+      this.setState({
+        areaText: Area,
+        roadText: Road,
+        City,
+        Divison: State,
+        landmarkText: Landmark,
+        Pincode,
+        DateOfBirth,
+        FirstName,
+        LastName,
+        MobileNo,
+        Coins,
+        Gold,
+        Silver,
+        UserImage,
+        UserName,
+        EmailId,
+        Gender,
+        CompanyName,
+        GSTNo,
+        Address: Home,
+        BusinessType,
+      });
+    }
   }
 
   setIndicator() {
@@ -142,44 +198,59 @@ export default class EditProfile extends Component {
   }
 
   async updateEditProfile() {
-    if (!this.state.FirstName) {
+    const {navigation} = this.props;
+    const {
+      UserName,
+      CompanyName,
+      FirstName,
+      LastName,
+      City,
+      DateOfBirth,
+      EmailId,
+      MobileNo,
+      landmarkText,
+      roadText,
+      areaText,
+      Pincode,
+      Divison,
+      GSTNo,
+      BusinessType,
+      Address,
+      Gender,
+    } = this.state;
+    console.log(this.state, 'stttttttttt');
+    if (!FirstName) {
       this.setState({
         validationMsg: 'Please Enter First Name',
       });
       return;
     }
-    if (!this.state.LastName) {
+    if (!LastName) {
       this.setState({
         validationMsg: 'Please Enter Last Name',
       });
       return;
     }
-    // if (!this.state.Address) {
-    //   this.setState({
-    //     validationMsg: 'Please Enter Address',
-    //   });
-    //   return;
-    // }
-    if (!this.state.City) {
+    if (!City) {
       this.setState({
         validationMsg: 'Please Enter City',
       });
       return;
     }
 
-    if (!this.state.DateOfBirth) {
+    if (!DateOfBirth) {
       this.setState({
         validationMsg: 'Please Enter Birthdate',
       });
       return;
     }
-    if (!this.state.EmailId) {
+    if (!EmailId) {
       this.setState({
         validationMsg: 'Please Enter Email',
       });
       return;
     }
-    if (!this.state.MobileNo) {
+    if (!MobileNo) {
       this.setState({
         validationMsg: 'Please Enter Mobile no',
       });
@@ -197,43 +268,84 @@ export default class EditProfile extends Component {
     //   });
     //   return;
     // }
-    if (!this.state.landmarkText) {
+    if (!landmarkText) {
       this.setState({
         validationMsg: 'Please Enter Landmark',
       });
       return;
     }
-    if (!this.state.roadText) {
+    if (!roadText) {
       this.setState({
         validationMsg: 'Please Enter Road',
       });
       return;
     }
-    if (!this.state.areaText) {
+    if (!areaText) {
       this.setState({
         validationMsg: 'Please Enter Area',
       });
       return;
     }
 
-    if (!this.state.Pincode) {
+    if (!Pincode) {
       this.setState({
         validationMsg: 'Please Enter Pincode',
       });
       return;
     }
 
-    if (!this.state.Divison) {
+    if (!Divison) {
       this.setState({
         validationMsg: 'Please Enter State',
       });
       return;
     }
-
+    console.log(this.state, 'this.state');
     this.imageUpload();
-    await APIController.EditProfile(this.state);
+
+    const endPoint = `UserEdit`;
+    const method = 'POST';
+    const editProfileData = {
+      An_Master_Users: [
+        {
+          UserName,
+          FirstName,
+          LastName,
+          DateOfBirth,
+          Gender,
+          Landmark: landmarkText,
+          Road: roadText,
+          Area: areaText,
+          Pincode: Pincode,
+          MobileNo: MobileNo,
+          EmailId: EmailId,
+          CompanyName: CompanyName,
+          City: City,
+          State: Divison,
+          BusinessType: BusinessType,
+          GSTNo: GSTNo,
+          Home: Address,
+        },
+      ],
+    };
+    const body = JSON.stringify(editProfileData);
+    APICaller(`${endPoint}`, method, body).then(json => {
+      console.log(json, 'json');
+      if (json.data.Success === 1 || json.data.Success === '1') {
+        const userInfo = json.data.Response;
+        // setUser(userInfo);
+        Helper.setLocalStorageItem('userInfo', userInfo);
+        Events.trigger('refreshProfile', 'refreshProfile');
+        Events.trigger('refreshDashboard', 'refresh');
+        // const landmarkList = { landmark: json.data.Response};
+        // return landmarkList;
+        // setLandMark(landmarkList);
+      }
+      // setLoader({loader: false});
+    });
     if (!this.state.mediaPath) {
-      this.props.navigation.navigate('Home');
+      navigation.goBack();
+      // NavigationHelper.navigate(this.props.navigation, 'Dashboard');
     }
   }
 
@@ -288,40 +400,6 @@ export default class EditProfile extends Component {
       }
     });
   }
-
-  // componentWillReceiveProps() {
-  //     const setParamsAction = NavigationActions.setParams({
-  //         params: { tabBarVisible: true },
-  //         key: 'HomeScreen',
-  //     });
-  //     this.props.navigation.dispatch(setParamsAction)
-  // }
-
-  // ------------->>>Controllers/Functions------------>>>>
-  //
-  // renderViewComment() {
-  //   const setParamsAction = NavigationActions.setParams({
-  //       params: { tabBarVisible: false },
-  //       key: 'HomeScreen',
-  //   });
-  //   this.props.navigation.dispatch(setParamsAction);
-  //   this.props.navigation.navigate('CommentsScreen');
-  // }
-
-  //       renderSettings() {
-  //         console.log('Clicked Settings');
-  //         Alert.alert(
-  //             'Alert',
-  //             '',
-  //             [
-  //               {text: 'Edit', onPress: this.renderViewComment.bind(this)},
-  //               {text: 'Delete', onPress: () => console.log('Delete')},
-  //               {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'}
-  //             ],
-  //             { cancelable: false }
-  //           )
-  //       }
-  //
 
   editPress() {
     this.setState({
@@ -529,9 +607,17 @@ export default class EditProfile extends Component {
 
   render() {
     const {validationMsg} = this.state;
+    const {navigation} = this.props;
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-        <Header title={'Edit Profile'} left="back" />
+        <Appbar.Header style={{backgroundColor: Color.primary}}>
+          <Appbar.BackAction onPress={() => navigation.goBack()} />
+          <Appbar.Content title={'Edit Profile'} />
+          <Appbar.Action
+            icon="check"
+            onPress={() => this.updateEditProfile()}
+          />
+        </Appbar.Header>
         {validationMsg ? (
           <View
             style={{
@@ -758,34 +844,46 @@ export default class EditProfile extends Component {
               </View>
             </View>
             <View style={{flex: 1, padding: 10}}>
-              <TextInputView
-                placeholder="First Name"
-                value={this.state.FirstName}
-                autoCorrect={false}
-                onChangeText={value => this.setState({FirstName: value})}
-                blurOnSubmit={false}
-              />
-              <TextInputView
-                placeholder="Last Name"
-                value={this.state.LastName}
-                autoCorrect={false}
-                onChangeText={value => this.setState({LastName: value})}
-                blurOnSubmit={false}
-              />
-              <TextInputView
-                placeholder="Email"
-                value={this.state.EmailId}
-                autoCorrect={false}
-                onChangeText={value => this.setState({EmailId: value})}
-                blurOnSubmit={false}
-              />
-              <TextInputView
-                placeholder="Phone No"
-                value={this.state.MobileNo}
-                autoCorrect={false}
-                onChangeText={value => this.setState({MobileNo: value})}
-                blurOnSubmit={false}
-              />
+              <View style={styles.subTextBoxView}>
+                <TextInputView
+                  placeholder="First Name"
+                  value={this.state.FirstName}
+                  autoCorrect={false}
+                  onChangeText={value => this.setState({FirstName: value})}
+                  blurOnSubmit={false}
+                  customStyle={styles.customStyle}
+                />
+              </View>
+              <View style={styles.subTextBoxView}>
+                <TextInputView
+                  placeholder="Last Name"
+                  value={this.state.LastName}
+                  autoCorrect={false}
+                  onChangeText={value => this.setState({LastName: value})}
+                  blurOnSubmit={false}
+                  customStyle={styles.customStyle}
+                />
+              </View>
+              <View style={styles.subTextBoxView}>
+                <TextInputView
+                  placeholder="Email"
+                  value={this.state.EmailId}
+                  autoCorrect={false}
+                  onChangeText={value => this.setState({EmailId: value})}
+                  blurOnSubmit={false}
+                  customStyle={styles.customStyle}
+                />
+              </View>
+              <View style={styles.subTextBoxView}>
+                <TextInputView
+                  placeholder="Phone No"
+                  value={this.state.MobileNo}
+                  autoCorrect={false}
+                  onChangeText={value => this.setState({MobileNo: value})}
+                  blurOnSubmit={false}
+                  customStyle={styles.customStyle}
+                />
+              </View>
               <View
                 style={{
                   height: 50,
@@ -795,7 +893,7 @@ export default class EditProfile extends Component {
                   borderBottomColor: '#d3d3d3',
                   borderBottomWidth: 1,
                 }}>
-                <View style={{width: 120}}>
+                <View style={{width: 120, paddingLeft: 5}}>
                   <Text style={{color: '#000', fontSize: 14}}>Birthday</Text>
                 </View>
                 <View
@@ -853,6 +951,7 @@ export default class EditProfile extends Component {
                     height: 60,
                     justifyContent: 'center',
                     width: 120,
+                    paddingLeft: 5,
                   }}>
                   <Text style={{color: '#333', fontSize: 14}}>Gender</Text>
                 </View>
@@ -882,27 +981,36 @@ export default class EditProfile extends Component {
                   }}
                 /> */}
               </View>
-              <TextInputView
-                placeholder="Company Name"
-                value={this.state.CompanyName}
-                autoCorrect={false}
-                onChangeText={value => this.setState({CompanyName: value})}
-                blurOnSubmit={false}
-              />
-              <TextInputView
-                placeholder="GST No."
-                value={this.state.GSTNo}
-                autoCorrect={false}
-                onChangeText={value => this.setState({GSTNo: value})}
-                blurOnSubmit={false}
-              />
-              <TextInputView
-                placeholder="Address"
-                value={this.state.Address}
-                autoCorrect={false}
-                onChangeText={value => this.setState({Address: value})}
-                blurOnSubmit={false}
-              />
+              <View style={styles.subTextBoxView}>
+                <TextInputView
+                  placeholder="Company Name"
+                  value={this.state.CompanyName}
+                  autoCorrect={false}
+                  onChangeText={value => this.setState({CompanyName: value})}
+                  blurOnSubmit={false}
+                  customStyle={styles.customStyle}
+                />
+              </View>
+              <View style={styles.subTextBoxView}>
+                <TextInputView
+                  placeholder="GST No."
+                  value={this.state.GSTNo}
+                  autoCorrect={false}
+                  onChangeText={value => this.setState({GSTNo: value})}
+                  blurOnSubmit={false}
+                  customStyle={styles.customStyle}
+                />
+              </View>
+              <View style={styles.subTextBoxView}>
+                <TextInputView
+                  placeholder="Address"
+                  value={this.state.Address}
+                  autoCorrect={false}
+                  onChangeText={value => this.setState({Address: value})}
+                  blurOnSubmit={false}
+                  customStyle={styles.customStyle}
+                />
+              </View>
               <TouchableOpacity
                 style={{
                   borderBottomWidth: 1,
@@ -980,27 +1088,36 @@ export default class EditProfile extends Component {
                   <Text style={{color: '#999', fontSize: 16}}>Area</Text>
                 )}
               </TouchableOpacity>
-              <TextInputView
-                placeholder="City"
-                value={this.state.City}
-                autoCorrect={false}
-                onChangeText={value => this.setState({City: value})}
-                blurOnSubmit={false}
-              />
-              <TextInputView
-                placeholder="Pincode"
-                value={this.state.Pincode}
-                autoCorrect={false}
-                onChangeText={value => this.setState({Pincode: value})}
-                blurOnSubmit={false}
-              />
-              <TextInputView
-                placeholder="State"
-                value={this.state.Divison}
-                autoCorrect={false}
-                onChangeText={value => this.setState({Divison: value})}
-                blurOnSubmit={false}
-              />
+              <View style={styles.subTextBoxView}>
+                <TextInputView
+                  placeholder="City"
+                  value={this.state.City}
+                  autoCorrect={false}
+                  onChangeText={value => this.setState({City: value})}
+                  blurOnSubmit={false}
+                  customStyle={styles.customStyle}
+                />
+              </View>
+              <View style={styles.subTextBoxView}>
+                <TextInputView
+                  placeholder="Pincode"
+                  value={this.state.Pincode}
+                  autoCorrect={false}
+                  onChangeText={value => this.setState({Pincode: value})}
+                  blurOnSubmit={false}
+                  customStyle={styles.customStyle}
+                />
+              </View>
+              <View style={styles.subTextBoxView}>
+                <TextInputView
+                  placeholder="State"
+                  value={this.state.Divison}
+                  autoCorrect={false}
+                  onChangeText={value => this.setState({Divison: value})}
+                  blurOnSubmit={false}
+                  customStyle={styles.customStyle}
+                />
+              </View>
               <View
                 style={{
                   width: '100%',
@@ -1037,216 +1154,3 @@ export default class EditProfile extends Component {
     );
   }
 }
-
-//= =====STYLES DECLARATION======//
-
-const styles = StyleSheet.create({
-  imageView: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#eee',
-    width: Dimensions.get('window').width / 5,
-    height: Dimensions.get('window').width / 5,
-    borderRadius: Dimensions.get('window').width / 10,
-  },
-  viewStyle: {
-    flex: 3,
-    flexDirection: 'column',
-    justifyContent: 'space-around',
-    paddingLeft: Matrics.ScaleValue(10),
-  },
-  textStyle: {
-    fontSize: Matrics.ScaleValue(18),
-    fontWeight: 'bold',
-    color: Color.BLACK,
-  },
-  textStyle1: {
-    fontSize: Matrics.ScaleValue(15),
-    color: Color.GRAY,
-  },
-  textStyleLocation: {
-    fontSize: Matrics.ScaleValue(13),
-    color: Color.GRAY,
-  },
-  viewStyle1: {
-    justifyContent: 'center',
-    // backgroundColor: Color.VERY_PALE_ORANGE,
-    width: Matrics.ScaleValue(100),
-    alignSelf: 'center',
-  },
-  imageStyle: {
-    width: window.width,
-    height: Matrics.ScaleValue(265),
-  },
-  textStyle2: {
-    fontSize: Matrics.ScaleValue(19),
-    color: Color.BLACK,
-    fontWeight: 'bold',
-  },
-  textStyle3: {
-    fontSize: Matrics.ScaleValue(16),
-    paddingTop: Matrics.ScaleValue(8),
-    color: Color.GRAY,
-  },
-  viewStyle2: {
-    borderBottomWidth: 1,
-    borderBottomColor: Color.SILVER,
-    paddingBottom: Matrics.ScaleValue(10),
-  },
-  textStyle4: {
-    fontSize: Matrics.ScaleValue(15),
-    marginTop: Matrics.ScaleValue(8),
-    color: Color.BLACK,
-    paddingTop: Matrics.ScaleValue(5),
-  },
-  textStyle5: {
-    fontSize: Matrics.ScaleValue(15),
-    marginTop: Matrics.ScaleValue(8),
-    color: Color.GRAY,
-    padding: Matrics.ScaleValue(5),
-    paddingRight: Matrics.ScaleValue(0),
-  },
-  textStyle6: {
-    fontSize: Matrics.ScaleValue(17),
-    color: Color.BLACK,
-    flex: 1,
-  },
-  textStyle7: {
-    fontSize: Matrics.ScaleValue(14),
-    color: Color.GRAY,
-  },
-  textStyle8: {
-    fontSize: Matrics.ScaleValue(15),
-    color: Color.GRAY,
-  },
-  textinputStyle: {
-    flexDirection: 'row',
-    backgroundColor: Color.WHITE,
-    fontWeight: 'bold',
-    borderColor: Color.GRAY,
-    height: Matrics.ScaleValue(40),
-    borderWidth: 1,
-    borderRadius: Matrics.ScaleValue(5),
-    justifyContent: 'space-between',
-  },
-  viewCommentAll: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingBottom: Matrics.ScaleValue(15),
-  },
-  commentSettingButton: {
-    paddingHorizontal: Matrics.ScaleValue(12),
-    paddingVertical: Matrics.ScaleValue(6),
-  },
-  userCommentView: {
-    flexDirection: 'row',
-    paddingTop: Matrics.ScaleValue(20),
-    paddingBottom: Matrics.ScaleValue(20),
-  },
-  sendCommentButton: {
-    alignSelf: 'center',
-    marginRight: Matrics.ScaleValue(15),
-  },
-  commentSettingButtonView: {
-    marginRight: -12,
-    marginTop: 2,
-  },
-  rightDash: {
-    width: 60,
-    alignItems: 'flex-end',
-  },
-  mainRightDash: {
-    justifyContent: 'flex-end',
-    flexDirection: 'row',
-    height: 20,
-  },
-  systemProtectedView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: Dimensions.get('window').width - 40,
-    shadowOffset: {width: 2, height: 0},
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 20,
-    borderRadius: 10,
-    margin: 10,
-    backgroundColor: '#fff',
-  },
-  actionTouch: {
-    flex: 1,
-    borderRadius: 5,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginHorizontal: 10,
-    backgroundColor: Color.APP_COLOR,
-  },
-  protectedSubView: {
-    borderWidth: 3,
-    width: Dimensions.get('window').width / 7,
-    height: Dimensions.get('window').width / 7,
-    borderRadius: Dimensions.get('window').width / 14,
-    marginHorizontal: Dimensions.get('window').width * 0.01,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  protectedDTSubView: {
-    width: Dimensions.get('window').width / 6,
-    height: Dimensions.get('window').width / 6,
-    borderRadius: Dimensions.get('window').width / 12,
-    marginHorizontal: Dimensions.get('window').width * 0.01,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  dayNumber: {
-    fontSize: 12,
-    color: '#000',
-  },
-  dayText: {
-    fontSize: 12,
-    color: '#000',
-  },
-  textdescView: {
-    marginTop: 5,
-  },
-  textdesc: {
-    fontSize: 10,
-  },
-  tcTextView: {
-    borderWidth: 3,
-    position: 'absolute',
-    width: Dimensions.get('window').width / 7,
-    height: Dimensions.get('window').width / 7,
-    borderRadius: Dimensions.get('window').width / 14,
-    borderColor: 'red',
-  },
-  textInputCss: {
-    height: 40,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    flex: 1,
-    marginHorizontal: 10,
-  },
-  offerAcc: {
-    flex: 1,
-    backgroundColor: '#ff375e',
-    borderRadius: 5,
-    alignItems: 'center',
-    padding: 5,
-    margin: 5,
-  },
-  offerName: {fontWeight: 'bold', fontSize: 14},
-  userView: {
-    height: Matrics.ScaleValue(120),
-    width: Dimensions.get('window').width,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 20,
-  },
-  userImage: {
-    height: Matrics.ScaleValue(120),
-    width: Matrics.ScaleValue(120),
-    borderRadius: Matrics.ScaleValue(120) / 2,
-  },
-});

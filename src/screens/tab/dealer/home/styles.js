@@ -25,5 +25,25 @@ export default styles = {
   },
   subBodyView: {flex: 1, paddingBottom: 10},
   textDate: {fontSize: 20, textAlign: 'center'},
+  carouselView: {
+    margin: 10,
+    borderWidth: 0,
+    padding: 10,
+    height: Matrics.screenWidth / 1.1 + 15,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  sliderImageView: {
+    backgroundColor: '#fff',
+    justifyContent: 'flex-end',
+    // width: Matrics.screenWidth - 20,
+  },
+  sliderImage: {
+    height: '100%',
+    width: Matrics.screenWidth - 20,
+  },
 };
 module.exports = styles;

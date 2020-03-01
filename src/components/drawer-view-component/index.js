@@ -43,7 +43,7 @@ class DrawerViewComponent extends Component {
             <TouchableOpacity
               style={{marginLeft: 10}}
               onPress={() => {
-                props.navigation.toggleDrawer();
+                navigation.toggleDrawer();
               }}>
               <Avatar.Image
                 source={{
@@ -121,15 +121,20 @@ class DrawerViewComponent extends Component {
               }
             />
           ) : null}
-          <DrawerItem
-            icon={({color, size}) => (
-              <McIcon name="bookmark-outline" color={color} size={size} />
-            )}
-            label="System Warranty"
-            onPress={() =>
-              NavigationHelper.navigate(navigation, 'SystemWarranty')
-            }
-          />
+          {userInfo &&
+          (userInfo.LoginType === '1' ||
+            userInfo.LoginType === '2' ||
+            userInfo.LoginType === '3') ? (
+            <DrawerItem
+              icon={({color, size}) => (
+                <McIcon name="bookmark-outline" color={color} size={size} />
+              )}
+              label="System Warranty"
+              onPress={() =>
+                NavigationHelper.navigate(navigation, 'SystemWarranty')
+              }
+            />
+          ) : null}
           <DrawerItem
             icon={({color, size}) => (
               <McIcon name="lock" color={color} size={size} />
@@ -139,15 +144,20 @@ class DrawerViewComponent extends Component {
               NavigationHelper.navigate(navigation, 'ChangePassword')
             }
           />
-          <DrawerItem
-            icon={({color, size}) => (
-              <McIcon name="bookmark-outline" color={color} size={size} />
-            )}
-            label="System Verify"
-            onPress={() =>
-              NavigationHelper.navigate(navigation, 'SystemVerify')
-            }
-          />
+          {userInfo &&
+          (userInfo.LoginType === '1' ||
+            userInfo.LoginType === '2' ||
+            userInfo.LoginType === '3') ? (
+            <DrawerItem
+              icon={({color, size}) => (
+                <McIcon name="bookmark-outline" color={color} size={size} />
+              )}
+              label="System Verify"
+              onPress={() =>
+                NavigationHelper.navigate(navigation, 'SystemVerify')
+              }
+            />
+          ) : null}
           <DrawerItem
             icon={({color, size}) => (
               <McIcon name="bookmark-outline" color={color} size={size} />

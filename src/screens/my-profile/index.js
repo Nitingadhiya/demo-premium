@@ -36,6 +36,9 @@ class MyProfile extends Component {
   componentDidMount() {
     console.log('DDD*********');
     this.getUserInfo();
+    Events.on('refreshProfile', 'refreshProfile', () => {
+      this.getUserInfo();
+    });
   }
 
   async getUserInfo() {
@@ -97,7 +100,7 @@ class MyProfile extends Component {
   }
 
   editPress() {
-    this.props.navigation.navigate('EditProfile');
+    NavigationHelper.navigate(this.props.navigation, 'EditProfile');
   }
 
   listInfo = (name, value) => (
@@ -113,7 +116,6 @@ class MyProfile extends Component {
 
   render() {
     const {profileInfo} = this.state;
-    const {navigation} = this.props;
     console.log('prof', profileInfo);
     if (!profileInfo) return <View />;
     return (
@@ -150,6 +152,7 @@ class MyProfile extends Component {
               padding: 10,
               justifyContent: 'center',
               alignItems: 'center',
+              borderWidth: 1,
             }}>
             <View style={styles.imageView}>
               <Image
@@ -191,8 +194,13 @@ class MyProfile extends Component {
               {this.listInfo('Area', profileInfo.Area)}
               {this.listInfo('City', profileInfo.City)}
               {this.listInfo('Pincode', profileInfo.Pincode)}
-              {this.listInfo('State', profileInfo.Divison)}
-              {this.listInfo('Business Type', profileInfo.BusinessType)}
+              {this.listInfo('State', profileInfo.State)}
+              {this.listInfo(
+                'Business Type',
+                profileInfo.BusinessType && profileInfo.BusinessType === 'B'
+                  ? 'Business Use'
+                  : 'Home Use',
+              )}
             </View>
           </View>
         </ScrollView>

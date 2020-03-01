@@ -8,6 +8,12 @@ import {useIsFocused, RouteProp} from '@react-navigation/native';
 import overlay from '../overlay';
 import {Feed} from '../feed';
 import Dashboard from '../tab/dealer/home';
+import ProductList from '../../screens/product-list';
+
+import WishList from '../wish-list';
+import Order from '../order';
+import Offer from '../offer';
+import Chat from '../chat';
 import {Message} from '../message';
 import {Notifications} from '../notifications';
 import {StackNavigatorParamlist} from '../types';
@@ -65,17 +71,17 @@ export const DealerBottomTabs = (props: Props) => {
           }}
         />
         <Tab.Screen
-          name="ComplaintList"
-          component={Feed}
+          name="ProductList"
+          component={ProductList}
           options={{
             tabBarIcon: 'format-list-bulleted',
-            tabBarLabel: 'Complaint',
+            tabBarLabel: 'Product',
             tabBarColor,
           }}
         />
         <Tab.Screen
           name="WishList"
-          component={Feed}
+          component={WishList}
           options={{
             tabBarIcon: 'binoculars',
             tabBarLabel: 'Wishlist',
@@ -84,7 +90,7 @@ export const DealerBottomTabs = (props: Props) => {
         />
         <Tab.Screen
           name="Order"
-          component={Feed}
+          component={Order}
           options={{
             tabBarIcon: 'shopping',
             tabBarLabel: 'Order',
@@ -93,8 +99,8 @@ export const DealerBottomTabs = (props: Props) => {
         />
 
         <Tab.Screen
-          name="Notifications"
-          component={Notifications}
+          name="Offer"
+          component={Offer}
           options={{
             tabBarIcon: 'bell-outline',
             tabBarLabel: 'Offer',
@@ -102,8 +108,8 @@ export const DealerBottomTabs = (props: Props) => {
           }}
         />
         <Tab.Screen
-          name="Messages"
-          component={Message}
+          name="Chat"
+          component={Chat}
           options={{
             tabBarIcon: 'message-text-outline',
             tabBarLabel: 'chat',

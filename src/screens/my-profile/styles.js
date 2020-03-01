@@ -22,4 +22,17 @@ export default styles = {
   valueText: {
     color: '#000',
   },
+  imageView: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#eee',
+    width: Matrics.screenWidth / 5,
+    height: Matrics.screenWidth / 5,
+    borderRadius: Matrics.screenWidth / 10,
+  },
+  UserImage: {
+    width: Matrics.screenWidth / 5,
+    height: Matrics.screenWidth / 5,
+    borderRadius: Matrics.screenWidth / 10,
+  },
 };

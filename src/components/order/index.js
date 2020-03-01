@@ -8,6 +8,8 @@ import {userDashboardEndPoint} from '../../config/api-endpoint';
 import {Color} from '../../common/styles';
 
 let img;
+const ordTrue = 'green';
+const ordFalse = 'grey';
 class POrder extends Component {
   render() {
     const {data, onPress} = this.props;

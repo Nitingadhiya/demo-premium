@@ -21,4 +21,15 @@ export default styles = {
     alignItems: 'center',
     backgroundColor: '#eee',
   },
+  orderStaus: {
+    backgroundColor: '#000',
+    borderRadius: 5,
+    width: 10,
+    height: 10,
+  },
+  orderStausBRD: {
+    borderWidth: 2,
+    flex: 1,
+    height: 2,
+  },
 };

@@ -88,19 +88,54 @@ class ProductDetails extends Component {
     );
   }
 
+  navigateCartList(navigation) {
+    NavigationHelper.navigate(navigation, 'PlaceOrder');
+  }
+
+  async addWishListCart(item, type) {
+    const {navigation} = this.props;
+    if (type === 'CART') {
+      NavigationHelper.navigate(navigation, 'ServicePackage', {item});
+      return;
+    }
+
+    this.setState({loadingData: true});
+    const userInfo = await Helper.getLocalStorageItem('userInfo');
+    if (!userInfo) return;
+    APICaller(
+      insertWishCartEndPoint(item.ProductNo, userInfo.UserName, type),
+      'GET',
+    ).then(json => {
+      console.log(json);
+      if (json.data.Success === 1 || json.data.Success === '1') {
+        //const cartCount = json.data.Response.length;
+        this.fetchProductList(userInfo.UserName);
+        this.setState({loadingData: false});
+      }
+    });
+  }
+
   render() {
     const {productDetails, imageList, splSpec, splDesc, userInfo} = this.state;
     const {navigation} = this.props;
     const FirstRoute = () => (
       <View style={{borderTopWidth: 1, borderColor: '#ddd'}}>
         {splSpec &&
-          splSpec.map(res => <Text style={styles.welcome}>{res}</Text>)}
+          splSpec.map((res, index) => (
+            <Text style={styles.welcome} key={`${index}`}>
+              {res}
+            </Text>
+          ))}
       </View>
     );
     const SecondRoute = () => (
       <View style={{borderTopWidth: 1, borderColor: '#ddd'}}>
         {splDesc &&
-          splDesc.map(res => <Text style={styles.welcome}>{res}</Text>)}
+          splDesc.map((res, index) => (
+            <Text style={styles.welcome} key={`${index}`}>
+              {res}
+            </Text>
+          ))}
       </View>
     );
     const ThirdRoute = () => (
@@ -126,7 +161,7 @@ class ProductDetails extends Component {
         view: ThirdRoute,
       },
     ];
-
+    console.log(this.state, 'state');
     return (
       <SafeAreaView style={{flex: 1}}>
         {this.state.loadingData ? (
@@ -138,18 +173,21 @@ class ProductDetails extends Component {
           <Appbar.BackAction onPress={() => navigation.goBack()} />
           <Appbar.Content title={'Product Details'} />
           <Appbar.Action
-            icon="heart"
-            onPress={() =>
-              this.removeWishListCart(this.state.productDetailArray, 'WISH')
+            icon={
+              productDetails && productDetails.Wish ? 'heart' : 'heart-outline'
             }
+            onPress={() => {
+              if (productDetails && productDetails.Wish) {
+                this.removeWishListCart(this.state.productDetailArray, 'WISH');
+              } else {
+                this.addWishListCart(this.state.productDetailArray, 'WISH');
+              }
+            }}
           />
           <Appbar.Action
-            icon="heart-outline"
-            onPress={() =>
-              this.addWishListCart(this.state.productDetailArray, 'WISH')
-            }
+            icon="cart"
+            onPress={() => this.navigateCartList(navigation)}
           />
-          <Appbar.Action icon="cart" onPress={() => this.navigateCartList()} />
         </Appbar.Header>
         <ScrollView style={{flex: 1}}>
           <View

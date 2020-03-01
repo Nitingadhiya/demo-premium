@@ -16,7 +16,9 @@ class Login extends Component {
 
         <TouchableOpacity
           style={styles.productListIcon}
-          onPress={() => NavigationHelper.navigate(navigation, 'ProductList')}>
+          onPress={() =>
+            NavigationHelper.navigate(navigation, 'ProductListScreen')
+          }>
           <AIcon name="filetext1" size={20} color="#fff" style={{margin: 5}} />
         </TouchableOpacity>
       </SafeAreaView>

@@ -38,10 +38,13 @@ export default class Dashboard extends Component {
     complaintRegisterModal: true,
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     this.getUserInfo();
-    Events.on('refreshDashboard', 'refresh', () => {
-      this.getUserInfo();
+    Events.on('refreshDashboard', 'refresh', async () => {
+      const userInfo = await Helper.getLocalStorageItem('userInfo');
+      this.setState({
+        userInfo,
+      });
     });
     Events.on('updateAvailable', 'Updates', res => {
       this.setState({
@@ -102,7 +105,6 @@ export default class Dashboard extends Component {
       systemDescription,
       refreshing,
     } = this.state;
-    console.log(navigation);
     return (
       <View style={styles.mainContainer}>
         <Header title="Dashboard" left="menu" />
@@ -116,9 +118,12 @@ export default class Dashboard extends Component {
             />
           }>
           <UserInfoDashboardView userInfo={userInfo} />
-          <CategoryItemList />
+          <CategoryItemList navigation={navigation} />
           {systemDescription ? (
-            <SystemCardView systemDescription={systemDescription} />
+            <SystemCardView
+              systemDescription={systemDescription}
+              navigation={navigation}
+            />
           ) : null}
         </ScrollView>
         <View style={styles.bottomButton}>

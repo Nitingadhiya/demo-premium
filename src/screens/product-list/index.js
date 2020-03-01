@@ -42,7 +42,25 @@ class ProductList extends Component {
   };
 
   componentDidMount() {
+    console.log('Did mount');
+
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      // do something
+      this.categoryFilterValidation();
+    });
     this.getUserInfo();
+  }
+  componentWillUnmount() {
+    this._unsubscribe();
+  }
+
+  categoryFilterValidation() {
+    const {route} = this.props;
+    console.log('focus');
+    console.log(route, 'RRR');
+    if (route.params) {
+      this.categoryFilterApply(route.params.category);
+    }
   }
 
   async getUserInfo() {
@@ -170,22 +188,27 @@ class ProductList extends Component {
   }
 
   fetchProductList(userName) {
-    console.log('fetch');
     const {refreshing} = this.state;
     if (!refreshing) {
       this.setState({loadingData: true});
     }
-    console.log(fetchProductListEndPoint(userName));
     APICaller(fetchProductListEndPoint(userName), 'GET').then(json => {
       console.log(json, 'json');
       if (json.data.Success === 1 || json.data.Success === '1') {
         const list = json.data.Response;
+        let badgeCount = 0;
+        list.some(res => {
+          if (res.Cart === true) badgeCount++;
+        });
         this.setState({
           productItemList: list,
           filterResult: list,
           refreshing: false,
           loadingData: false,
+          badge: badgeCount,
         });
+
+        setTimeout(() => this.categoryFilterValidation());
       } else {
         this.setState({
           loadingData: false,
@@ -212,6 +235,7 @@ class ProductList extends Component {
       console.log(json);
       if (json.data.Success === 1 || json.data.Success === '1') {
         //const cartCount = json.data.Response.length;
+        this.fetchProductList(userInfo.UserName);
         this.setState({loadingData: false});
       }
     });
@@ -280,6 +304,26 @@ class ProductList extends Component {
     NavigationHelper.navigate(this.props.navigation, 'ProductDetails', {
       productNo: item.ProductNo,
     });
+  }
+
+  categoryFilterApply(res) {
+    this.state.productItemList = this.state.filterResult;
+    console.log(this.state.productItemList);
+    const {productItemList} = this.state;
+    if (productItemList) {
+      const result = productItemList.filter(data =>
+        this.replaceCustomExpression(data.ProductCategoryName).includes(
+          this.replaceCustomExpression(res),
+        ),
+      );
+      const uniq = _.uniqBy(result, 'ID');
+      this.setState({
+        productItemList: uniq,
+        searchFlag: false,
+        displayResult: true,
+        searchText: '',
+      });
+    }
   }
 
   render() {

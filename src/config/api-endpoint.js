@@ -43,6 +43,7 @@ const insertWishCartEndPoint = (productNo, userName, type) =>
   `InsertWishCart?ProductNo=${productNo}&Username=${userName}&WishCart=${type}`;
 const removeWishCartEndPoint = (productNo, userName, type) =>
   `RemoveWishCart?ProductNo=${productNo}&Username=${userName}&WishCart=${type}`;
+const getOrderReadyEndPoint = userName => `GetOrderList?Username=${userName}`;
 
 module.exports = {
   checkVersionEndPoint,
@@ -76,4 +77,5 @@ module.exports = {
   changePasswordEndPoint,
   insertWishCartEndPoint,
   removeWishCartEndPoint,
+  getOrderReadyEndPoint,
 };

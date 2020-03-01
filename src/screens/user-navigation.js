@@ -47,12 +47,13 @@ export default class UserNavigation extends React.Component {
 
   tabBarBottom() {
     const {userInfo} = this.state;
+    console.log('user', userInfo);
     if (!userInfo) return CustomerBottomTabs;
     if (userInfo.LoginType === '1') return AdminBottomTabs;
     if (userInfo.LoginType === '2') return ManagerBottomTabs;
     if (userInfo.LoginType === '3') return EngineerBottomTabs;
     if (userInfo.LoginType === '4') return CustomerBottomTabs;
-    if (userInfo.LoginType === '4') return DealerBottomTabs;
+    if (userInfo.LoginType === '5') return DealerBottomTabs;
   }
 
   cancelAllJob() {

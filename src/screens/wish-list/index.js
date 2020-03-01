@@ -110,7 +110,7 @@ class WishList extends Component {
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}>
-                  <PListItem
+                  <ProductItemList
                     data={item}
                     productDetails={() => this.productDetails(item)}
                     removeWishListCart={() =>

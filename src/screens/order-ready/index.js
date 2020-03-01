@@ -22,55 +22,59 @@ import APICaller from '../../utils/api-caller';
 import {Images, Color, Matrics} from '../../common/styles';
 import POrder from '../../components/pending-order';
 import {Header} from '../../common/components';
+import {getOrderReadyEndPoint} from '../../config/api-endpoint';
+import Helper from '../../utils/helper';
 
 let self;
 
 class OrderReady extends Component {
   state = {
-    orderArr: [],
+    orderItem: [],
     orderNotText: '',
     leadInfoModal: false,
     systemConfig: [],
     systemName: '',
+    refreshing: false,
+    loadingData: false,
   };
-
-  // ------------>>>LifeCycle Methods------------->>>
 
   componentDidMount() {
     self = this;
-    this.getOrderList();
+    this.getUserInfo();
   }
 
-  // ------------->>>Controllers/Functions------------>>>>
+  async getUserInfo() {
+    const userInfo = await Helper.getLocalStorageItem('userInfo');
+    this.setState({
+      userInfo,
+    });
+    console.log(userInfo, 'oinnnn');
+    this.getOrderList(userInfo.UserName);
+  }
 
-  getOrderList() {
+  getOrderList(userName) {
     if (!this.state.refreshing) this.setState({loadingData: true});
-    AsyncStorage.getItem('userInfo').then(getUser => {
-      const result = JSON.parse(getUser);
-      let UserName = '';
-      if (result) {
-        UserName = result.UserName;
-      }
-      const endPoint = `GetOrderList?Username=${UserName}`;
-      const method = 'GET';
-      APICaller(`${endPoint}`, method).then(json => {
-        if (json.data.Success === 1 || json.data.Success === '1') {
-          if (result.LoginType === '1') {
-            this.setState({
-              orderArr: _.filter(json.data.Response, {IsReady: 'True'}),
-            });
-          } else {
-            this.setState({
-              orderArr: json.data.Response,
-            });
-          }
+    console.log(
+      getOrderReadyEndPoint(userName),
+      'getOrderReadyEndPoint(userName)',
+    );
+    APICaller(getOrderReadyEndPoint(userName), 'GET').then(json => {
+      if (json.data.Success === 1 || json.data.Success === '1') {
+        if (result.LoginType === '1') {
+          this.setState({
+            orderItem: _.filter(json.data.Response, {IsReady: 'True'}),
+          });
         } else {
           this.setState({
-            orderNotText: json.data.Message,
+            orderItem: json.data.Response,
           });
         }
-        this.setState({loadingData: false, refreshing: false});
-      });
+      } else {
+        this.setState({
+          orderNotText: json.data.Message,
+        });
+      }
+      this.setState({loadingData: false, refreshing: false});
     });
   }
 
@@ -167,19 +171,12 @@ class OrderReady extends Component {
 
   onRefresh = () => {
     this.setState({refreshing: true});
-    this.getOrderList();
+    this.getOrderList(this.state.userInfo.UserName);
   };
   // ----------->>>Render Method-------------->>>
 
   render() {
     const {orderNotText, refreshing} = this.state;
-    if (this.state.orderNotText) {
-      return (
-        <View style={styles.noOrderView}>
-          <Text style={styles.noOrderText}>{orderNotText}</Text>
-        </View>
-      );
-    }
     return (
       <SafeAreaView style={{flex: 1}}>
         <Header title="Order Ready" left="menu" />
@@ -191,7 +188,12 @@ class OrderReady extends Component {
               onRefresh={this.onRefresh}
             />
           }>
-          {this.state.orderArr.map((res, index) => {
+          {this.state.orderNotText ? (
+            <View style={styles.noOrderView}>
+              <Text style={styles.noOrderText}>{orderNotText}</Text>
+            </View>
+          ) : null}
+          {this.state.orderItem.map((res, index) => {
             return (
               <POrder
                 data={res}
@@ -201,11 +203,6 @@ class OrderReady extends Component {
             );
           })}
           <View style={{marginBottom: 10}} />
-          {/* <POrder />
-          <POrder />
-          <POrder />
-          <POrder />
-          <POrder /> */}
         </ScrollView>
         <Modal
           animationType="slide"

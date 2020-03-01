@@ -3,6 +3,8 @@ import {Text, View, TouchableOpacity, ScrollView, Image} from 'react-native';
 import styles from './styles';
 import APICaller from '../../utils/api-caller';
 import {getCategoryListEndPoint} from '../../config/api-endpoint';
+import NavigationHelper from '../../utils/navigation-helper';
+import Events from '../../utils/events';
 
 class CategoryItemList extends Component {
   state = {
@@ -28,9 +30,11 @@ class CategoryItemList extends Component {
     return categoryData.map((res, index) => (
       <TouchableOpacity
         onPress={() => {
-          global.categoryFilter = res.CodeDesc;
-          this.props.navigation.navigate('List');
-          Events.trigger('refreshProductList');
+          //global.categoryFilter = res.CodeDesc;
+          NavigationHelper.navigate(this.props.navigation, 'ProductList', {
+            category: res.CodeDesc,
+          });
+          //Events.trigger('refreshProductList');
         }}
         style={styles.buttonCategory}
         key={`${index.toString()}`}>

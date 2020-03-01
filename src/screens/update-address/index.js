@@ -419,13 +419,16 @@ class UpdateAddress extends Component {
         <KeyboardAvoidingView style={{flex: 1}}>
           <View style={{flex: 1}}>
             <View style={{flex: 1, padding: 10}}>
-              <TextInputView
-                placeholder="Address"
-                value={this.state.Address}
-                autoCorrect={false}
-                onChangeText={value => this.setState({Address: value})}
-                blurOnSubmit={false}
-              />
+              <View style={styles.subTextBoxView}>
+                <TextInputView
+                  placeholder="Address"
+                  value={this.state.Address}
+                  autoCorrect={false}
+                  onChangeText={value => this.setState({Address: value})}
+                  blurOnSubmit={false}
+                  customStyle={styles.plml0}
+                />
+              </View>
               <TouchableOpacity
                 style={{
                   borderBottomWidth: 1,
@@ -491,27 +494,36 @@ class UpdateAddress extends Component {
                   {this.state.areaText || 'Area'}
                 </Text>
               </TouchableOpacity>
-              <TextInputView
-                placeholder="City"
-                value={this.state.City}
-                autoCorrect={false}
-                onChangeText={value => this.setState({City: value})}
-                blurOnSubmit={false}
-              />
-              <TextInputView
-                placeholder="Pincode"
-                value={this.state.Pincode}
-                autoCorrect={false}
-                onChangeText={value => this.setState({Pincode: value})}
-                blurOnSubmit={false}
-              />
-              <TextInputView
-                placeholder="State"
-                value={this.state.Divison}
-                autoCorrect={false}
-                onChangeText={value => this.setState({Divison: value})}
-                blurOnSubmit={false}
-              />
+              <View style={styles.subTextBoxView}>
+                <TextInputView
+                  placeholder="City"
+                  value={this.state.City}
+                  autoCorrect={false}
+                  onChangeText={value => this.setState({City: value})}
+                  blurOnSubmit={false}
+                  customStyle={styles.plml0}
+                />
+              </View>
+              <View style={styles.subTextBoxView}>
+                <TextInputView
+                  placeholder="Pincode"
+                  value={this.state.Pincode}
+                  autoCorrect={false}
+                  onChangeText={value => this.setState({Pincode: value})}
+                  blurOnSubmit={false}
+                  customStyle={styles.plml0}
+                />
+              </View>
+              <View style={styles.subTextBoxView}>
+                <TextInputView
+                  placeholder="State"
+                  value={this.state.Divison}
+                  autoCorrect={false}
+                  onChangeText={value => this.setState({Divison: value})}
+                  blurOnSubmit={false}
+                  customStyle={styles.plml0}
+                />
+              </View>
             </View>
           </View>
           <TouchableOpacity
@@ -747,6 +759,15 @@ const styles = StyleSheet.create({
   checkoutText: {
     color: '#fff',
     fontSize: 16,
+  },
+  subTextBoxView: {
+    width: '100%',
+    borderBottomWidth: 1,
+    borderBottomColor: '#d3d3d3',
+  },
+  plml0: {
+    paddingLeft: 0,
+    marginLeft: 0,
   },
 });
 

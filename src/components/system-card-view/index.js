@@ -15,6 +15,7 @@ import {MIcon, McIcon} from '../../common/assets/vector-icon';
 import APICaller from '../../utils/api-caller';
 import {userDashboardEndPoint} from '../../config/api-endpoint';
 import Events from '../../utils/events';
+import NavigationHelper from '../../utils/navigation-helper';
 
 let self;
 class SystemCardView extends Component {
@@ -23,7 +24,12 @@ class SystemCardView extends Component {
   }
 
   navigateSignature(systemTag, signature) {
-    this.props.navigation.navigate('SignCapture', {systemTag, signature});
+    const {navigation} = this.props;
+    NavigationHelper.navigate(navigation, 'SignCapture', {
+      systemTag,
+      signature,
+    });
+    // this.props.navigation.navigate('SignCapture', {systemTag, signature});
   }
 
   EditSystemNameMethod = (systemTag, systemName) => {

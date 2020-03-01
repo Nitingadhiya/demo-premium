@@ -375,7 +375,9 @@ class PlaceOrder extends Component {
               Your cart is empty
             </Text>
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('List')}
+              onPress={() =>
+                NavigationHelper.navigate(navigation, 'ProductList')
+              }
               style={{
                 backgroundColor: Color.primary,
                 width: '75%',
