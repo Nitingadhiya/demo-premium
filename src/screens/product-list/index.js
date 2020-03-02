@@ -188,7 +188,6 @@ class ProductList extends Component {
       this.setState({loadingData: true});
     }
     APICaller(fetchProductListEndPoint(userName), 'GET').then(json => {
-      console.log(json, 'json');
       if (json.data.Success === 1 || json.data.Success === '1') {
         const list = json.data.Response;
         let badgeCount = 0;
@@ -227,7 +226,6 @@ class ProductList extends Component {
       insertWishCartEndPoint(item.ProductNo, userInfo.UserName, type),
       'GET',
     ).then(json => {
-      console.log(json);
       if (json.data.Success === 1 || json.data.Success === '1') {
         //const cartCount = json.data.Response.length;
         this.fetchProductList(userInfo.UserName);
@@ -255,7 +253,6 @@ class ProductList extends Component {
       if (json.data.Success === 1 || json.data.Success === '1') {
         let prd = this.state.productItemList;
         const index = _.findIndex(prd, {ProductNo: productNumber});
-        console.log(index);
         this.setState({loadingData: false});
       }
     });
@@ -269,7 +266,6 @@ class ProductList extends Component {
       //this.fetchProductList(this.state.searchText);
       this.setState({refreshing: false});
     } else {
-      console.log('Check');
       this.fetchProductList(this.state.userInfo.UserName);
     }
   }
@@ -295,7 +291,6 @@ class ProductList extends Component {
   };
 
   productDetails(item) {
-    console.log(item, 'iii');
     NavigationHelper.navigate(this.props.navigation, 'ProductDetails', {
       productNo: item.ProductNo,
     });
@@ -303,7 +298,6 @@ class ProductList extends Component {
 
   categoryFilterApply(res) {
     this.state.productItemList = this.state.filterResult;
-    console.log(this.state.productItemList);
     const {productItemList} = this.state;
     if (productItemList) {
       const result = productItemList.filter(data =>

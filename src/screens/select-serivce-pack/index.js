@@ -182,7 +182,6 @@ class ServicePackage extends Component {
     if (userInfo) {
       this.setState({loadingData: true});
       const endPoint = `InsertWishCart?ProductNo=${item.ProductNo}&Username=${userInfo.UserName}&WishCart=CART&OrderType=${orderType}`;
-      console.log(endPoint, 'end');
       const method = 'GET';
       APICaller(`${endPoint}`, method).then(json => {
         this.setState({loadingData: false});

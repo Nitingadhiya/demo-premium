@@ -87,7 +87,6 @@ class PlaceOrder extends Component {
     const endPoint = `GetProductList?ProductNo=&Username=${UserName}&WishCart=Cart`;
     const method = 'GET';
     APICaller(`${endPoint}`, method).then(json => {
-      console.log(json, 'json');
       if (json.data.Success === 1 || json.data.Success === '1') {
         const productList = {product: json.data.Response};
 
@@ -171,7 +170,6 @@ class PlaceOrder extends Component {
 
     const method = 'GET';
     APICaller(`${endPoint}`, method).then(json => {
-      console.log(json, 'json');
       this.setState({loadingData: false});
       if (json.data.Success === 1 || json.data.Success === '1') {
         if (this.state.cartListArr[index].CartQty === 1) {
