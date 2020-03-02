@@ -34,7 +34,6 @@ class MyProfile extends Component {
   };
 
   componentDidMount() {
-    console.log('DDD*********');
     this.getUserInfo();
     Events.on('refreshProfile', 'refreshProfile', () => {
       this.getUserInfo();
@@ -42,12 +41,10 @@ class MyProfile extends Component {
   }
 
   async getUserInfo() {
-    console.log('DDD');
     const userInfo = await Helper.getLocalStorageItem('userInfo');
     this.setState({
       userInfo,
     });
-    console.log(userInfo, 'innnn');
     this.getUserDetails(userInfo.UserName);
     // Events.on('refreshProfile', 'refreshProfile', () => {
     //   this.getUserDetails();
@@ -60,34 +57,11 @@ class MyProfile extends Component {
       return;
     }
     this.setState({loadingData: true});
-    console.log('Looks ***');
     APICaller(getUserProfileEndPoint(userName), 'GET').then(json => {
-      console.log(json, '***********');
-
       if (json.data.Success === '1') {
         const userInfo = json.data.Response;
-        console.log(userInfo, 'info');
         this.setState({
           profileInfo: userInfo,
-          // Area: userInfo.Area,
-          // Road: userInfo.Road,
-          // City: userInfo.City,
-          // Divison: userInfo.State,
-          // Landmark: userInfo.Landmark,
-          // Pincode: userInfo.Pincode,
-          // DateOfBirth: userInfo.DateOfBirth,
-          // FirstName: userInfo.FirstName,
-          // LastName: userInfo.LastName,
-          // MobileNo: userInfo.MobileNo,
-          // Coins: userInfo.Coins,
-          // Gold: userInfo.Gold,
-          // Silver: userInfo.Silver,
-          // UserImage: userInfo.UserImage,
-          // UserName: userInfo.UserName,
-          // EmailId: userInfo.EmailId,
-          // Gender: userInfo.Gender,
-          // CompanyName: userInfo.CompanyName,
-          // BusinessType: userInfo.BusinessType,
         });
         Helper.setLocalStorageItem('userInfo', userInfo);
       } else {
@@ -116,7 +90,6 @@ class MyProfile extends Component {
 
   render() {
     const {profileInfo} = this.state;
-    console.log('prof', profileInfo);
     if (!profileInfo) return <View />;
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: Color.white}}>

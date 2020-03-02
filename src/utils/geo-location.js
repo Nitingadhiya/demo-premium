@@ -3,7 +3,6 @@ import Geolocation from 'react-native-geolocation-service';
 
 const LocationServiceHelper = {
   async hasLocationPermissionMethod() {
-    console.log('access');
     if (
       Platform.OS === 'ios' ||
       (Platform.OS === 'android' && Platform.Version < 23)
@@ -32,18 +31,17 @@ const LocationServiceHelper = {
     return false;
   },
   async getLocation() {
-    console.log('permission');
     const hasLocationPermission = await this.hasLocationPermissionMethod();
     if (!hasLocationPermission) return;
     //this.setState({loading: true}, () => {
     Geolocation.getCurrentPosition(
       position => {
         // this.setState({location: position, loading: false});
-        console.log(position);
+        // console.log(position);
       },
       error => {
         //this.setState({location: error, loading: false});
-        console.log(error);
+        // console.log(error);
       },
       {
         enableHighAccuracy: true,

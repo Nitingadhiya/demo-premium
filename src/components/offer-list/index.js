@@ -6,7 +6,6 @@ import {
   Image,
   Text,
   Dimensions,
-  AsyncStorage,
 } from 'react-native';
 import {Matrics, Color} from '../../common/styles';
 
@@ -44,25 +43,6 @@ const styles = StyleSheet.create({
 });
 
 export default class OfferList extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      loggedInUserId: null,
-      // apiRead: false,
-    };
-  }
-
-  componentWillMount() {
-    AsyncStorage.getItem('userInfo').then(userInfo => {
-      if (userInfo) {
-        const user = JSON.parse(userInfo);
-        this.setState({
-          loggedInUserId: user.id,
-        });
-      }
-    });
-  }
-
   render() {
     return (
       <View

@@ -42,8 +42,6 @@ class ProductList extends Component {
   };
 
   componentDidMount() {
-    console.log('Did mount');
-
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
       // do something
       this.categoryFilterValidation();
@@ -56,8 +54,6 @@ class ProductList extends Component {
 
   categoryFilterValidation() {
     const {route} = this.props;
-    console.log('focus');
-    console.log(route, 'RRR');
     if (route.params) {
       this.categoryFilterApply(route.params.category);
     }
@@ -166,7 +162,6 @@ class ProductList extends Component {
       });
 
       const uniq = _.uniqBy(searchResult, 'ID');
-      console.log(uniq, 'uniq');
       searchResult = uniq;
       this.setState({
         productItemList: searchResult,

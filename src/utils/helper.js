@@ -63,7 +63,6 @@ const Helper = {
             'MinimumVersion',
             null,
           );
-          console.log(VersionNumber.buildVersion, 'buidl');
           if (VersionNumber.buildVersion <= checkMinimumVersion) {
             Helper.appUpdateAlert(false);
             return false;
@@ -100,7 +99,6 @@ const Helper = {
     if (!token) return;
     const userInfo = await Helper.getLocalStorageItem('userInfo');
     if (userInfo) {
-      console.log(updateTokenEndPoint(userInfo.UserName, token), 'point');
       APICaller(
         updateTokenEndPoint(userInfo.UserName, token),
         'GET',

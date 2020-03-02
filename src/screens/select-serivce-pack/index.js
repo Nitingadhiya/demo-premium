@@ -11,7 +11,6 @@ import {
   TextInput,
   KeyboardAvoidingView,
   SafeAreaView,
-  AsyncStorage,
   Dimensions,
   ScrollView,
 } from 'react-native';
@@ -98,12 +97,19 @@ class ServicePackage extends Component {
   componentDidMount() {
     const {route} = this.props;
     this.params = route.params;
-    console.log(this.props, 'parm');
+    this.getUserInfo();
     this.setState({
       priceRate: this.params.item.PlatinumRate,
       onlineDiscount: this.params.item.OnlineDiscount,
       shipping: this.params.item.shipping || 0,
       packageSelect: this.selectedPackageOption(this.params.item),
+    });
+  }
+
+  async getUserInfo() {
+    const userInfo = await Helper.getLocalStorageItem('userInfo');
+    this.setState({
+      userInfo,
     });
   }
 
@@ -120,14 +126,10 @@ class ServicePackage extends Component {
   }
 
   addWishListCart(productNumber, type) {
+    const {userInfo} = this.state;
     this.setState({loadingData: true});
-    AsyncStorage.getItem('userInfo').then(getUser => {
-      const result = JSON.parse(getUser);
-      let UserName = '';
-      if (result) {
-        UserName = result.UserName;
-      }
-      const endPoint = `InsertWishCart?ProductNo=${productNumber}&Username=${UserName}&WishCart=${type}`;
+    if (userInfo) {
+      const endPoint = `InsertWishCart?ProductNo=${productNumber}&Username=${userInfo.UserName}&WishCart=${type}`;
       const method = 'GET';
       APICaller(`${endPoint}`, method).then(json => {
         if (json.data.Success === 1 || json.data.Success === '1') {
@@ -142,7 +144,7 @@ class ServicePackage extends Component {
         }
         this.setState({loadingData: false});
       });
-    });
+    }
   }
 
   selectPackageServices(value) {
@@ -165,6 +167,7 @@ class ServicePackage extends Component {
   }
 
   addToCart(data) {
+    const {userInfo} = this.state;
     const item = data.item;
     let orderType;
     if (this.state.packageSelect === 'platinum') {
@@ -176,14 +179,9 @@ class ServicePackage extends Component {
     }
     if (!orderType) return;
 
-    this.setState({loadingData: true});
-    AsyncStorage.getItem('userInfo').then(getUser => {
-      const result = JSON.parse(getUser);
-      let UserName = '';
-      if (result) {
-        UserName = result.UserName;
-      }
-      const endPoint = `InsertWishCart?ProductNo=${item.ProductNo}&Username=${UserName}&WishCart=CART&OrderType=${orderType}`;
+    if (userInfo) {
+      this.setState({loadingData: true});
+      const endPoint = `InsertWishCart?ProductNo=${item.ProductNo}&Username=${userInfo.UserName}&WishCart=CART&OrderType=${orderType}`;
       console.log(endPoint, 'end');
       const method = 'GET';
       APICaller(`${endPoint}`, method).then(json => {
@@ -193,25 +191,17 @@ class ServicePackage extends Component {
           // add badge count
         }
       });
-    });
+    }
   }
 
   navigateCartList() {
-    AsyncStorage.getItem('userInfo').then(res => {
-      if (res) {
-        const result = JSON.parse(res);
-        if (result) {
-          const {UserName} = result;
-          this.setState({
-            UserName,
-          });
-          //this.props.navigation.navigate('CartList');
-          this.props.navigation.navigate('PlaceOrder');
-        }
-      } else {
-        this.props.navigation.navigate('Login');
-      }
-    });
+    const {userInfo} = this.state;
+    if (userInfo) {
+      //this.props.navigation.navigate('CartList');
+      this.props.navigation.navigate('PlaceOrder');
+    } else {
+      this.props.navigation.navigate('Login');
+    }
   }
 
   render() {

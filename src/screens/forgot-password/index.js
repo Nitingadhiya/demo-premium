@@ -28,7 +28,6 @@ class ForgotPassword extends Component {
   };
   componentDidMount() {
     const {route} = this.props;
-    console.log(route);
     if (route.params) {
       this.setState({
         mobileNo: route.params.mobileNo,
@@ -50,9 +49,7 @@ class ForgotPassword extends Component {
       .catch(p => console.log(p));
 
   otpHandler = message => {
-    console.log(message, 'msg');
     const otp = /(\d{6})/g.exec(message)[1];
-    console.log(otp, 'otp');
     this.setState({otpText: otp});
     this.onFinishCheckingCode(otp);
     // RNOtpVerify.removeListener();

@@ -55,23 +55,19 @@ class ProductDetails extends Component {
   getProductDetails(productNo, userName) {
     APICaller(getProductDetailsEndPoint(productNo, userName), 'GET').then(
       json => {
-        console.log(json, 'res');
         if (json.data.Success === 1 || json.data.Success === '1') {
           const res = json.data.Response[0];
-          console.log(res, 'res');
           this.setState({
             productDetails: res,
             loadingData: false,
           });
           const imageSplit = res.ImageList.split(',');
           let sliderImage = [];
-          console.log(imageSplit, 'splt');
           imageSplit.map(image => {
             sliderImage.push({
               uri: res.Url + image.trim(),
             });
           });
-          console.log(sliderImage, 'image');
           this.setState({
             imageList: sliderImage,
           });
@@ -106,7 +102,6 @@ class ProductDetails extends Component {
       insertWishCartEndPoint(item.ProductNo, userInfo.UserName, type),
       'GET',
     ).then(json => {
-      console.log(json);
       if (json.data.Success === 1 || json.data.Success === '1') {
         //const cartCount = json.data.Response.length;
         this.fetchProductList(userInfo.UserName);
@@ -161,7 +156,6 @@ class ProductDetails extends Component {
         view: ThirdRoute,
       },
     ];
-    console.log(this.state, 'state');
     return (
       <SafeAreaView style={{flex: 1}}>
         {this.state.loadingData ? (

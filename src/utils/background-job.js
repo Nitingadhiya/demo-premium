@@ -20,7 +20,6 @@ const BackgroundServiceHelper = {
         console.log(
           `Background Job fired*************************!. Key = ${BackgroundServiceHelper.everRunningJobKey()}`,
         );
-        console.log(global.userInfo, 'global.userInfo');
         if (!global.userInfo) return;
         if (
           global.userInfo.LoinType === '4' ||
@@ -38,15 +37,14 @@ const BackgroundServiceHelper = {
             });
             APICaller(updateLatLongEndPoint, 'POST', body)
               .then(json => {
-                console.log(json.data.Message);
+                //console.log(json.data.Message);
               })
               .catch(function(error) {
-                console.log(error);
+                //console.log(error);
               });
-            console.log(position);
           },
           error => {
-            console.log(error);
+            //console.log(error);
           },
           {
             enableHighAccuracy: true,

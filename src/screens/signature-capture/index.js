@@ -8,7 +8,6 @@ import {
   Image,
   TouchableOpacity,
   Alert,
-  AsyncStorage,
   ScrollView,
   Dimensions,
   ImageBackground,

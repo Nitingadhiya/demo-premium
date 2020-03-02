@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from 'react';
 import {
   Text,
   View,
@@ -7,28 +7,27 @@ import {
   ImageBackground,
   TouchableOpacity,
   Platform,
-  AsyncStorage
-} from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { StackActions, NavigationActions } from "react-navigation";
-import { connect } from "react-redux";
+} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {StackActions, NavigationActions} from 'react-navigation';
+import {connect} from 'react-redux';
 import {
   Button,
   TextInputField,
   ActionModal,
   LoadWheel,
-  TextInputView
-} from "../index";
+  TextInputView,
+} from '../index';
 import {
   Color,
   Images,
   Matrics,
   Fonts,
-  ApplicationStyles
-} from "../../../common/styles";
+  ApplicationStyles,
+} from '../../../common/styles';
 // import { loginRequest } from '../Redux/actions'
-import Global from "../../../global";
-import Styles from "./styles";
+import Global from '../../../global';
+import Styles from './styles';
 
 class InfoHeader extends Component {
   skipStep = (skip, skipStep) => {
@@ -48,7 +47,7 @@ class InfoHeader extends Component {
       totalStep,
       navigation,
       skipStep,
-      skip
+      skip,
     } = this.props;
     return (
       <View style={Styles.signInView}>

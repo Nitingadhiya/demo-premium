@@ -88,7 +88,6 @@ export default class Dashboard extends Component {
           res.uri = res.Slide;
           delete res.Slide;
         });
-        console.log('data', data);
         this.setState({sliderImage: data});
       }
     });

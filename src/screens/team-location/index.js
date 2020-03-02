@@ -11,7 +11,6 @@ import {
   TextInput,
   KeyboardAvoidingView,
   SafeAreaView,
-  AsyncStorage,
   Dimensions,
 } from 'react-native';
 import {Images, Color, Matrics} from '../../common/styles';

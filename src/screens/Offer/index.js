@@ -31,7 +31,6 @@ class Offer extends Component {
   }
 
   renderSettings() {
-    console.log('Clicked Settings');
     Alert.alert(
       'Alert',
       '',

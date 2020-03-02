@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from 'react';
 import {
   Text,
   View,
@@ -7,21 +7,20 @@ import {
   ImageBackground,
   TouchableOpacity,
   Platform,
-  AsyncStorage
-} from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { StackActions, NavigationActions } from "react-navigation";
-import { connect } from "react-redux";
+} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {StackActions, NavigationActions} from 'react-navigation';
+import {connect} from 'react-redux';
 import {
   Button,
   TextInputField,
   ActionModal,
   LoadWheel,
-  TextInputView
-} from "../../components/index";
-import { Color, Images, Matrics, Fonts, ApplicationStyles } from "./index";
-import Global from "../../../global";
-import Styles from "./styles";
+  TextInputView,
+} from '../../components/index';
+import {Color, Images, Matrics, Fonts, ApplicationStyles} from './index';
+import Global from '../../../global';
+import Styles from './styles';
 
 class BottomButton extends Component {
   render() {
@@ -30,14 +29,13 @@ class BottomButton extends Component {
       buttonText,
       color,
       customStyle,
-      customeTextStyle
+      customeTextStyle,
     } = this.props;
     return (
       <TouchableOpacity
-        style={[Styles.flatButton, { backgroundColor: color }, customStyle]}
+        style={[Styles.flatButton, {backgroundColor: color}, customStyle]}
         onPress={onPress}
-        activeOpacity={0.8}
-      >
+        activeOpacity={0.8}>
         <Text style={[Styles.flatText, customeTextStyle]}>{buttonText}</Text>
       </TouchableOpacity>
     );

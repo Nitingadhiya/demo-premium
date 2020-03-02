@@ -11,7 +11,6 @@ import {
   TextInput,
   KeyboardAvoidingView,
   SafeAreaView,
-  AsyncStorage,
   Dimensions,
   Modal,
 } from 'react-native';

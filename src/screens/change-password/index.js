@@ -13,7 +13,6 @@ import {
   Dimensions,
   KeyboardAvoidingView,
   ScrollView,
-  AsyncStorage,
   Alert,
 } from 'react-native';
 import {changePasswordEndPoint} from '../../config/api-endpoint';
@@ -25,7 +24,7 @@ import {TextInputView, SpinnerView, Header} from '../../common/components';
 class ChangePassword extends Component {
   state = {
     loadingData: false,
-    UserName: null,
+    userInfo: null,
     nPassword: null,
     oPassword: null,
     oPasswordSecure: true,
@@ -33,20 +32,17 @@ class ChangePassword extends Component {
   };
 
   componentDidMount() {
-    AsyncStorage.getItem('userInfo').then(res => {
-      if (res) {
-        const result = JSON.parse(res);
-        if (result) {
-          const {UserName} = result;
-          this.setState({UserName});
-        }
-      }
-    });
+    this.userInfo();
+  }
+  async getUserInfo() {
+    const userInfo = await Helper.getLocalStorageItem('userInfo');
+    this.setState({userInfo});
   }
 
   // CHECK FOR API RESPONSE
   ChangePasswordAPI(oldPassword, newPassword) {
-    if (this.state.userName === null) {
+    const {UserName} = this.state.userInfo;
+    if (UserName === null) {
       this.setState({userNameError: 'In valid Username'});
       return;
     }
@@ -64,10 +60,9 @@ class ChangePassword extends Component {
       userNameError: null,
     });
     APICaller(
-      changePasswordEndPoint(this.state.UserName, oldPassword, newPassword),
+      changePasswordEndPoint(UserName, oldPassword, newPassword),
       'GET',
     ).then(json => {
-      console.log(json, '**********');
       if (json.status !== 200) {
         this.setState({
           loadingData: false,

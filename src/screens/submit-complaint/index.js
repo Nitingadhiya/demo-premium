@@ -11,6 +11,7 @@ import {
   Modal,
 } from 'react-native';
 import _ from 'lodash';
+import styles from './styles';
 import {Matrics, Color} from '../../common/styles';
 import {MIcon} from '../../common/assets/vector-icon';
 import APICaller from '../../utils/api-caller';
@@ -44,6 +45,7 @@ export default class submitComplaint extends Component {
     paymentServiceModal: false,
     paramsData: null,
     selectedServices: 'Advance',
+    userInfo: null,
   };
 
   // ------------>>>LifeCycle Methods------------->>>
@@ -51,7 +53,7 @@ export default class submitComplaint extends Component {
   componentDidMount() {
     const {route} = this.props;
     const params = route.params;
-    //console.log(params, 'pass');
+    this.systemTag = '';
     if (params) {
       this.setState({
         systemTag: params.systemTag,
@@ -64,40 +66,38 @@ export default class submitComplaint extends Component {
           withOutQrCode: true,
           systemTag: params.tmpSystemName[0].sysTag,
         });
+        this.systemTag = params.tmpSystemName[0].sysTag;
       }
       if (params.complainCharge > 0) {
         this.setState({
           paymentServiceModal: true,
         });
       }
-
-      const userInfo = Helper.getLocalStorageItem('userInfo');
-      if (userInfo) {
-        const {UserName, EmailId, MobileNo} = userInfo;
-        this.setState({
-          UserName,
-          EmailId,
-          MobileNo,
-        });
-        this.getComplainCharge(this.state.systemTag, UserName);
-      }
+      this.getUserInfo();
     }
     self = this;
     this.getcompDescList();
   }
 
-  getComplainCharge(result, UserName) {
-    if (UserName) {
+  async getUserInfo() {
+    const userInfo = await Helper.getLocalStorageItem('userInfo');
+    this.setState({
+      userInfo,
+    });
+    this.getComplainCharge(this.systemTag, userInfo.UserName);
+  }
+
+  getComplainCharge(result, userName) {
+    if (userName) {
       this.setState({
         loadingData: true,
       });
-      const endPoint = `GetComplaintCharges?SystemTag=${result}&BaseUserName=${UserName}`;
+      const endPoint = `GetComplaintCharges?SystemTag=${result}&BaseUserName=${userName}`;
       const method = 'GET';
       APICaller(`${endPoint}`, method).then(json => {
         this.setState({
           loadingData: false,
         });
-        //console.log(json, 'json');
         if (json.data.Success === '1') {
           this.setState({
             complainCharge: json.data.Response.ComplaintCharge,
@@ -176,8 +176,8 @@ export default class submitComplaint extends Component {
   }
 
   submitComplaintFn() {
-    const {UserName} = this.state;
-    if (UserName) {
+    const {userInfo} = this.state;
+    if (userInfo.UserName) {
       this.setState({
         loadingData: true,
       });
@@ -188,7 +188,7 @@ export default class submitComplaint extends Component {
           {
             ComplaintSubject: this.state.selectedCompSubject,
             ComplaintDesc: this.state.selectedCompDesc,
-            ComplaintBy: UserName,
+            ComplaintBy: userInfo.UserName,
             SystemTag: this.state.systemTag,
             TotalCharges:
               this.state.paymentMethod === '1'
@@ -293,7 +293,7 @@ export default class submitComplaint extends Component {
   // ----------->>>Render Method-------------->>>
   //'http://premiumsales.in/Home/CreatePaymentMobile?mobilenumber=9725682497&email=arkeshkorat404@gmail.com&amount=',
   render() {
-    const {paymentMethod, selectedServices, paramsData} = this.state;
+    const {paymentMethod, selectedServices, paramsData, userInfo} = this.state;
     const {navigation} = this.props;
     return (
       <SafeAreaView style={{flex: 1}}>
@@ -310,12 +310,12 @@ export default class submitComplaint extends Component {
             <SpinnerView />
           </View>
         ) : null}
-        {this.state.webviewShow ? (
+        {userInfo && this.state.webviewShow ? (
           <WebView
             onLoadStart={() => this.webviewStartLoad()}
             onLoadEnd={() => this.webviewEndLoad()}
             source={{
-              uri: `http://premiumitware.com/Home/CreatePaymentMobile?mobilenumber=${this.state.MobileNo}&email=${this.state.EmailId}&amount=${this.state.complainCharge}&DocumentNo=${this.state.ComplaintID}&UserName=${this.state.UserName}`,
+              uri: `http://premiumitware.com/Home/CreatePaymentMobile?mobilenumber=${userInfo.MobileNo}&email=${userInfo.EmailId}&amount=${this.state.complainCharge}&DocumentNo=${this.state.ComplaintID}&UserName=${userInfo.UserName}`,
             }}
             style={{flex: 1}}
             onLoad={syntheticEvent => {

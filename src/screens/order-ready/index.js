@@ -12,7 +12,6 @@ import {
   KeyboardAvoidingView,
   SafeAreaView,
   ScrollView,
-  AsyncStorage,
   Modal,
   RefreshControl,
 } from 'react-native';
@@ -48,16 +47,11 @@ class OrderReady extends Component {
     this.setState({
       userInfo,
     });
-    console.log(userInfo, 'oinnnn');
     this.getOrderList(userInfo.UserName);
   }
 
   getOrderList(userName) {
     if (!this.state.refreshing) this.setState({loadingData: true});
-    console.log(
-      getOrderReadyEndPoint(userName),
-      'getOrderReadyEndPoint(userName)',
-    );
     APICaller(getOrderReadyEndPoint(userName), 'GET').then(json => {
       if (json.data.Success === 1 || json.data.Success === '1') {
         if (result.LoginType === '1') {
@@ -83,7 +77,6 @@ class OrderReady extends Component {
   }
 
   renderSettings() {
-    //console.log('Clicked Settings');
     Alert.alert(
       'Alert',
       '',

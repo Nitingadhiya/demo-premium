@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from 'react';
 import {
   Modal,
   View,
@@ -6,60 +6,60 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   TouchableOpacity,
-  Platform
-} from "react-native";
-import _ from "lodash";
-import Spinner from "react-native-spinkit";
-import StarRating from "react-native-star-rating";
-import Icon from "react-native-fontawesome-pro";
-import { TextInputView, Button } from "../index";
-import { Matrics, Images, Color, Fonts } from "../../styles";
-import Styles from "./styles";
-import ModalHeader from "../modal-header";
-import GlobalVar from "../../../global";
-import ErrorComponent from "../error-message";
+  Platform,
+} from 'react-native';
+import _ from 'lodash';
+import Spinner from 'react-native-spinkit';
+import StarRating from 'react-native-star-rating';
+import Icon from 'react-native-fontawesome-pro';
+import {TextInputView, Button} from '../index';
+import {Matrics, Images, Color, Fonts} from '../../styles';
+import Styles from './styles';
+import ModalHeader from '../modal-header';
+import GlobalVar from '../../../global';
+import ErrorComponent from '../error-message';
 //import Events from "../../../util/events";
-import { APICaller, Events, Helper } from "../../../util";
+import {APICaller, Events, Helper} from '../../../util';
 //import APICaller from "../../../util/apiCaller";
-import Http from "../../../api/http";
+import Http from '../../../api/http';
 // import Helper from "../../../util/helper";
 
 const textInputRegisterArray = [
   {
-    placeholder: "Heading",
-    stateName: "title",
-    returnKeyType: "done",
-    keyboardType: "default",
-    nextRef: "rating",
+    placeholder: 'Heading',
+    stateName: 'title',
+    returnKeyType: 'done',
+    keyboardType: 'default',
+    nextRef: 'rating',
     multiline: false,
-    phoneInput: false
-  }
+    phoneInput: false,
+  },
 ];
 
 const textInputRatingArray = [
   {
-    placeholder: " ",
-    stateName: "review",
-    returnKeyType: "done",
-    keyboardType: "default",
-    nextRef: "rating",
+    placeholder: ' ',
+    stateName: 'review',
+    returnKeyType: 'done',
+    keyboardType: 'default',
+    nextRef: 'rating',
     multiline: true,
-    phoneInput: false
-  }
+    phoneInput: false,
+  },
 ];
 
 const catRR = {
-  "ratings.kindness": 0,
-  "ratings.transparency": 0,
-  "ratings.speed": 0,
-  "ratings.liability": 0
+  'ratings.kindness': 0,
+  'ratings.transparency': 0,
+  'ratings.speed': 0,
+  'ratings.liability': 0,
 };
 
 class RejectModal extends Component {
   state = {
     textInputArray: [],
     errorsMsg: null,
-    loading: false
+    loading: false,
   };
   componentDidMount() {
     this.getOfferRejectReason();
@@ -67,76 +67,74 @@ class RejectModal extends Component {
 
   rejectRequestReview(offer_token) {
     const body = {
-      reasons: this.state.textInputArray
+      reasons: this.state.textInputArray,
     };
     this.setState({
-      loading: true
+      loading: true,
     });
     APICaller(
       `${Http.acceptRejectOfferEndPoint}/reject/${offer_token}`,
-      "POST",
+      'POST',
       global.apiToken,
-      body
+      body,
     ).then(json => {
       if (json) {
         if (json.status && json.status === GlobalVar.responseInvalidCode) {
           this.setState({
             errorsMsg: json.data.errors,
-            loading: false
+            loading: false,
           });
           return;
         }
         if (json.status && json.status === GlobalVar.responseSuccess) {
           const obj = {
             message: json.data.message,
-            modal: false
+            modal: false,
           };
-          Events.trigger("rejectModal", obj);
+          Events.trigger('rejectModal', obj);
         }
         this.setState({
-          loading: false
+          loading: false,
         });
       }
     });
   }
 
   getOfferRejectReason() {
-    Events.trigger("loading", true);
+    Events.trigger('loading', true);
     APICaller(
       `${Http.offerRejectOptionsEndPoint}`,
-      "GET",
-      global.apiToken
+      'GET',
+      global.apiToken,
     ).then(json => {
-      console.log(json, "json write review");
       if (json) {
-        Events.trigger("loading", false);
+        Events.trigger('loading', false);
         if (json.status && json.status === GlobalVar.responseInvalidCode) {
           const errors = json.data.errors;
           this.setState({
-            errorsMsg: errors // set state Error message,
+            errorsMsg: errors, // set state Error message,
           });
           return;
         }
         if (json.status && json.status === GlobalVar.responseSuccess) {
-          console.log(json);
           let data = json.data;
           data.map(res => {
             const texInput = {
-              placeholder: " ",
+              placeholder: ' ',
               stateName: res.name,
-              returnKeyType: "done",
-              keyboardType: "default",
-              nextRef: "",
+              returnKeyType: 'done',
+              keyboardType: 'default',
+              nextRef: '',
               multiline: true,
-              phoneInput: false
+              phoneInput: false,
             };
             _.merge(res, texInput);
           });
           this.setState({
-            textInputArray: data
+            textInputArray: data,
           });
         }
-        Events.trigger("loading", false);
+        Events.trigger('loading', false);
       }
     });
   }
@@ -145,7 +143,7 @@ class RejectModal extends Component {
     this.state.textInputArray[index].checked = !val;
     const textInputArr = this.state.textInputArray;
     this.setState({
-      textInputArray: textInputArr
+      textInputArray: textInputArr,
     });
   }
 
@@ -160,7 +158,7 @@ class RejectModal extends Component {
     phoneInput,
     checked,
     index,
-    name
+    name,
   ) => {
     return (
       <View
@@ -170,24 +168,22 @@ class RejectModal extends Component {
           borderColor: Color.paleGreyTwo,
           marginTop: Matrics.ScaleValue(10),
           borderRadius: Matrics.ScaleValue(5),
-          padding: Matrics.ScaleValue(5)
-        }}
-      >
+          padding: Matrics.ScaleValue(5),
+        }}>
         <TouchableOpacity
           style={Styles.touchBtn}
-          onPress={() => this.checkboxCheck(checked, index)}
-        >
+          onPress={() => this.checkboxCheck(checked, index)}>
           <View style={Styles.checkView}>
             {checked ? (
               <Icon
-                name={"check"}
+                name={'check'}
                 color={Color.darkRed}
                 size={Matrics.ScaleValue(16)}
                 style={{
                   marginTop:
-                    Platform.OS === "ios"
+                    Platform.OS === 'ios'
                       ? Matrics.ScaleValue(-4)
-                      : Matrics.ScaleValue(0)
+                      : Matrics.ScaleValue(0),
                 }}
               />
             ) : null}
@@ -198,7 +194,7 @@ class RejectModal extends Component {
           placeholder={placeholder}
           placeholderTextColor={Color.silver}
           placeholderStyle={Styles.placeholderStyle}
-          style={[Styles.textInput, { borderWidth: 1 }]}
+          style={[Styles.textInput, {borderWidth: 1}]}
           value={value[stateName]}
           returnKeyType={returnKeyType}
           keyboardType={keyboardType}
@@ -219,39 +215,36 @@ class RejectModal extends Component {
 
   /* text input change */
   textInputChange = (stateVal, value, index) => {
-    this.setState({ [stateVal]: value });
+    this.setState({[stateVal]: value});
     this.state.textInputArray[index].text = value;
   };
 
   onStarRatingPress(rating, stateKey) {
     this.setState({
-      [`${stateKey}`]: rating
+      [`${stateKey}`]: rating,
     });
   }
 
   render() {
-    const { visible, closeModalReq, offer_token } = this.props;
-    const { textInputArray } = this.state;
+    const {visible, closeModalReq, offer_token} = this.props;
+    const {textInputArray} = this.state;
     return (
       <Modal
         animationType="slide"
         transparent={true}
         visible={visible}
-        onRequestClose={closeModalReq}
-      >
+        onRequestClose={closeModalReq}>
         <View style={Styles.mainModalView}>
           <KeyboardAvoidingView
             behavior={GlobalVar.keyboardBehavior()}
-            keyboardVerticalOffset={GlobalVar.verticalOffset()}
-          >
+            keyboardVerticalOffset={GlobalVar.verticalOffset()}>
             <ScrollView
               style={Styles.bodyView}
-              keyboardShouldPersistTaps={"handled"}
-            >
+              keyboardShouldPersistTaps={'handled'}>
               <ModalHeader
                 title={Helper.translation(
-                  "Words.Why does this offer not fit you?",
-                  "Why does this offer not fit you?"
+                  'Words.Why does this offer not fit you?',
+                  'Why does this offer not fit you?',
                 )}
                 leftText="close"
                 rightText=""
@@ -263,13 +256,12 @@ class RejectModal extends Component {
                   <View
                     style={{
                       marginTop: Matrics.ScaleValue(5),
-                      marginBottom: Matrics.ScaleValue(10)
-                    }}
-                  >
+                      marginBottom: Matrics.ScaleValue(10),
+                    }}>
                     <Text style={Styles.heading}>
                       {Helper.translation(
-                        "Words.feedbackImportance",
-                        "Your feedback is important to us. We would like to provide you with more suitable offers in the future. We would be glad if you tell us why this offer is not interesting"
+                        'Words.feedbackImportance',
+                        'Your feedback is important to us. We would like to provide you with more suitable offers in the future. We would be glad if you tell us why this offer is not interesting',
                       )}
                     </Text>
                     {textInputArray &&
@@ -285,7 +277,7 @@ class RejectModal extends Component {
                           res.phoneInput,
                           res.checked,
                           index,
-                          res.name
+                          res.name,
                         );
                       })}
                   </View>
@@ -295,13 +287,13 @@ class RejectModal extends Component {
                         style={styles.spinner}
                         isVisible={true}
                         size={Matrics.ScaleValue(50)}
-                        type={"ThreeBounce"}
+                        type={'ThreeBounce'}
                         color={Color.darkRed}
                       />
                     </View>
                   ) : null}
                   <Button
-                    label={Helper.translation("Words.Send", "Send")}
+                    label={Helper.translation('Words.Send', 'Send')}
                     onPress={() => this.rejectRequestReview(offer_token)}
                   />
                 </View>

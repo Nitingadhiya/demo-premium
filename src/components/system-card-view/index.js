@@ -212,6 +212,10 @@ class SystemCardView extends Component {
     );
   }
 
+  getcomplainList() {
+    NavigationHelper.navigate(this.props.navigation, 'ComplaintList');
+  }
+
   render() {
     const {systemDescription} = this.props;
     return (

@@ -136,8 +136,12 @@ class AddSystem extends Component {
                 this.setState({selectedItemType: itemValue});
               }}>
               {itemTypeList &&
-                itemTypeList.map(data => (
-                  <Picker.Item label={data.CodeDesc} value={data.CodeDesc} />
+                itemTypeList.map((data, index) => (
+                  <Picker.Item
+                    label={data.CodeDesc}
+                    value={data.CodeDesc}
+                    key={`${index}`}
+                  />
                 ))}
             </Picker>
           </View>
@@ -153,8 +157,12 @@ class AddSystem extends Component {
                 this.setState({selectedSystemType: itemValue});
               }}>
               {systemTypeList &&
-                systemTypeList.map(data => (
-                  <Picker.Item label={data.CodeDesc} value={data.CodeDesc} />
+                systemTypeList.map((data, index) => (
+                  <Picker.Item
+                    label={data.CodeDesc}
+                    value={data.CodeDesc}
+                    key={`${index}`}
+                  />
                 ))}
             </Picker>
           </View>

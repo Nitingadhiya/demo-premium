@@ -115,7 +115,7 @@ export const CustomerBottomTabs = (props: Props) => {
           }}
         />
       </Tab.Navigator>
-      <Portal>
+      {/* <Portal>
         <FAB
           visible={isFocused}
           icon={icon}
@@ -132,7 +132,7 @@ export const CustomerBottomTabs = (props: Props) => {
           }}
           onPress={() => {}}
         />
-      </Portal>
+      </Portal> */}
     </React.Fragment>
   );
 };

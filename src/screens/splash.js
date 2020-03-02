@@ -31,7 +31,7 @@ import TeamLocation from './team-location';
 import {SystemVerify} from './system-verify';
 import ChangePassword from './change-password';
 import ServicePackage from './select-serivce-pack';
-import ComplainList from './complaint-list';
+import ComplaintList from './complaint-list';
 import EditProfile from './edit-profile';
 import OrderReady from './order-ready';
 import UpdateAddress from './update-address';
@@ -56,7 +56,6 @@ export default class Splash extends React.Component {
 
     //Helper.checkAppVersion(); //Check application update
     const data = await Helper.getLocalStorageItem('userInfo');
-    console.log(data, 'data');
     if (data) {
       global.userInfo = data;
       this.setState({userInfo: data, loading: false});
@@ -71,12 +70,10 @@ export default class Splash extends React.Component {
   }
 
   handleAppStateChange = nextAppState => {
-    console.log(this.state.appState, 'state');
     if (
       this.state.appState.match(/inactive|background/) &&
       nextAppState === 'active'
     ) {
-      console.log('state', nextAppState);
       //Helper.checkAppVersion();
     }
     this.setState({appState: nextAppState});
@@ -103,7 +100,6 @@ export default class Splash extends React.Component {
                 : options.title !== undefined
                 ? options.title
                 : scene.route.name;
-            // console.log(navigation, 'options.headerTitle');
             if (!options.headerTitle) {
               return null;
             }
@@ -234,7 +230,7 @@ export default class Splash extends React.Component {
         />
         <Stack.Screen
           name="ComplaintList"
-          component={ComplainList}
+          component={ComplaintList}
           options={{headerTitle: 'Complaint list'}}
         />
         <Stack.Screen

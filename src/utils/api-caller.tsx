@@ -2,7 +2,6 @@ import axios from 'axios';
 import BasicURL from '../config';
 
 const APICaller = (endPoint, method, body) => {
-  console.log('end');
   return axios({
     method: method || 'get',
     url: `${BasicURL.path}/${endPoint}`,

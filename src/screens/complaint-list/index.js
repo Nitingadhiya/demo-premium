@@ -17,7 +17,6 @@ import {
   LayoutAnimation,
   Picker,
   Modal,
-  AsyncStorage,
   Dimensions,
   Linking,
   CheckBox,
@@ -30,6 +29,7 @@ import QRCodeScanner from 'react-native-qrcode-scanner';
 import {Images, Color, Matrics} from '../../common/styles';
 import {MIcon} from '../../common/assets/vector-icon';
 import APICaller from '../../utils/api-caller';
+import Helper from '../../utils/helper';
 
 let self;
 
@@ -85,31 +85,27 @@ class ComplainList extends Component {
 
   componentDidMount() {
     self = this;
-    AsyncStorage.getItem('userInfo').then(res => {
-      if (res) {
-        const result = JSON.parse(res);
-        if (result) {
-          const {UserName, LoginType} = result;
-          this.setState({UserName, LoginType});
-          this.UserName = UserName;
+    this.getUserInfo();
+  }
 
-          if (result.LoginType === '3' || result.LoginType === 3) {
-            statusC = 'ASSIGN';
-          }
-          if (result.LoginType === '2' || result.LoginType === '1') {
-            statusC = 'ASSIGN';
-          }
-          this.getComplainList(statusC);
-          this.getComplaintStatus();
-          this.getAntivirusList();
-        }
-      }
-      this.getUser();
+  async getUserInfo() {
+    const userInfo = await Helper.getLocalStorageItem('userInfo');
+
+    const {UserName, LoginType} = userInfo;
+    this.UserName = UserName;
+    if (userInfo.LoginType === '3' || userInfo.LoginType === 3) {
+      statusC = 'ASSIGN';
+    }
+    if (userInfo.LoginType === '2' || userInfo.LoginType === '1') {
+      statusC = 'ASSIGN';
+    }
+    this.setState({
+      userInfo,
+      LoginType,
     });
-    // Events.on('refreshProductList', 'List', () => {
-    //   console.log('Receive')
-    //   this.getComplainList()
-    // });
+    this.getComplainList(statusC);
+    this.getComplaintStatus();
+    this.getAntivirusList();
   }
 
   setModalVisible(visible, index) {
@@ -125,10 +121,8 @@ class ComplainList extends Component {
       this.props.navigation.navigate('Login');
     }
     const endPoint = `GetComplaint?ComplainId=&ComplainType=${status}&ComplaintBy=${this.UserName}`;
-    // console.log(endPoint, 'end');
     const method = 'GET';
     APICaller(`${endPoint}`, method).then(json => {
-      //  console.log(json, 'json');
       if (json.data.Success === '1') {
         if (json.data.Response && json.data.Response.length === 0) {
           this.setState({
@@ -376,9 +370,13 @@ class ComplainList extends Component {
               this.setState({complaintSelectedValue: itemValue});
               this.filterComplaintFn(itemValue);
             }}>
-            {this.state.complainListStatusArr.map(data => {
+            {this.state.complainListStatusArr.map((data, index) => {
               return (
-                <Picker.Item label={data.CodeDesc} value={data.CodeDesc} />
+                <Picker.Item
+                  label={data.CodeDesc}
+                  value={data.CodeDesc}
+                  key={`${index.toString()}`}
+                />
               );
             })}
           </Picker>
@@ -641,11 +639,12 @@ class ComplainList extends Component {
                         value={''}
                         disabled={true}
                       />
-                      {this.state.antivirusData.map(data => {
+                      {this.state.antivirusData.map((data, index) => {
                         return (
                           <Picker.Item
                             label={data.CodeDesc}
                             value={data.CodeDesc}
+                            key={`${index.toString()}`}
                           />
                         );
                       })}
@@ -832,6 +831,7 @@ class ComplainList extends Component {
             keyboardShouldPersistTaps="handled"
             contentContainerStyle={{flexGrow: 1}}
             showsVerticalScrollIndicator={false}
+            keyExtractor={(item, index) => `${index}`}
             style={{flex: 1}}
             extraData={this.state}
             ListEmptyComponent={() =>
@@ -967,11 +967,12 @@ class ComplainList extends Component {
                                 value={''}
                                 disabled={true}
                               />
-                              {this.state.userList.map(data => {
+                              {this.state.userList.map((data, index) => {
                                 return (
                                   <Picker.Item
                                     label={data.FirstName + ' ' + data.LastName}
                                     value={data.UserName}
+                                    key={`${index.toString()}`}
                                   />
                                 );
                               })}
@@ -1078,11 +1079,12 @@ class ComplainList extends Component {
                             label={'Please choose assign complaint to '}
                             value={''}
                           />
-                          {this.state.userList.map(data => {
+                          {this.state.userList.map((data, index) => {
                             return (
                               <Picker.Item
                                 label={data.FirstName + ' ' + data.LastName}
                                 value={data.UserName}
+                                key={`${index.toString()}`}
                               />
                             );
                           })}

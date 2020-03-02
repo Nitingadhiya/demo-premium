@@ -15,8 +15,6 @@ const backButton = navigation => (
 
 export const Header = ({title, left}) => {
   const navigation = useNavigation();
-  console.log(navigation, 'nav');
-
   return (
     <Appbar.Header style={{backgroundColor: Color.primary}}>
       {left === 'menu' && drawerMenu(navigation)}

@@ -43,7 +43,6 @@ class WishList extends Component {
 
   fetchWishList(userName) {
     APICaller(getWishlistEndPoint(userName), 'GET').then(json => {
-      console.log(json, 'json');
       this.setState({loadingData: false, refreshing: false});
       if (json.data.Success === '1') {
         this.setState({
@@ -73,7 +72,6 @@ class WishList extends Component {
     );
   };
   productDetails(item) {
-    console.log(item, 'iii');
     NavigationHelper.navigate(this.props.navigation, 'ProductDetails', {
       productNo: item.ProductNo,
     });

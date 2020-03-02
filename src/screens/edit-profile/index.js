@@ -12,7 +12,6 @@ import {
   SafeAreaView,
   Modal,
   Picker,
-  AsyncStorage,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {Appbar} from 'react-native-paper';
@@ -77,58 +76,6 @@ export default class EditProfile extends Component {
     this.month = 1;
     this.day = 27;
     this.getUserInfo();
-    // AsyncStorage.getItem('userInfo').then(res => {
-    //   const result = JSON.parse(res);
-    //   if (result) {
-    //     const {
-    //       FirstName,
-    //       LastName,
-    //       MobileNo,
-    //       Landmark,
-    //       UserName,
-    //       Coins,
-    //       Gold,
-    //       Silver,
-    //       UserImage,
-    //       EmailId,
-    //       Gender,
-    //       CompanyName,
-    //       Area,
-    //       Road,
-    //       City,
-    //       State,
-    //       DateOfBirth,
-    //       Pincode,
-    //       GSTNo,
-    //       Home,
-    //       BusinessType,
-    //     } = result;
-    //     this.setState({
-    //       areaText: Area,
-    //       roadText: Road,
-    //       City,
-    //       Divison: State,
-    //       landmarkText: Landmark,
-    //       Pincode,
-    //       DateOfBirth,
-    //       FirstName,
-    //       LastName,
-    //       MobileNo,
-    //       Coins,
-    //       Gold,
-    //       Silver,
-    //       UserImage,
-    //       UserName,
-    //       EmailId,
-    //       Gender,
-    //       CompanyName,
-    //       GSTNo,
-    //       Address: Home,
-    //       BusinessType,
-    //     });
-    //   }
-    // });
-
     this.getLandMark();
     this.getArea();
     this.getRoad();
@@ -218,7 +165,6 @@ export default class EditProfile extends Component {
       Address,
       Gender,
     } = this.state;
-    console.log(this.state, 'stttttttttt');
     if (!FirstName) {
       this.setState({
         validationMsg: 'Please Enter First Name',
@@ -300,7 +246,6 @@ export default class EditProfile extends Component {
       });
       return;
     }
-    console.log(this.state, 'this.state');
     this.imageUpload();
 
     const endPoint = `UserEdit`;
@@ -330,7 +275,6 @@ export default class EditProfile extends Component {
     };
     const body = JSON.stringify(editProfileData);
     APICaller(`${endPoint}`, method, body).then(json => {
-      console.log(json, 'json');
       if (json.data.Success === 1 || json.data.Success === '1') {
         const userInfo = json.data.Response;
         // setUser(userInfo);
@@ -966,20 +910,6 @@ export default class EditProfile extends Component {
                     <Picker.Item label="Female" value="FeMale" />
                   </Picker>
                 </View>
-                {/* <RadioForm
-                  radio_props={radio_props}
-                  formHorizontal
-                  buttonColor={Color.APP_COLOR}
-                  selectedButtonColor={Color.APP_COLOR}
-                  buttonSize={14}
-                  animation
-                  initial={this.state.GenVal}
-                  labelStyle={{ marginRight: 10 }}
-                  onPress={value => {
-                    console.log(value, 'Value');
-                    this.setState({ Gender: value });
-                  }}
-                /> */}
               </View>
               <View style={styles.subTextBoxView}>
                 <TextInputView

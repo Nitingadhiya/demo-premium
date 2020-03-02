@@ -11,7 +11,6 @@ let img;
 class ProductList extends Component {
   packageSelectedPrice(GoldRate, SilverRate, PlatinumRate) {
     let price = '';
-    //console.log(PlatinumRate, 'platinum');
     if (this.props.data.SystemPackage === 'Silver') {
       price =
         SilverRate -
@@ -25,12 +24,10 @@ class ProductList extends Component {
         (this.props.data.shipping || 0);
     }
     if (this.props.data.SystemPackage === 'Platinum') {
-      // console.log(this.props.data.OnlineDiscount);
       price =
         PlatinumRate -
         this.props.data.OnlineDiscount +
         (this.props.data.shipping || 0);
-      //console.log(price, 'price');
     }
     return `₹ ${price} + GST`;
   }

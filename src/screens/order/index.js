@@ -46,9 +46,7 @@ class Order extends Component {
 
   getOrderList(userName) {
     if (!this.state.refreshing) this.setState({loadingData: true});
-    console.log('orde');
     APICaller(getOrderListEndPoint(userName), 'GET').then(json => {
-      console.log(json);
       if (json.data.Success === 1 || json.data.Success === '1') {
         this.setState({
           orderItem: json.data.Response,
@@ -78,7 +76,6 @@ class Order extends Component {
     );
   };
   productDetails(item) {
-    console.log(item, 'iii');
     NavigationHelper.navigate(this.props.navigation, 'ProductDetails', {
       productNo: item.ProductNo,
     });

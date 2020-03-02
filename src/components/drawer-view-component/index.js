@@ -23,10 +23,8 @@ class DrawerViewComponent extends Component {
 
     if (data) {
       this.setState({userInfo: data});
-      console.log(data, 'data');
     }
     Events.on('userInfo-drawer', 'user', res => {
-      console.log('trigger');
       this.setState({
         userInfo: res,
       });

@@ -15,7 +15,6 @@ import {
   ScrollView,
   Modal,
   Picker,
-  AsyncStorage,
   KeyboardAvoidingView,
 } from 'react-native';
 import _ from 'lodash';
@@ -71,62 +70,65 @@ class UpdateAddress extends Component {
     this.month = 1;
     this.day = 27;
 
-    AsyncStorage.getItem('userInfo').then(res => {
-      result = JSON.parse(res);
-
-      if (result) {
-        const {
-          FirstName,
-          LastName,
-          MobileNo,
-          Landmark,
-          UserName,
-          Coins,
-          Gold,
-          Silver,
-          UserImage,
-          EmailId,
-          Gender,
-          CompanyName,
-          Area,
-          Road,
-          City,
-          State,
-          DateOfBirth,
-          Pincode,
-          GSTNo,
-          Home,
-          BusinessType,
-        } = result;
-        this.setState({
-          areaText: Area,
-          roadText: Road,
-          City,
-          Divison: State,
-          landmarkText: Landmark,
-          Pincode,
-          DateOfBirth,
-          FirstName,
-          LastName,
-          MobileNo,
-          Coins,
-          Gold,
-          Silver,
-          UserImage,
-          UserName,
-          EmailId,
-          Gender,
-          CompanyName,
-          GSTNo,
-          Address: Home,
-          BusinessType,
-        });
-      }
-    });
-
+    this.getUserInfo();
     this.getLandMark();
     this.getArea();
     this.getRoad();
+  }
+
+  async getUserInfo() {
+    const userInfo = await Helper.getLocalStorageItem('userInfo');
+    this.setState({
+      userInfo,
+    });
+    if (userInfo) {
+      const {
+        FirstName,
+        LastName,
+        MobileNo,
+        Landmark,
+        UserName,
+        Coins,
+        Gold,
+        Silver,
+        UserImage,
+        EmailId,
+        Gender,
+        CompanyName,
+        Area,
+        Road,
+        City,
+        State,
+        DateOfBirth,
+        Pincode,
+        GSTNo,
+        Home,
+        BusinessType,
+      } = userInfo;
+      this.setState({
+        areaText: Area,
+        roadText: Road,
+        City,
+        Divison: State,
+        landmarkText: Landmark,
+        Pincode,
+        DateOfBirth,
+        FirstName,
+        LastName,
+        MobileNo,
+        Coins,
+        Gold,
+        Silver,
+        UserImage,
+        UserName,
+        EmailId,
+        Gender,
+        CompanyName,
+        GSTNo,
+        Address: Home,
+        BusinessType,
+      });
+    }
   }
 
   setIndicator() {
@@ -165,7 +167,6 @@ class UpdateAddress extends Component {
         result.Pincode = this.state.Pincode;
         result.State = this.state.Divison;
         Helper.setLocalStorageItem('userInfo', result);
-        //AsyncStorage.setItem('userInfo', JSON.stringify(result));
         this.props.navigation.goBack();
       }
     });

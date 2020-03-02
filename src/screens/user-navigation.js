@@ -47,7 +47,6 @@ export default class UserNavigation extends React.Component {
 
   tabBarBottom() {
     const {userInfo} = this.state;
-    console.log('user', userInfo);
     if (!userInfo) return CustomerBottomTabs;
     if (userInfo.LoginType === '1') return AdminBottomTabs;
     if (userInfo.LoginType === '2') return ManagerBottomTabs;
@@ -102,7 +101,6 @@ export default class UserNavigation extends React.Component {
         //         : options.title !== undefined
         //         ? options.title
         //         : scene.route.name;
-        //     console.log(options);
         //     if (!options.headerTitle) {
         //       return null;
         //     }
@@ -152,19 +150,7 @@ export default class UserNavigation extends React.Component {
         //   },
         // }}
       >
-        <Stack.Screen
-          name="tabHome"
-          component={this.tabBarBottom()}
-          // options={({route}) => {
-          //   console.log('!@# options ********', {route});
-          //   const routeName = route.state
-          //     ? route.state.routes[route.state.index].name
-          //     : 'Feed';
-          //   return {
-          //     headerTitle: routeName,
-          //   };
-          // }}
-        />
+        <Stack.Screen name="tabHome" component={this.tabBarBottom()} />
         <Stack.Screen
           name="Details"
           component={Details}
@@ -174,33 +160,3 @@ export default class UserNavigation extends React.Component {
     );
   }
 }
-
-// import React from 'react';
-// import {View, Text} from 'react-native';
-// import {RouteProp} from '@react-navigation/native';
-// import {createStackNavigator} from '@react-navigation/stack';
-// import {BottomTabs} from './bottomTabs';
-// import {StackNavigatorParamlist} from './types';
-
-// type Props = {
-//   route: RouteProp<StackNavigatorParamlist, 'Splash'>;
-// };
-// const Stack = createStackNavigator();
-
-// export const Splash = (props: Props) => {
-//   return (
-//     <Stack.Navigator initialRouteName="Splash" headerMode="screen">
-//       <Stack.Screen
-//         name="FeedList"
-//         component={BottomTabs}
-//         options={({route}) => {
-//           console.log('!@# options', {route});
-//           const routeName = route.state
-//             ? route.state.routes[route.state.index].name
-//             : 'Feed';
-//           return {headerTitle: routeName};
-//         }}
-//       />
-//     </Stack.Navigator>
-//   );
-// };
