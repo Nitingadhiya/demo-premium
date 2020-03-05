@@ -160,7 +160,6 @@ class Register extends Component {
       ],
     };
     if (!this.genrateUserName) return;
-    console.log(body, 'body');
     APICaller(userRegistrationEndPoint, 'POST', JSON.stringify(body)).then(
       json => {
         if (json.data.Success === '0' || json.data.Success === 0) {

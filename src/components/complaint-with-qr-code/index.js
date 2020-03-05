@@ -6,6 +6,7 @@ import {
   Modal,
   Image,
   TextInput,
+  Alert,
 } from 'react-native';
 import {CommonActions} from '@react-navigation/native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
@@ -24,15 +25,19 @@ import Events from '../../utils/events';
 import {useNavigation} from '@react-navigation/native';
 
 let tmpSys = [];
+let self;
 class ComplaintWithQRCode extends Component {
   state = {
     qrCode: false,
+    item: null,
   };
 
   componentDidMount() {
+    self = this;
     Events.on('ComplaintWithQRCodeEvent', 'Event', res => {
       this.setState({
-        qrCode: res,
+        qrCode: res.isOpen,
+        item: res.item,
       });
     });
   }
@@ -40,15 +45,55 @@ class ComplaintWithQRCode extends Component {
   onSuccess(e) {
     if (e.data) {
       const url = e.data;
-      this.setState({qrCode: false});
+      self.setState({qrCode: false});
       const result = url.replace(/(^\w+:|^)\/\//, '');
-      this.getComplaintCharge(result);
+      const {userInfo} = self.props;
+      if (userInfo.LoginType === '2' || userInfo.LoginType === '3') {
+        self.complaintClose(result);
+      }
+      if (userInfo.LoginType === '4') {
+        self.getComplaintCharge(result);
+      }
     }
   }
 
   getComplaintCharge(result) {
     const {navigation, userName} = this.props;
     Helper.getComplaintCharge(navigation, userName, result);
+  }
+
+  complaintClose(result) {
+    const {item} = this.state;
+    if (!item) return;
+    console.log(item, '*************' + result);
+
+    const splt = item.SystemTag.split('-');
+    const checksplt = splt[0];
+    if (checksplt === 'SYS' || checksplt === 'SER') {
+      if (item.SystemTag === result) {
+        console.log('Close Remark modal');
+        const params = {
+          isOpen: true,
+          item,
+        };
+        Events.trigger('closeRemarkModal', params);
+        //this.setState({closeRemarkModal: true});
+      } else {
+        Alert.alert(
+          'Complaint',
+          'Your Complaint QR Code does not match with Scan QR Code.',
+        );
+      }
+    } else {
+      console.log('Close Remark modal ***');
+      const params = {
+        isOpen: true,
+        item,
+      };
+      Events.trigger('closeRemarkModal', params);
+
+      //this.setState({closeRemarkModal: true});
+    }
   }
 
   render() {
@@ -72,9 +117,11 @@ class ComplaintWithQRCode extends Component {
                 customMarker={
                   <View style={styles.rectangleContainer}>
                     <View style={styles.topOverlay}>
-                      <Text style={styles.centerText}>
-                        Scan QR code on your products for book your complaint
-                      </Text>
+                      <View style={{margin: 15}}>
+                        <Text style={styles.centerText}>
+                          Scan QR code on your products for book your complaint
+                        </Text>
+                      </View>
                     </View>
 
                     <View style={{flexDirection: 'row'}}>

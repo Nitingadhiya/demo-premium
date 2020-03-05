@@ -48,6 +48,17 @@ const getPolicyEndPoint = 'GetPolicyList';
 const uploadSignatureEndPoint = 'UploadSignatureImage';
 const forgotPasswordendPoint = mobileNo =>
   `ForgotPassword?Username=${mobileNo}`;
+const getAntivirusListEndPoint = 'GetAntivirusList';
+const complaintCompleteEndPoint = (
+  complaintId,
+  userName,
+  closeRemarkText,
+  systemtag,
+  antivirusCheckbox,
+  selectAntivirus,
+  antivirusKey,
+) =>
+  `ComplaintComplete?ComplainId=${complaintId}&CompleteBy=${userName}&CloseRemark=${closeRemarkText}&SystemTag=${systemtag}&IsAntivirus=${antivirusCheckbox}&Antivirus=${selectAntivirus}&AntivirusKey=${antivirusKey}`;
 
 module.exports = {
   checkVersionEndPoint,
@@ -85,4 +96,6 @@ module.exports = {
   getPolicyEndPoint,
   uploadSignatureEndPoint,
   forgotPasswordendPoint,
+  getAntivirusListEndPoint,
+  complaintCompleteEndPoint,
 };

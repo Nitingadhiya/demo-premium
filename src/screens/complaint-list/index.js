@@ -22,14 +22,16 @@ import {
   CheckBox,
 } from 'react-native';
 import _ from 'lodash';
+import Events from '../../utils/events';
 import {Header, SpinnerView} from '../../common/components';
 //import * as Animatable from 'react-native-animatable';
-import QRCodeScanner from 'react-native-qrcode-scanner';
 // ASSETS
 import {Images, Color, Matrics} from '../../common/styles';
 import {MIcon} from '../../common/assets/vector-icon';
 import APICaller from '../../utils/api-caller';
 import Helper from '../../utils/helper';
+import ComplaintWithQRCode from '../../components/complaint-with-qr-code';
+import ComplaintRemarkModal from '../../components/complaint-remark-modal';
 
 let self;
 
@@ -76,6 +78,7 @@ class ComplainList extends Component {
     validationAntivirus: '',
     antivirusKey: '',
     complaintRemarkValidation: null,
+    complaintCloseQRcode: '',
   };
 
   constructor(props) {
@@ -86,6 +89,9 @@ class ComplainList extends Component {
   componentDidMount() {
     self = this;
     this.getUserInfo();
+    Events.on('RefreshComplaint', 'close remark', res => {
+      this.getUserInfo();
+    });
   }
 
   async getUserInfo() {
@@ -216,9 +222,12 @@ class ComplainList extends Component {
   closeComplaint(item) {
     this.complaintCloseQRcode = item.SystemTag;
     this.complaintId = item.ComplaintID;
-    this.setState({
-      qrCode: true,
-    });
+    console.log('Loogg');
+    const params = {
+      isOpen: true,
+      item: item,
+    };
+    Events.trigger('ComplaintWithQRCodeEvent', params);
     //this.setState({ closeRemarkModal: true });
   }
 
@@ -241,7 +250,7 @@ class ComplainList extends Component {
       closeRemarkModal: !this.state.closeRemarkModal,
     });
 
-    const endPoint = `ComplaintComplete?ComplainId=${this.complaintId}&CompleteBy=${this.UserName}&CloseRemark=${this.state.closeRemarkText}&SystemTag=${this.complaintCloseQRcode}&IsAntivirus=${this.state.antivirusCheckbox}&Antivirus=${this.state.selectAntivirus}&AntivirusKey=${this.state.antivirusKey}`;
+    const endPoint = `ComplaintComplete?ComplainId=${this.complaintId}&CompleteBy=${this.UserName}&CloseRemark=${this.state.closeRemarkText}&SystemTag=${this.state.complaintCloseQRcode}&IsAntivirus=${this.state.antivirusCheckbox}&Antivirus=${this.state.selectAntivirus}&AntivirusKey=${this.state.antivirusKey}`;
     const method = 'GET';
     APICaller(`${endPoint}`, method).then(json => {
       this.setState({loadingData: false, refreshing: false});
@@ -348,6 +357,7 @@ class ComplainList extends Component {
 
   render() {
     const {LoginType} = this.state;
+    const {navigation} = this.props;
     return (
       <SafeAreaView style={{flex: 1}}>
         <Header
@@ -381,7 +391,7 @@ class ComplainList extends Component {
             })}
           </Picker>
         </View>
-        <Modal
+        {/* <Modal
           animationType="slide"
           transparent={false}
           visible={this.state.qrCode}
@@ -394,7 +404,7 @@ class ComplainList extends Component {
               height: Dimensions.get('window').height,
             }}>
             <View style={{flex: 1}}>
-              {/* <QRCodeScanner
+              <QRCodeScanner
                 showMarker
                 onRead={this.onSuccess.bind(this)}
                 cameraStyle={{
@@ -433,10 +443,10 @@ class ComplainList extends Component {
                     <View style={styles.bottomOverlay} />
                   </View>
                 }
-              /> */}
+              />
             </View>
           </View>
-        </Modal>
+        </Modal> */}
 
         <Modal
           animationType="slide"
@@ -1130,6 +1140,8 @@ class ComplainList extends Component {
             </View>
           ) : null}
         </KeyboardAvoidingView>
+        <ComplaintWithQRCode userInfo={userInfo} navigation={navigation} />
+        <ComplaintRemarkModal userInfo={userInfo} />
       </SafeAreaView>
     );
   }
