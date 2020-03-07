@@ -21,4 +21,18 @@ export default styles = {
     alignItems: 'center',
     backgroundColor: '#eee',
   },
+  newProductTagView: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    zIndex: 1,
+    backgroundColor: 'green',
+    paddingHorizontal: 5,
+    paddingVertical: 1,
+    borderRadius: 3,
+  },
+  newProductText: {
+    color: '#fff',
+    fontSize: 14,
+  },
 };

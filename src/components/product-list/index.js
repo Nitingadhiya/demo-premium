@@ -82,6 +82,7 @@ class ProductList extends Component {
       Cart,
       IsDeleted,
       IsActive,
+      IsNew,
     } = data;
 
     const imgL = ImageListSmall
@@ -101,6 +102,11 @@ class ProductList extends Component {
         onPress={productDetails}
         style={styles.container}
         disabled={this.props.placeOrder}>
+        {IsNew ? (
+          <View style={styles.newProductTagView}>
+            <Text style={styles.newProductText}>New</Text>
+          </View>
+        ) : null}
         <View
           style={{
             flex: 2,

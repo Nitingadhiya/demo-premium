@@ -37,6 +37,7 @@ export default class Dashboard extends Component {
   };
 
   componentDidMount() {
+    Helper.userAccessApplication(this.props.navigation);
     this.getUserInfo();
     Events.on('updateAvailable', 'Updates', res => {
       this.setState({

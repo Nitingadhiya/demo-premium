@@ -13,7 +13,6 @@ export default styles = {
   cameraStyles: {
     height: Matrics.screenHeight,
     width: Matrics.screenWidth,
-    //marginTop: 50,
   },
   rectangleContainer: {
     flex: 1,
@@ -40,7 +39,6 @@ export default styles = {
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   bottomOverlay: {
     flex: 1,
     height: Matrics.screenWidth,

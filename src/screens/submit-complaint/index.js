@@ -7,10 +7,10 @@ import {
   Alert,
   SafeAreaView,
   Picker,
-  WebView,
   Modal,
 } from 'react-native';
 import _ from 'lodash';
+import {WebView} from 'react-native-webview';
 import styles from './styles';
 import {Matrics, Color} from '../../common/styles';
 import {MIcon} from '../../common/assets/vector-icon';

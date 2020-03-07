@@ -63,6 +63,7 @@ const getPartFromSerialNoEndPoint = tag =>
   `/GetPartFromSerialNo?SerialNo=${tag}`;
 const getPartFromSystemTagNoEndPoint = tag =>
   `GetPartFromSystemTag?SystemTag=${tag}`;
+const userCheckEndPoint = mobileNo => `UserCheck?MobileNo=${mobileNo}`;
 
 module.exports = {
   checkVersionEndPoint,
@@ -104,4 +105,5 @@ module.exports = {
   complaintCompleteEndPoint,
   getPartFromSerialNoEndPoint,
   getPartFromSystemTagNoEndPoint,
+  userCheckEndPoint,
 };

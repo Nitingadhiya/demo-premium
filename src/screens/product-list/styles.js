@@ -33,4 +33,17 @@ export default styles = {
     right: 15,
     top: 13,
   },
+  categoryFilterView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 5,
+    alignItems: 'center',
+  },
+  categoryTextStyle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  clearCategory: {
+    paddingVertical: 3,
+  },
 };

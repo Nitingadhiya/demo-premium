@@ -103,8 +103,8 @@ class AddSystem extends Component {
         NavigationHelper.navigate(this.props.navigation, 'Dashboard');
       } else {
         Alert.alert(
-          `Error - ${json.status}`,
-          'Something went to wrong, please try again.',
+          `Error code - ${json.status}`,
+          json.data.Message || 'Something went to wrong, please try again.',
         );
       }
     });

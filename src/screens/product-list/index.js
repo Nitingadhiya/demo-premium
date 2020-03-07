@@ -12,7 +12,8 @@ import {
   LayoutAnimation,
 } from 'react-native';
 import _ from 'lodash';
-import {Appbar, Avatar, useTheme, Badge} from 'react-native-paper';
+import {Appbar, Avatar, useTheme, Badge, Portal, FAB} from 'react-native-paper';
+import {CommonActions} from '@react-navigation/native';
 import CodeInput from 'react-native-confirmation-code-input';
 import APICaller from '../../utils/api-caller';
 import {
@@ -28,7 +29,7 @@ import Helper from '../../utils/helper';
 import NavigationHelper from '../../utils/navigation-helper';
 import {SpinnerView} from '../../common/components';
 import ProductItemList from '../../components/product-list';
-
+let searchResult = [];
 class ProductList extends Component {
   state = {
     mobileNo: null,
@@ -39,14 +40,29 @@ class ProductList extends Component {
     refreshing: false,
     searchText: null,
     message: null,
+    categoryFilterValue: '',
   };
 
-  componentDidMount() {
-    this._unsubscribe = this.props.navigation.addListener('focus', () => {
-      // do something
-      this.categoryFilterValidation();
-    });
+  async componentDidMount() {
+    const {route} = this.props;
+    if (route.params) {
+      await this.setState({
+        categoryFilterValue: route.params.category,
+      });
+    }
     this.getUserInfo();
+    this._unsubscribe = this.props.navigation.addListener('focus', async () => {
+      console.log('Looks');
+      // do something
+      const {route} = this.props;
+      if (route.params) {
+        await this.setState({
+          categoryFilterValue: route.params.category,
+        });
+        this.categoryFilterValidation(route.params.category);
+      }
+    });
+
     Events.on('refresh-product-list', 'refresh', () => {
       this.getUserInfo();
     });
@@ -56,9 +72,9 @@ class ProductList extends Component {
   }
 
   categoryFilterValidation() {
-    const {route} = this.props;
-    if (route.params) {
-      this.categoryFilterApply(route.params.category);
+    const {categoryFilterValue} = this.state;
+    if (categoryFilterValue) {
+      this.categoryFilterApply(categoryFilterValue);
     }
   }
 
@@ -83,23 +99,11 @@ class ProductList extends Component {
   }
 
   clearSearchText() {
-    let productClear = [];
-    if (global.categoryFilter) {
-      this.state.filterResult.map(rs => {
-        if (rs.ProductCategoryName === global.categoryFilter) {
-          productClear.push(rs);
-        }
-      });
-      this.setState({
-        searchText: null,
-        productItemList: productClear,
-      });
-    } else {
-      this.setState({
-        searchText: null,
-        productItemList: this.state.filterResult,
-      });
-    }
+    this.setState({
+      searchText: '',
+      productItemList: this.state.filterResult,
+    });
+    this.getSearchResult();
   }
 
   replaceCustomExpression = title => {
@@ -109,6 +113,7 @@ class ProductList extends Component {
   };
 
   getSearchResult(text) {
+    const {categoryFilterValue} = this.state;
     if (!text) {
       searchResult = [];
     }
@@ -129,12 +134,12 @@ class ProductList extends Component {
               ),
           );
           result.map(rs => {
-            if (!global.categoryFilter) {
+            if (!categoryFilterValue) {
               searchResult.push(rs);
             }
             if (
-              global.categoryFilter &&
-              rs.ProductCategoryName === global.categoryFilter
+              categoryFilterValue &&
+              rs.ProductCategoryName === categoryFilterValue
             ) {
               searchResult.push(rs);
             }
@@ -151,12 +156,12 @@ class ProductList extends Component {
               ),
           );
           result.map(rs => {
-            if (!global.categoryFilter) {
+            if (!categoryFilterValue) {
               searchResult.push(rs);
             }
             if (
-              global.categoryFilter &&
-              rs.ProductCategoryName === global.categoryFilter
+              categoryFilterValue &&
+              rs.ProductCategoryName === categoryFilterValue
             ) {
               searchResult.push(rs);
             }
@@ -172,9 +177,9 @@ class ProductList extends Component {
         displayResult: true,
       });
     } else {
-      if (global.categoryFilter) {
-        reduxProductList.map(res => {
-          if (res.ProductCategoryName === global.categoryFilter) {
+      if (categoryFilterValue) {
+        this.state.filterResult.map(res => {
+          if (res.ProductCategoryName === categoryFilterValue) {
             searchResult.push(res);
           }
         });
@@ -183,6 +188,15 @@ class ProductList extends Component {
         this.setState({productItemList: data});
       }
     }
+  }
+
+  async clearCategoryFilter() {
+    this.props.navigation.dispatch(CommonActions.setParams({category: ''}));
+    await this.setState({
+      categoryFilterValue: '',
+    });
+    const {userInfo, searchText} = this.state;
+    this.getSearchResult(searchText);
   }
 
   fetchProductList(userName) {
@@ -205,7 +219,7 @@ class ProductList extends Component {
           badge: badgeCount,
         });
 
-        setTimeout(() => this.categoryFilterValidation());
+        setTimeout(() => this.categoryFilterValidation(''));
       } else {
         this.setState({
           loadingData: false,
@@ -262,15 +276,13 @@ class ProductList extends Component {
   }
 
   async onRefresh() {
-    // global.categoryFilter = '';
-    // this.state.searchText = '';
-    // await this.setState({refreshing: true});
-    if (this.state.searchText) {
-      //this.fetchProductList(this.state.searchText);
-      this.setState({refreshing: false});
-    } else {
-      this.fetchProductList(this.state.userInfo.UserName);
-    }
+    const {UserName} = this.state.userInfo;
+    this.setState({
+      categoryFilterValue: '',
+      searchText: '',
+      refreshing: true,
+    });
+    this.fetchProductList(UserName);
   }
 
   noItemFound = () => {
@@ -318,8 +330,17 @@ class ProductList extends Component {
     }
   }
 
+  // latestProduct() {
+  //   if (this.state.productItemList && this.state.productItemList.length > 0) {
+  //     console.log('LLL');
+  //     const productItem = JSON.stringify(this.state.productItemList);
+  //     const PRD = JSON.parse(productItem);
+  //     _.reverse(PRD);
+  //   }
+  // }
+
   render() {
-    const {productItemList, badge, userInfo} = this.state;
+    const {productItemList, badge, userInfo, categoryFilterValue} = this.state;
     const {navigation} = this.props;
     return (
       <SafeAreaView style={styles.safeView}>
@@ -394,6 +415,18 @@ class ProductList extends Component {
               </TouchableOpacity>
             </Animated.View>
           </View>
+          {categoryFilterValue ? (
+            <View style={styles.categoryFilterView}>
+              <Text style={styles.categoryTextStyle}>
+                {categoryFilterValue}
+              </Text>
+              <TouchableOpacity
+                style={styles.clearCategory}
+                onPress={() => this.clearCategoryFilter()}>
+                <MIcon name="close" size={22} color={Color.primary} />
+              </TouchableOpacity>
+            </View>
+          ) : null}
           {this.state.loadingData ? (
             <View style={styles.spinnerView}>
               <SpinnerView />
@@ -440,6 +473,23 @@ class ProductList extends Component {
             </View>
           ) : null} */}
         </KeyboardAvoidingView>
+
+        {/* <FAB
+          visible={true}
+          icon={'new-box'}
+          style={{
+            position: 'absolute',
+            bottom: 15,
+            right: 16,
+          }}
+          color="white"
+          theme={{
+            colors: {
+              accent: Color.primary,
+            },
+          }}
+          onPress={() => this.latestProduct()}
+        /> */}
       </SafeAreaView>
     );
   }

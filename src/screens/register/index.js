@@ -7,6 +7,7 @@ import {
   Text,
   KeyboardAvoidingView,
   Alert,
+  Picker,
 } from 'react-native';
 import RadioForm from 'react-native-simple-radio-button';
 import CityListModal from '../../components/city-list-modal';
@@ -34,6 +35,8 @@ class Register extends Component {
       cityList: [],
       selectedCity: '',
       cityText: null,
+      businessType: 'B',
+      pincode: '',
     },
     passwordSecure: true,
     cPasswordSecure: true,
@@ -100,6 +103,8 @@ class Register extends Component {
       password,
       cityText,
       gender,
+      businessType,
+      pincode,
     } = this.state.registerForm;
 
     // Reset Validation error
@@ -112,7 +117,9 @@ class Register extends Component {
       !email ||
       !mobileNo ||
       !password ||
-      !cityText
+      !cityText ||
+      !pincode ||
+      !businessType
     ) {
       this.setState(prevState => {
         let error = Object.assign({}, prevState.error);
@@ -124,7 +131,7 @@ class Register extends Component {
           error.lastName = 'Please enter minimum 3 characters';
         if (!email) error.email = 'Please enter email number';
         const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-        if (email && reg.test(text) === false) {
+        if (email && reg.test(email) === false) {
           error.email = 'Please enter correct email';
           return;
         }
@@ -133,6 +140,8 @@ class Register extends Component {
           error.mobileNo = 'Please enter mobile number';
         if (!password) error.password = 'Please enter password';
         if (!cityText) error.cityText = 'Please enter city';
+        if (!pincode) error.pincode = 'Please enter pincode';
+        if (!businessType) error.businessType = 'Please select Usage type';
         return {error};
       });
       return;
@@ -156,9 +165,13 @@ class Register extends Component {
           MobileNo1: mobileNo,
           EmailId: email,
           City: cityText,
+          Pincode: pincode,
+          BusinessType: businessType,
         },
       ],
     };
+    console.log(body, 'body');
+    return;
     if (!this.genrateUserName) return;
     APICaller(userRegistrationEndPoint, 'POST', JSON.stringify(body)).then(
       json => {
@@ -334,6 +347,40 @@ class Register extends Component {
                   />
                 </TouchableOpacity>
                 {this.errorView('cityText')}
+                <View style={styles.subTextBoxView}>
+                  <TextInputView
+                    placeholder="Pincode"
+                    value={this.state.pincode}
+                    labelIcon={
+                      <McIcon name="pin" size={22} color={Color.lightGray} />
+                    }
+                    autoCorrect={false}
+                    onChangeText={value =>
+                      this.changeTexInputValue('pincode', value)
+                    }
+                    blurOnSubmit={false}
+                    customStyle={styles.customStyle}
+                  />
+                </View>
+                {this.errorView('pincode')}
+                <Picker
+                  selectedValue={this.state.registerForm.businessType}
+                  style={styles.cityList}
+                  onValueChange={(itemValue, itemIndex) => {
+                    console.log(itemValue, 'value');
+                    this.changeTexInputValue('businessType', itemValue);
+                  }}>
+                  <Picker.Item label="Business Use" value="B" />
+                  <Picker.Item label="Home Use" value="H" />
+                </Picker>
+                <View
+                  style={{
+                    width: '80%',
+                    borderBottomWidth: 1,
+                    borderBottomColor: '#d3d3d3',
+                  }}
+                />
+                {this.errorView('businessType')}
 
                 <View style={styles.loginView}>
                   {loadingData ? (

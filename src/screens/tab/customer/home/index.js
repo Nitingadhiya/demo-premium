@@ -39,6 +39,7 @@ export default class Dashboard extends Component {
   };
 
   async componentDidMount() {
+    Helper.userAccessApplication(this.props.navigation);
     this.getUserInfo();
     Events.on('refreshDashboard', 'refresh', async () => {
       const userInfo = await Helper.getLocalStorageItem('userInfo');

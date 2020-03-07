@@ -263,6 +263,8 @@ PODS:
     - React
   - react-native-version-number (0.3.6):
     - React
+  - react-native-webview (8.1.2):
+    - React
   - React-RCTActionSheet (0.61.5):
     - React-Core/RCTActionSheetHeaders (= 0.61.5)
   - React-RCTAnimation (0.61.5):
@@ -354,6 +356,7 @@ DEPENDENCIES:
   - react-native-signature-capture (from `../node_modules/react-native-signature-capture`)
   - react-native-spinkit (from `../node_modules/react-native-spinkit`)
   - react-native-version-number (from `../node_modules/react-native-version-number`)
+  - react-native-webview (from `../node_modules/react-native-webview`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
   - React-RCTBlob (from `../node_modules/react-native/Libraries/Blob`)
@@ -435,6 +438,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-spinkit"
   react-native-version-number:
     :path: "../node_modules/react-native-version-number"
+  react-native-webview:
+    :path: "../node_modules/react-native-webview"
   React-RCTActionSheet:
     :path: "../node_modules/react-native/Libraries/ActionSheetIOS"
   React-RCTAnimation:
@@ -513,6 +518,7 @@ SPEC CHECKSUMS:
   react-native-signature-capture: 6dae6c8c9f085536d4ba305e15c01f0a3a49373e
   react-native-spinkit: da294fd828216ad211fe36a5c14c1e09f09e62db
   react-native-version-number: 15563dc4145a94aabfc1faab2a9af10174a4204e
+  react-native-webview: 055c7110f17c2f19c971f655064ee480638db668
   React-RCTActionSheet: 600b4d10e3aea0913b5a92256d2719c0cdd26d76
   React-RCTAnimation: 791a87558389c80908ed06cc5dfc5e7920dfa360
   React-RCTBlob: d89293cc0236d9cb0933d85e430b0bbe81ad1d72

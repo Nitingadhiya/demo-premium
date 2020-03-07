@@ -8,6 +8,7 @@ import {
   updateTokenEndPoint,
   getComplaintChargeEndPoint,
   getVersionCodeEndPoint,
+  userCheckEndPoint,
 } from '../config/api-endpoint';
 import Events from './events';
 import NavigationHelper from './navigation-helper';
@@ -27,6 +28,28 @@ const Helper = {
   },
   clearLocalStorage() {
     AsyncStorage.clear();
+  },
+  async userAccessApplication(navigation) {
+    const userInfo = await Helper.getLocalStorageItem('userInfo');
+    if (userInfo && userInfo.MobileNo) {
+      APICaller(userCheckEndPoint(userInfo.MobileNo), 'GET').then(json => {
+        if (json && json.data.Success === '1') {
+          if (
+            json.data.Response.UserStatus === '0' ||
+            json.data.Response.LoginStatus === '0'
+          ) {
+            AsyncStorage.removeItem('userInfo');
+            NavigationHelper.navigate(navigation, 'Login');
+          }
+        } else if (json.data.Success === '2') {
+          AsyncStorage.removeItem('userInfo');
+          NavigationHelper.navigate(navigation, 'Login');
+        }
+      });
+    } else {
+      AsyncStorage.removeItem('userInfo');
+      NavigationHelper.navigate(navigation, 'Login');
+    }
   },
   appUpdateAlert(cancelled) {
     const cancelValue = {
@@ -76,10 +99,6 @@ const Helper = {
           if (VersionNumber.buildVersion < checkCurrentVersion) {
             Helper.appUpdateAlert(true);
             return false;
-          }
-          if (res.Response[0].is_login === '0') {
-            AsyncStorage.removeItem('userInfo');
-            Events.trigger('appRouteRefresh', '');
           }
         }
       } else {
