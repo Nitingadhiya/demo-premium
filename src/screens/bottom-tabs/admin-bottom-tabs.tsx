@@ -11,6 +11,10 @@ import Dashboard from '../tab/admin/home';
 import {Message} from '../message';
 import {StackNavigatorParamlist} from '../types';
 import Offer from '../offer';
+import Chat from '../chat';
+import ComplainList from '../complaint-list';
+import WishList from '../wish-list';
+import Order from '../order';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -66,7 +70,7 @@ export const AdminBottomTabs = (props: Props) => {
         />
         <Tab.Screen
           name="ComplaintList"
-          component={Feed}
+          component={ComplainList}
           options={{
             tabBarIcon: 'format-list-bulleted',
             tabBarLabel: 'Complaint',
@@ -75,7 +79,7 @@ export const AdminBottomTabs = (props: Props) => {
         />
         <Tab.Screen
           name="WishList"
-          component={Feed}
+          component={WishList}
           options={{
             tabBarIcon: 'binoculars',
             tabBarLabel: 'Wishlist',
@@ -84,7 +88,7 @@ export const AdminBottomTabs = (props: Props) => {
         />
         <Tab.Screen
           name="Order"
-          component={Feed}
+          component={Order}
           options={{
             tabBarIcon: 'shopping',
             tabBarLabel: 'Order',

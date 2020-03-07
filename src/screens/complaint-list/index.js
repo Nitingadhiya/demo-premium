@@ -362,7 +362,11 @@ class ComplainList extends Component {
       <SafeAreaView style={{flex: 1}}>
         <Header
           title={'Complaint list'}
-          left={LoginType === '3' || LoginType === '2' ? 'menu' : 'back'}
+          left={
+            LoginType === '3' || LoginType === '2' || LoginType === '1'
+              ? 'menu'
+              : 'back'
+          }
         />
         <View
           style={{

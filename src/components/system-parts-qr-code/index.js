@@ -34,6 +34,11 @@ class SystemPartsWithQRCode extends Component {
 
   componentDidMount() {
     self = this;
+    Events.on('qrCode-syste-parts', 'open again', res => {
+      this.setState({
+        qrCode: true,
+      });
+    });
   }
 
   onSuccess(e) {
