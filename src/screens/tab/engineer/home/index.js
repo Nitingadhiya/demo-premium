@@ -12,6 +12,7 @@ import APICaller from '../../../../utils/api-caller';
 import {userDashboardEndPoint} from '../../../../config/api-endpoint';
 import Helper from '../../../../utils/helper';
 import Events from '../../../../utils/events';
+import LocationServiceHelper from '../../../../utils/geo-location';
 import styles from './styles';
 import {
   UpdateAvailableView,
@@ -39,6 +40,7 @@ export default class Dashboard extends Component {
       });
     });
     Helper.checkUpdateAvailable();
+    setTimeout(() => LocationServiceHelper.getLocation(), 1000);
   }
 
   async getUserInfo() {
@@ -103,13 +105,17 @@ export default class Dashboard extends Component {
     return (
       <SafeAreaView style={styles.safeView}>
         <Header title="Dashboard" left="menu" />
-        {loadingData ? <SpinnerView /> : null}
+        {loadingData ? (
+          <View style={styles.spinnerView}>
+            <SpinnerView />
+          </View>
+        ) : null}
         {updateAvailable ? <UpdateAvailableView /> : null}
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.button}
           onPress={() => this.backgroundJobMethod()}>
           <Text>Schedule everRunning job</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <ScrollView
           style={{flex: 1}}
           refreshControl={

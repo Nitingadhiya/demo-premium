@@ -81,6 +81,7 @@ class UpdateAddress extends Component {
     this.setState({
       userInfo,
     });
+    result = userInfo;
     if (userInfo) {
       const {
         FirstName,
@@ -184,7 +185,7 @@ class UpdateAddress extends Component {
             arr.push(res);
           }
         });
-        this.setState({landmarkList: arr});
+        this.setState({landmarkList: arr, filterLandmarkList: arr});
       }
     });
   }
@@ -201,7 +202,7 @@ class UpdateAddress extends Component {
             arr.push(res);
           }
         });
-        this.setState({areaList: arr});
+        this.setState({areaList: arr, filterAreaList: arr});
       }
     });
   }
@@ -218,7 +219,7 @@ class UpdateAddress extends Component {
             arr.push(res);
           }
         });
-        this.setState({roadList: arr});
+        this.setState({roadList: arr, filterRoadList: arr});
       }
     });
   }
@@ -251,13 +252,13 @@ class UpdateAddress extends Component {
 
   loadModalFlatListData() {
     if (this.state.modalType === 'Landmark') {
-      return this.state.landmarkList;
+      return this.state.filterLandmarkList; //this.state.landmarkList;
     }
     if (this.state.modalType === 'Area') {
-      return this.state.areaList;
+      return this.state.filterAreaList; //this.state.areaList;
     }
     if (this.state.modalType === 'Road') {
-      return this.state.roadList;
+      return this.state.filterRoadList; //this.state.roadList;
     }
   }
 
@@ -312,15 +313,48 @@ class UpdateAddress extends Component {
     }
   }
 
+  // changeTextForsearch(text) {
+  //   if (this.state.modalType === 'Landmark') {
+  //     this.setState({landmarkSearch: text});
+  //   }
+  //   if (this.state.modalType === 'Area') {
+  //     this.setState({areaSearch: text});
+  //   }
+  //   if (this.state.modalType === 'Road') {
+  //     this.setState({roadSearch: text});
+  //   }
+  // }
+
+  replaceCustomExpression = title => {
+    // console.warn(title.replace(/[^a-zA-Z 0-9 | ]/ig, ""));
+    const result = title.replace(/  +/g, ' '); // Replace multiple whitespace to a whitespace
+    return result.replace(/[^a-zA-Z 0-9 | ]/gi, '').toLowerCase();
+  };
+
   changeTextForsearch(text) {
     if (this.state.modalType === 'Landmark') {
-      this.setState({landmarkSearch: text});
+      const epi = this.state.landmarkList.filter(land =>
+        this.replaceCustomExpression(land.Landmark).includes(
+          this.replaceCustomExpression(text),
+        ),
+      );
+      this.setState({landmarkSearch: text, filterLandmarkList: epi});
     }
     if (this.state.modalType === 'Area') {
-      this.setState({areaSearch: text});
+      const epi = this.state.areaList.filter(land =>
+        this.replaceCustomExpression(land.Area).includes(
+          this.replaceCustomExpression(text),
+        ),
+      );
+      this.setState({areaSearch: text, filterAreaList: epi});
     }
     if (this.state.modalType === 'Road') {
-      this.setState({roadSearch: text});
+      const epi = this.state.roadList.filter(land =>
+        this.replaceCustomExpression(land.Road).includes(
+          this.replaceCustomExpression(text),
+        ),
+      );
+      this.setState({roadSearch: text, filterRoadList: epi});
     }
   }
 

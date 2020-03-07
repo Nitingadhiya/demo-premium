@@ -10,7 +10,6 @@ import Dashboard from '../tab/customer/home';
 import ProductList from '../../screens/product-list';
 import {Feed} from '../feed';
 import {Message} from '../message';
-import {Notifications} from '../notifications';
 import {StackNavigatorParamlist} from '../types';
 import WishList from '../wish-list';
 import Order from '../order';

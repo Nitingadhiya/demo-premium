@@ -19,6 +19,7 @@ import {Images, Color, Matrics} from '../../common/styles';
 import {MIcon} from '../../common/assets/vector-icon';
 import APICaller from '../../utils/api-caller';
 import {SpinnerView, Header} from '../../common/components';
+import Helper from '../../utils/helper';
 
 class ServicePackage extends Component {
   state = {

@@ -13,6 +13,7 @@ export default styles = {
   cameraStyles: {
     height: Matrics.screenHeight,
     width: Matrics.screenWidth,
+    //marginTop: 50,
   },
   rectangleContainer: {
     flex: 1,

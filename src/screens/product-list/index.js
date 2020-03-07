@@ -47,6 +47,9 @@ class ProductList extends Component {
       this.categoryFilterValidation();
     });
     this.getUserInfo();
+    Events.on('refresh-product-list', 'refresh', () => {
+      this.getUserInfo();
+    });
   }
   componentWillUnmount() {
     this._unsubscribe();

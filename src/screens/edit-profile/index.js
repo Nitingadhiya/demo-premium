@@ -821,6 +821,7 @@ export default class EditProfile extends Component {
               <View style={styles.subTextBoxView}>
                 <TextInputView
                   placeholder="Phone No"
+                  editable={false}
                   value={this.state.MobileNo}
                   autoCorrect={false}
                   onChangeText={value => this.setState({MobileNo: value})}

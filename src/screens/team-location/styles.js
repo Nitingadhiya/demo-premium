@@ -2,38 +2,61 @@ import {Color, Matrics} from '../../common/styles';
 
 export default styles = {
   container: {
+    flex: 1,
     backgroundColor: Color.white,
-    padding: 10,
   },
-  viewItemTypeText: {
-    height: 40,
+
+  spinnerView: {
+    flex: 1,
     justifyContent: 'center',
-  },
-  viewPicker: {
-    borderColor: '#d3d3d3',
-    borderWidth: 1,
-  },
-  saveButtonview: {
-    height: 45,
+    alignSelf: 'center',
+    position: 'absolute',
+    zIndex: 1,
     alignItems: 'center',
+    top: '45%',
+  },
+  spinnerViewPOS: {
+    position: 'absolute',
+    zIndex: 1,
+    top: '45%',
+    left: '40%',
+  },
+  controlBar: {
+    top: 58,
+    right: 10,
+    height: 40,
+    borderRadius: 20,
+    position: 'absolute',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    backgroundColor: 'white',
+    justifyContent: 'space-between',
     marginTop: 10,
   },
-  saveButton: {
-    width: '60%',
-    height: 45,
-    backgroundColor: Color.primary,
+  button: {
+    height: 40,
     justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 5,
+    paddingHorizontal: 5,
   },
-  saveButtonText: {
-    color: Color.white,
-    fontSize: 16,
-  },
-  systemNameTextInput: {
+  clusterContainer: {
+    width: 30,
+    height: 30,
+    padding: 6,
     borderWidth: 1,
-    borderColor: '#d3d3d3',
-    marginLeft: -2,
-    paddingLeft: 10,
+    borderRadius: 15,
+    alignItems: 'center',
+    borderColor: '#65bc46',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+  },
+  clusterText: {
+    fontSize: 13,
+    color: '#65bc46',
+    fontWeight: '500',
+    textAlign: 'center',
+  },
+  refreshText: {
+    fontWeight: 'bold',
   },
 };

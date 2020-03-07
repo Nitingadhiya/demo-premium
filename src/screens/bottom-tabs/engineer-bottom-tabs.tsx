@@ -13,7 +13,6 @@ import WishList from '../wish-list';
 import Order from '../order';
 import Offer from '../offer';
 import {Message} from '../message';
-import {Notifications} from '../notifications';
 import {StackNavigatorParamlist} from '../types';
 
 const Tab = createMaterialBottomTabNavigator();
@@ -115,7 +114,7 @@ export const EngineerBottomTabs = (props: Props) => {
           }}
         />
       </Tab.Navigator>
-      <Portal>
+      {/* <Portal>
         <FAB
           visible={isFocused}
           icon={icon}
@@ -132,7 +131,7 @@ export const EngineerBottomTabs = (props: Props) => {
           }}
           onPress={() => {}}
         />
-      </Portal>
+      </Portal> */}
     </React.Fragment>
   );
 };

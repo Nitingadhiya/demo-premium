@@ -99,7 +99,7 @@ class AddSystem extends Component {
       });
 
       if (json.data.Success === '1') {
-        Events.trigger('refreshDashboard', 'refresh');
+        Events.trigger('systemAdded', 'refresh');
         NavigationHelper.navigate(this.props.navigation, 'Dashboard');
       } else {
         Alert.alert(

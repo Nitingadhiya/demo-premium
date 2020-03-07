@@ -128,7 +128,7 @@ class SignCapture extends Component {
             <View style={styles.policyView}>
               {policyResponse &&
                 policyResponse.map((res, index) => (
-                  <View>
+                  <View key={`${index}`}>
                     <Text style={styles.font16}>
                       <Text style={styles.fontBold16}>{index + 1}) </Text>
                       {res.Description}

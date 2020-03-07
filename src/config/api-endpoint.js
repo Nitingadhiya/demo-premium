@@ -59,6 +59,10 @@ const complaintCompleteEndPoint = (
   antivirusKey,
 ) =>
   `ComplaintComplete?ComplainId=${complaintId}&CompleteBy=${userName}&CloseRemark=${closeRemarkText}&SystemTag=${systemtag}&IsAntivirus=${antivirusCheckbox}&Antivirus=${selectAntivirus}&AntivirusKey=${antivirusKey}`;
+const getPartFromSerialNoEndPoint = tag =>
+  `/GetPartFromSerialNo?SerialNo=${tag}`;
+const getPartFromSystemTagNoEndPoint = tag =>
+  `GetPartFromSystemTag?SystemTag=${tag}`;
 
 module.exports = {
   checkVersionEndPoint,
@@ -98,4 +102,6 @@ module.exports = {
   forgotPasswordendPoint,
   getAntivirusListEndPoint,
   complaintCompleteEndPoint,
+  getPartFromSerialNoEndPoint,
+  getPartFromSystemTagNoEndPoint,
 };

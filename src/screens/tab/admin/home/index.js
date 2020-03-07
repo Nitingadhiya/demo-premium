@@ -168,10 +168,7 @@ export default class Dashboard extends Component {
           navigation={navigation}
         />
         {/* complaint with QR Code */}
-        <ComplaintWithQRCode
-          userName={userInfo && userInfo.UserName}
-          navigation={navigation}
-        />
+        <ComplaintWithQRCode userInfo={userInfo} navigation={navigation} />
       </SafeAreaView>
     );
   }

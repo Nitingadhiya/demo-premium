@@ -14,7 +14,7 @@ import {
   Dimensions,
   Modal,
 } from 'react-native';
-// import ImagePicker from 'react-native-image-crop-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 // import * as Animatable from 'react-native-animatable';
 
@@ -23,7 +23,11 @@ import _ from 'lodash';
 import CodeInput from 'react-native-confirmation-code-input';
 import {Color, Matrics} from '../../common/styles';
 import APICaller from '../../utils/api-caller';
+import Events from '../../utils/events';
+import Helper from '../../utils/helper';
 import {Header, SpinnerView} from '../../common/components';
+import SystemVerifyWithQRCode from '../../components/system-verify-qr-code';
+import NavigationHelper from '../../utils/navigation-helper';
 
 /** ******* QR code ********** */
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -49,12 +53,21 @@ export class SystemVerify extends Component {
     systemOTP: false,
     cameraOpen: false,
     imageData: null,
+    userInfo: null,
   };
   // ------------>>>LifeCycle Methods------------->>>
 
   componentDidMount() {
+    this.getUserInfo();
+    Events.on('system-verify-event', 'systemTag', result => {
+      this.qrcodeVerify(result);
+    });
+  }
+
+  async getUserInfo() {
+    const userInfo = await Helper.getLocalStorageItem('userInfo');
     this.setState({
-      qrCode: true,
+      userInfo,
     });
   }
 
@@ -79,6 +92,9 @@ export class SystemVerify extends Component {
   }
 
   qrcodeVerify(result) {
+    this.setState({
+      loadingData: true,
+    });
     this.sysyemCode = result;
     const endPoint = `SystemOTP?SystemTag=${result}`;
     const method = 'GET';
@@ -87,6 +103,7 @@ export class SystemVerify extends Component {
         this.setState({
           cameraOpen: true,
           qrCode: false,
+          loadingData: false,
         });
         setTimeout(() => {
           this.openCameraModal();
@@ -95,6 +112,7 @@ export class SystemVerify extends Component {
         this.setState({
           validateError: 'Please scan right Qr-code, try again.',
           cameraOpen: false,
+          loadingData: false,
         });
       }
     });
@@ -115,6 +133,7 @@ export class SystemVerify extends Component {
       this.setState({
         systemOTP: true,
         imageData: image.path,
+        cameraOpen: false,
       });
       // this.setState({ modalVisible: !this.state.modalVisible });
       this.media = {
@@ -138,7 +157,7 @@ export class SystemVerify extends Component {
     APICaller(`${endPoint}`, 'POST', JSON.stringify(formData)).then(json => {
       this.setState({loadingData: false});
       if (json.data.Success === 1 || json.data.Success === '1') {
-        this.props.navigation.navigate('Home');
+        NavigationHelper.navigate(this.props.navigation, 'Dashboard');
       } else {
         Alert.alert('Failed', json.data.Message);
       }
@@ -146,22 +165,23 @@ export class SystemVerify extends Component {
   }
 
   render() {
+    const {loadingData, cameraOpen, validateError} = this.state;
     return (
       <SafeAreaView style={{flex: 1}}>
-        <Header title="System Verify" left="back" />
-        {this.state.loadingData ? (
+        <Header title="System Verify" left="menu" />
+        {loadingData ? (
           <View style={styles.spinnerView}>
             <SpinnerView />
           </View>
         ) : null}
-        {!this.state.cameraOpen ? (
+        {!cameraOpen && !loadingData ? (
           <View
             style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <Text style={{marginBottom: 10, fontSize: 14, fontWeight: 'bold'}}>
-              {this.state.validateError}
+              {validateError}
             </Text>
             <TouchableOpacity
-              onPress={() => this.setState({qrCode: true})}
+              onPress={() => Events.trigger('qrCode', 'open again')}
               style={{
                 borderRadius: 5,
                 paddingHorizontal: 10,
@@ -169,17 +189,20 @@ export class SystemVerify extends Component {
                 backgroundColor: Color.primary,
                 justifyContent: 'center',
               }}>
-              <Text style={{color: '#fff', fontSize: 14}}>Scan QR-Code</Text>
+              <Text style={{color: '#fff', fontSize: 14}}>
+                Retry, Scan QR-Code
+              </Text>
             </TouchableOpacity>
           </View>
         ) : null}
-        {this.state.systemOTP ? (
+        {this.state.systemOTP && !loadingData ? (
           <View style={{flex: 1}}>
             <View
               style={{
-                justifyContent: 'center',
-                height: Dimensions.get('window').height,
+                height: Dimensions.get('window').height - 50,
                 alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: 10,
               }}>
               <Image
                 source={{uri: this.state.imageData}}
@@ -196,13 +219,16 @@ export class SystemVerify extends Component {
                 inputPosition="center"
                 size={Codelength}
                 onFulfill={isValid => this.onFinishCheckingCode(isValid)}
-                containerStyle={{marginTop: -50, alignItems: 'center'}}
+                containerStyle={{
+                  marginTop: 10,
+                }}
                 codeInputStyle={{borderWidth: 1.5}}
               />
             </View>
           </View>
         ) : null}
-        <Modal
+        <SystemVerifyWithQRCode userInfo={userInfo} />
+        {/* <Modal
           animationType="slide"
           transparent={false}
           visible={this.state.qrCode}
@@ -235,17 +261,7 @@ export class SystemVerify extends Component {
                       <View style={styles.leftAndRightOverlay} />
 
                       <View style={styles.rectangle}>
-                        {/* <Animatable.View
-                          style={styles.scanBar}
-                          direction="alternate-reverse"
-                          iterationCount="infinite"
-                          duration={1700}
-                          easing="linear"
-                          animation={this.makeSlideOutTranslation(
-                            'translateY',
-                            SCREEN_WIDTH * 0.22,
-                          )}
-                        /> */}
+                     
                       </View>
 
                       <View style={styles.leftAndRightOverlay} />
@@ -257,7 +273,7 @@ export class SystemVerify extends Component {
               />
             </View>
           </View>
-        </Modal>
+        </Modal> */}
       </SafeAreaView>
     );
   }

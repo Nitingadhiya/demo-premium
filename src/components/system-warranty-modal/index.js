@@ -7,6 +7,7 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
+import _ from 'lodash';
 import {CommonActions} from '@react-navigation/native';
 import {TextInputView, SpinnerView} from '../../common/components';
 import {MIcon} from '../../common/assets/vector-icon';
@@ -25,9 +26,6 @@ class SystemWarrantyModal extends Component {
   };
   componentDidMount() {
     Events.on('systemWarrantyEvent', 'warranty', res => {
-      this.setState({
-        warrantyModal: true,
-      });
       this.getWarrantyMethod(res.systemTag);
     });
   }
@@ -37,6 +35,7 @@ class SystemWarrantyModal extends Component {
       if (json.data.Success === '1') {
         this.setState({
           warrantyList: json.data.Response,
+          warrantyModal: true,
         });
       } else {
         Alert.alert('Alert', json.data.Message || 'No Warranty Found.');
@@ -64,7 +63,7 @@ class SystemWarrantyModal extends Component {
                 <TouchableOpacity
                   onPress={() => this.modalShowHide(false)}
                   style={styles.closeIcon}>
-                  <Icon name="keyboard-arrow-left" size={40} />
+                  <MIcon name="keyboard-arrow-left" size={40} />
                 </TouchableOpacity>
                 <Text style={styles.titleText}>Warranty</Text>
               </View>
@@ -154,9 +153,9 @@ class SystemWarrantyModal extends Component {
                               </View>
 
                               <View style={styles.viewSubDetails}>
-                                <View style={viewSub1Details}>
+                                <View style={styles.viewSub1Details}>
                                   <Text style={styles.bold14}>Warranty : </Text>
-                                  <Icon
+                                  <MIcon
                                     name={res.Warranty ? 'check' : 'close'}
                                     size={16}
                                     color="black"
@@ -164,7 +163,7 @@ class SystemWarrantyModal extends Component {
                                 </View>
                                 <View style={styles.newTitleView}>
                                   <Text style={styles.bold14}>New :</Text>
-                                  <Icon
+                                  <MIcon
                                     name={res.New ? 'check' : 'close'}
                                     size={16}
                                     color="black"

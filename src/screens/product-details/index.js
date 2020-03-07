@@ -11,13 +11,18 @@ import {
   ScrollView,
   LayoutAnimation,
   Image,
+  Alert,
 } from 'react-native';
 import _ from 'lodash';
 import Carousel from 'react-native-looped-carousel';
 import {Appbar, Avatar, useTheme, Badge, Button} from 'react-native-paper';
 import CodeInput from 'react-native-confirmation-code-input';
 import APICaller from '../../utils/api-caller';
-import {getProductDetailsEndPoint} from '../../config/api-endpoint';
+import {
+  getProductDetailsEndPoint,
+  removeWishCartEndPoint,
+  insertWishCartEndPoint,
+} from '../../config/api-endpoint';
 import {MIcon} from '../../common/assets/vector-icon';
 import styles from './styles';
 import {Matrics, Color} from '../../common/styles';
@@ -103,9 +108,44 @@ class ProductDetails extends Component {
       'GET',
     ).then(json => {
       if (json.data.Success === 1 || json.data.Success === '1') {
-        //const cartCount = json.data.Response.length;
-        this.fetchProductList(userInfo.UserName);
+        let productDetails = this.state.productDetails;
+        productDetails.Wish = true;
+
+        this.setState({
+          productDetails,
+          loadingData: false,
+        });
+        Events.trigger('refresh-product-list');
+        setTimeout(() => console.log(this.state.productDetails), 2000);
+      }
+    });
+  }
+
+  async removeWishListCart(item, type) {
+    this.setState({loadingData: true});
+    const userInfo = await Helper.getLocalStorageItem('userInfo');
+    if (!userInfo) return;
+    APICaller(
+      removeWishCartEndPoint(item.ProductNo, userInfo.UserName, type),
+      'GET',
+    ).then(json => {
+      if (json.status !== 200) {
         this.setState({loadingData: false});
+        Alert.alert(
+          `Error-${json.status}`,
+          'Server error, something went to wrong',
+        );
+        return;
+      }
+      if (json.data.Success === 1 || json.data.Success === '1') {
+        let productDetails = this.state.productDetails;
+        productDetails.Wish = false;
+
+        this.setState({
+          productDetails,
+          loadingData: false,
+        });
+        Events.trigger('refresh-product-list');
       }
     });
   }
@@ -172,9 +212,9 @@ class ProductDetails extends Component {
             }
             onPress={() => {
               if (productDetails && productDetails.Wish) {
-                this.removeWishListCart(this.state.productDetailArray, 'WISH');
+                this.removeWishListCart(productDetails, 'WISH');
               } else {
-                this.addWishListCart(this.state.productDetailArray, 'WISH');
+                this.addWishListCart(productDetails, 'WISH');
               }
             }}
           />

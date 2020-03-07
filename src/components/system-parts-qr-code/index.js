@@ -26,20 +26,14 @@ import {useNavigation} from '@react-navigation/native';
 
 let tmpSys = [];
 let self;
-class ComplaintWithQRCode extends Component {
+class SystemPartsWithQRCode extends Component {
   state = {
-    qrCode: false,
+    qrCode: true,
     item: null,
   };
 
   componentDidMount() {
     self = this;
-    Events.on('ComplaintWithQRCodeEvent', 'Event', res => {
-      this.setState({
-        qrCode: res.isOpen,
-        item: res.item,
-      });
-    });
   }
 
   onSuccess(e) {
@@ -51,52 +45,7 @@ class ComplaintWithQRCode extends Component {
       if (!userInfo) {
         Alert.alert('No User Found, Please Login again.');
       }
-      if (userInfo.LoginType === '4' || !self.state.item) {
-        self.getComplaintCharge(result);
-      }
-
-      if (userInfo.LoginType === '2' || userInfo.LoginType === '3') {
-        self.complaintClose(result);
-      }
-    }
-  }
-
-  getComplaintCharge(result) {
-    const {navigation, userInfo} = self.props;
-    Helper.getComplaintCharge(navigation, userInfo.UserName, result);
-  }
-
-  complaintClose(result) {
-    const {item} = this.state;
-    if (!item) return;
-    console.log(item, '*************' + result);
-
-    const splt = item.SystemTag.split('-');
-    const checksplt = splt[0];
-    if (checksplt === 'SYS' || checksplt === 'SER') {
-      if (item.SystemTag === result) {
-        console.log('Close Remark modal');
-        const params = {
-          isOpen: true,
-          item,
-        };
-        Events.trigger('closeRemarkModal', params);
-        //this.setState({closeRemarkModal: true});
-      } else {
-        Alert.alert(
-          'Complaint',
-          'Your Complaint QR Code does not match with Scan QR Code.',
-        );
-      }
-    } else {
-      console.log('Close Remark modal ***');
-      const params = {
-        isOpen: true,
-        item,
-      };
-      Events.trigger('closeRemarkModal', params);
-
-      //this.setState({closeRemarkModal: true});
+      Events.trigger('system-parts-tag-event', result);
     }
   }
 
@@ -108,7 +57,7 @@ class ComplaintWithQRCode extends Component {
         <Modal
           animationType="slide"
           transparent={false}
-          visible={this.state.qrCode}
+          visible={qrCode}
           onRequestClose={() => {
             this.setState({qrCode: false});
           }}>
@@ -130,21 +79,7 @@ class ComplaintWithQRCode extends Component {
 
                     <View style={{flexDirection: 'row'}}>
                       <View style={styles.leftAndRightOverlay} />
-
-                      <View style={styles.rectangle}>
-                        {/* <Animatable.View
-                          style={styles.scanBar}
-                          direction="alternate-reverse"
-                          iterationCount="infinite"
-                          duration={1700}
-                          easing="linear"
-                          animation={this.makeSlideOutTranslation(
-                            'translateY',
-                            SCREEN_WIDTH * 0.22,
-                          )}
-                        /> */}
-                      </View>
-
+                      <View style={styles.rectangle} />
                       <View style={styles.leftAndRightOverlay} />
                     </View>
 
@@ -159,4 +94,4 @@ class ComplaintWithQRCode extends Component {
     );
   }
 }
-export default ComplaintWithQRCode;
+export default SystemPartsWithQRCode;

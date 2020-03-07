@@ -15,7 +15,6 @@ import Order from '../order';
 import Offer from '../offer';
 import Chat from '../chat';
 import {Message} from '../message';
-import {Notifications} from '../notifications';
 import {StackNavigatorParamlist} from '../types';
 
 const Tab = createMaterialBottomTabNavigator();
@@ -117,7 +116,7 @@ export const DealerBottomTabs = (props: Props) => {
           }}
         />
       </Tab.Navigator>
-      <Portal>
+      {/* <Portal>
         <FAB
           visible={isFocused}
           icon={icon}
@@ -134,7 +133,7 @@ export const DealerBottomTabs = (props: Props) => {
           }}
           onPress={() => {}}
         />
-      </Portal>
+      </Portal> */}
     </React.Fragment>
   );
 };

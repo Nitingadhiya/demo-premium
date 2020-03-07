@@ -21,6 +21,9 @@ import {Marker, Callout} from 'react-native-maps';
 import ClusteredMapView from 'react-native-maps-super-cluster';
 import {SpinnerView, Header} from '../../common/components';
 import Helper from '../../utils/helper';
+import Events from '../../utils/events';
+import styles from './styles';
+import ToastComponent from '../../common/components/toast';
 
 let self;
 const italyCenterLatitude = 41.8962667,
@@ -30,6 +33,7 @@ class ServicePackage extends Component {
   state = {
     loadingData: false,
     pins: [],
+    toastVisible: false,
   };
 
   componentDidMount() {
@@ -58,12 +62,16 @@ class ServicePackage extends Component {
       json => {
         const data = json.data.Response;
         let markerPin = [];
-        data.map(res => {
-          markerPin.push({
-            id: res.ID,
-            location: {latitude: res.Latitude, longitude: res.Longitude},
+        data &&
+          data.map(res => {
+            markerPin.push({
+              id: res.ID,
+              location: {latitude: res.Latitude, longitude: res.Longitude},
+            });
           });
-        });
+        if (markerPin.length === 0) {
+          Events.trigger('toast', 'No Data Found');
+        }
         this.setState({pins: markerPin, loadingData: false});
         // { id: 'pin86',
         // location: { latitude: 43.759953662747066, longitude: 11.988450525880259 } },
@@ -134,6 +142,7 @@ class ServicePackage extends Component {
       latitudeDelta: 12,
       longitudeDelta: 12,
     };
+    const {toastVisible} = this.state;
     return (
       <SafeAreaView style={{flex: 1}}>
         <Header left="menu" title="Location" />
@@ -164,72 +173,10 @@ class ServicePackage extends Component {
             <Text style={styles.text}>Load more</Text>
           </TouchableOpacity> */}
         </View>
+        <ToastComponent />
       </SafeAreaView>
     );
   }
 }
-
-//= =====STYLES DECLARATION======//
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Color.white,
-  },
-
-  spinnerView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignSelf: 'center',
-    position: 'absolute',
-    zIndex: 1,
-    alignItems: 'center',
-    top: '45%',
-  },
-  spinnerViewPOS: {
-    position: 'absolute',
-    zIndex: 1,
-    top: '45%',
-    left: '40%',
-  },
-  controlBar: {
-    top: 58,
-    right: 10,
-    height: 40,
-    borderRadius: 20,
-    position: 'absolute',
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    backgroundColor: 'white',
-    justifyContent: 'space-between',
-    marginTop: 10,
-  },
-  button: {
-    height: 40,
-    justifyContent: 'center',
-    paddingHorizontal: 5,
-  },
-  clusterContainer: {
-    width: 30,
-    height: 30,
-    padding: 6,
-    borderWidth: 1,
-    borderRadius: 15,
-    alignItems: 'center',
-    borderColor: '#65bc46',
-    justifyContent: 'center',
-    backgroundColor: 'white',
-  },
-  clusterText: {
-    fontSize: 13,
-    color: '#65bc46',
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-  refreshText: {
-    fontWeight: 'bold',
-  },
-});
 
 export default ServicePackage;

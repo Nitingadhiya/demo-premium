@@ -261,6 +261,9 @@ export default class submitComplaint extends Component {
     });
     this.setState({
       filterComplainDesc,
+      selectedCompDesc: filterComplainDesc
+        ? filterComplainDesc[0].CodeDesc
+        : '',
     });
   }
 
@@ -367,11 +370,12 @@ export default class submitComplaint extends Component {
                   this.subjectChange(itemValue);
                   this.setState({selectedCompSubject: itemValue});
                 }}>
-                {this.state.subject.map(data => {
+                {this.state.subject.map((data, index) => {
                   return (
                     <Picker.Item
                       label={data.ParentCodeType}
                       value={data.ParentCodeType}
+                      key={`${index}`}
                     />
                   );
                 })}
@@ -387,9 +391,13 @@ export default class submitComplaint extends Component {
                 onValueChange={(itemValue, itemIndex) => {
                   this.setState({selectedCompDesc: itemValue});
                 }}>
-                {this.state.filterComplainDesc.map(data => {
+                {this.state.filterComplainDesc.map((data, index) => {
                   return (
-                    <Picker.Item label={data.CodeDesc} value={data.CodeDesc} />
+                    <Picker.Item
+                      label={data.CodeDesc}
+                      value={data.CodeDesc}
+                      key={`${index}`}
+                    />
                   );
                 })}
               </Picker>
@@ -411,9 +419,13 @@ export default class submitComplaint extends Component {
                     onValueChange={(itemValue, itemIndex) => {
                       this.setState({systemTag: itemValue});
                     }}>
-                    {this.state.tmpSYS.map(data => {
+                    {this.state.tmpSYS.map((data, index) => {
                       return (
-                        <Picker.Item label={data.sysName} value={data.sysTag} />
+                        <Picker.Item
+                          label={data.sysName}
+                          value={data.sysTag}
+                          key={`${index}`}
+                        />
                       );
                     })}
                   </Picker>

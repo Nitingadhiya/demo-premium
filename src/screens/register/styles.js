@@ -12,7 +12,6 @@ export default styles = {
   container: {
     flex: 1,
     backgroundColor: Color.white,
-    marginTop: 10,
   },
   txtStyle2: {
     color: Color.darkGrey,

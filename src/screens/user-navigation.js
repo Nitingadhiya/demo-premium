@@ -21,6 +21,7 @@ import Register from './register';
 import OTPScreen from './otp';
 import BackgroundJob from 'react-native-background-job';
 import BackgroundServiceHelper from '../utils/background-job';
+import ProductList from '../screens/product-list';
 
 BackgroundServiceHelper.BackgroundServiceJob();
 
@@ -64,8 +65,8 @@ export default class UserNavigation extends React.Component {
   backgroundJobMethod() {
     BackgroundJob.schedule({
       jobKey: BackgroundServiceHelper.everRunningJobKey(),
-      notificationTitle: 'Notification title',
-      notificationText: 'Notification text',
+      // notificationTitle: 'Notification title',
+      // notificationText: 'Notification text',
       period: 20000,
       exact: true,
       networkType: BackgroundJob.NETWORK_TYPE_ANY,
@@ -156,6 +157,13 @@ export default class UserNavigation extends React.Component {
           component={Details}
           options={{headerTitle: 'Tweet'}}
         />
+        {userInfo.LoginType === '3' || userInfo.LoginType === '2' ? (
+          <Stack.Screen
+            name="ProductList"
+            component={ProductList}
+            options={{headerTitle: 'Tweet'}}
+          />
+        ) : null}
       </Stack.Navigator>
     );
   }

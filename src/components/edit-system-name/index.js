@@ -59,7 +59,7 @@ class EditSystemNameModal extends Component {
       'GET',
     ).then(json => {
       if (json.data.Success === '2') {
-        Events.trigger('refreshDashboard');
+        Events.trigger('systemAdded', 'refresh'); //System Dashboard refresh
         this.setState({
           systemNameUpdateModal: false,
         });

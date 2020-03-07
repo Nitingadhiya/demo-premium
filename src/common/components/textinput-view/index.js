@@ -18,6 +18,7 @@ export const TextInputView = ({
   maxLength,
   customStyle,
   placeholderTextColor,
+  editable,
 }) => {
   return (
     <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -39,6 +40,7 @@ export const TextInputView = ({
           {height: 50, flex: 1, fontSize: 16, marginLeft: 5},
           customStyle,
         ]}
+        editable={editable}
       />
     </View>
   );

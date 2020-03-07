@@ -7,7 +7,6 @@ import {ManagerBottomTabs} from './bottom-tabs/manager-bottom-tabs';
 import {EngineerBottomTabs} from './bottom-tabs/engineer-bottom-tabs';
 import {CustomerBottomTabs} from './bottom-tabs/customer-bottom-tabs';
 import {DealerBottomTabs} from './bottom-tabs/dealer-bottom-tabs';
-import LocationServiceHelper from '../utils/geo-location';
 import {Appbar, Avatar, useTheme} from 'react-native-paper';
 import {DetailedTwitt} from '../components/detailedTwitt';
 
@@ -54,7 +53,7 @@ export default class Splash extends React.Component {
     console.disableYellowBox = true;
     enableFontPatch();
 
-    //Helper.checkAppVersion(); //Check application update
+    Helper.checkAppVersion(); //Check application update
     const data = await Helper.getLocalStorageItem('userInfo');
     if (data) {
       global.userInfo = data;
@@ -62,8 +61,6 @@ export default class Splash extends React.Component {
     } else {
       this.setState({loading: false});
     }
-    setTimeout(() => LocationServiceHelper.getLocation(), 2000);
-    //LocationServiceHelper.getLocation();
   }
   componentWillUnmount() {
     AppState.removeEventListener('change', this.handleAppStateChange);
@@ -74,7 +71,7 @@ export default class Splash extends React.Component {
       this.state.appState.match(/inactive|background/) &&
       nextAppState === 'active'
     ) {
-      //Helper.checkAppVersion();
+      Helper.checkAppVersion();
     }
     this.setState({appState: nextAppState});
   };

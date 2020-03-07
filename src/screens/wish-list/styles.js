@@ -32,4 +32,13 @@ export default styles = {
     right: 15,
     top: 13,
   },
+  refreshText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: Color.primary,
+  },
+  refreshView: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
 };

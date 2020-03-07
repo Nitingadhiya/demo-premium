@@ -1,39 +1,49 @@
-import {Color, Matrics} from '../../common/styles';
+import {Color, Matrics, ApplicationStyles} from '../../common/styles';
 
 export default styles = {
-  container: {
-    backgroundColor: Color.white,
-    padding: 10,
-  },
-  viewItemTypeText: {
-    height: 40,
+  ...ApplicationStyles,
+  messageView: {
+    flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
   },
-  viewPicker: {
-    borderColor: '#d3d3d3',
+  messageText: {
+    fontSize: 14,
+    color: '#333',
+    fontWeight: 'bold',
+  },
+  itemView: {
+    flex: 1,
     borderWidth: 1,
+    padding: 5,
+    margin: 5,
   },
-  saveButtonview: {
-    height: 45,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  saveButton: {
-    width: '60%',
-    height: 45,
-    backgroundColor: Color.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 5,
-  },
-  saveButtonText: {
-    color: Color.white,
+  ownerName: {
+    fontWeight: 'bold',
     fontSize: 16,
+    textAlign: 'center',
   },
-  systemNameTextInput: {
+  flex1: {
+    flex: 1,
+  },
+  twodivide: {
+    flexDirection: 'row',
+    flex: 1,
+    //flexWrap: 'wrap',
+    height: 50,
+    alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#d3d3d3',
-    marginLeft: -2,
-    paddingLeft: 10,
+    borderColor: '#eee',
+    padding: 5,
+  },
+  partsTitle: {
+    fontWeight: 'bold',
+    fontSize: 14,
+    color: '#000',
+    marginVertical: 10,
+  },
+  textName: {flex: 1, fontWeight: 'bold'},
+  subTextName: {
+    fontWeight: 'normal',
   },
 };

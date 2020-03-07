@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Alert, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Alert, TouchableOpacity, StyleSheet, Text} from 'react-native';
 import {
   DrawerContentComponentProps,
   DrawerContentOptions,
@@ -12,7 +12,9 @@ import _ from 'lodash';
 import Helper from '../../utils/helper';
 import NavigationHelper from '../../utils/navigation-helper';
 import {Color} from '../../common/styles';
+import {VersionNumber} from '../../package';
 import Events from '../../utils/events';
+import styles from './styles';
 
 class DrawerViewComponent extends Component {
   state = {
@@ -127,10 +129,8 @@ class DrawerViewComponent extends Component {
               icon={({color, size}) => (
                 <McIcon name="bookmark-outline" color={color} size={size} />
               )}
-              label="System Warranty"
-              onPress={() =>
-                NavigationHelper.navigate(navigation, 'SystemWarranty')
-              }
+              label="System Warranty, Parts"
+              onPress={() => NavigationHelper.navigate(navigation, 'Parts')}
             />
           ) : null}
           <DrawerItem
@@ -166,48 +166,15 @@ class DrawerViewComponent extends Component {
               NavigationHelper.reset(navigation, 'Splash');
             }}
           />
+          <View style={styles.viewVersion}>
+            <Text style={styles.versionText}>
+              App Version{' '}
+              {`${VersionNumber.appVersion}(${VersionNumber.buildVersion})`}
+            </Text>
+          </View>
         </Drawer.Section>
       </View>
     );
   }
 }
 export default DrawerViewComponent;
-const styles = StyleSheet.create({
-  drawerContent: {
-    flex: 1,
-  },
-  userInfoSection: {
-    paddingLeft: 20,
-  },
-  title: {
-    marginTop: 20,
-    fontWeight: 'bold',
-  },
-  caption: {
-    fontSize: 14,
-    lineHeight: 16,
-  },
-  row: {
-    marginTop: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  section: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 15,
-  },
-  paragraph: {
-    fontWeight: 'bold',
-    marginRight: 3,
-  },
-  drawerSection: {
-    marginTop: 15,
-  },
-  preference: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-  },
-});

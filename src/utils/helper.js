@@ -49,7 +49,7 @@ const Helper = {
     Alert.alert(
       'New Version Available',
       'Please update app to new version to continue using.',
-      [cancelled ? cancelValue : null, updateValue],
+      [cancelled ? cancelValue : '', updateValue],
       {cancelable: cancelled},
     );
   },

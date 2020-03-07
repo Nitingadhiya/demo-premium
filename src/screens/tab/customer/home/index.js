@@ -46,6 +46,9 @@ export default class Dashboard extends Component {
         userInfo,
       });
     });
+    Events.on('systemAdded', 'refresh', async () => {
+      this.getUserInfo();
+    });
     Events.on('updateAvailable', 'Updates', res => {
       this.setState({
         updateAvailable: res,
@@ -152,10 +155,7 @@ export default class Dashboard extends Component {
         <EditSystemNameModal userName={userInfo && userInfo.UserName} />
 
         {/* complaint with QR Code */}
-        <ComplaintWithQRCode
-          userName={userInfo && userInfo.UserName}
-          navigation={navigation}
-        />
+        <ComplaintWithQRCode userInfo={userInfo} navigation={navigation} />
 
         {/* Antivirus Modal */}
         <AntivirusKeyModal />

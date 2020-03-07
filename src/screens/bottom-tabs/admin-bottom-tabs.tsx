@@ -9,8 +9,8 @@ import overlay from '../overlay';
 import {Feed} from '../feed';
 import Dashboard from '../tab/admin/home';
 import {Message} from '../message';
-import {Notifications} from '../notifications';
 import {StackNavigatorParamlist} from '../types';
+import Offer from '../offer';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -93,8 +93,8 @@ export const AdminBottomTabs = (props: Props) => {
         />
 
         <Tab.Screen
-          name="Notifications"
-          component={Notifications}
+          name="Offer"
+          component={Offer}
           options={{
             tabBarIcon: 'bell-outline',
             tabBarLabel: 'Offer',
@@ -102,8 +102,8 @@ export const AdminBottomTabs = (props: Props) => {
           }}
         />
         <Tab.Screen
-          name="Messages"
-          component={Message}
+          name="Chat"
+          component={Chat}
           options={{
             tabBarIcon: 'message-text-outline',
             tabBarLabel: 'chat',
@@ -111,7 +111,7 @@ export const AdminBottomTabs = (props: Props) => {
           }}
         />
       </Tab.Navigator>
-      <Portal>
+      {/* <Portal>
         <FAB
           visible={isFocused}
           icon={icon}
@@ -128,7 +128,7 @@ export const AdminBottomTabs = (props: Props) => {
           }}
           onPress={() => {}}
         />
-      </Portal>
+      </Portal> */}
     </React.Fragment>
   );
 };

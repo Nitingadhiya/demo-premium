@@ -68,6 +68,12 @@ class WishList extends Component {
         <Text style={{color: 'grey', fontSize: 16}}>
           Your Wishlist is empty
         </Text>
+        <TouchableOpacity
+          style={styles.refreshView}
+          activeOpacity={0.6}
+          onPress={() => this.onRefresh()}>
+          <Text style={styles.refreshText}>Refresh</Text>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -78,8 +84,9 @@ class WishList extends Component {
   }
 
   onRefresh = () => {
+    console.log('Refrsh');
     this.setState({refreshing: true});
-    this.getWishlist();
+    this.getUserInfo();
   };
 
   render() {

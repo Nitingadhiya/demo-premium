@@ -33,6 +33,7 @@ export default styles = {
     paddingHorizontal: 5,
     borderRightWidth: 0,
     borderBottomWidth: 0,
+    flexWrap: 'wrap',
   },
   textProblem: {
     fontSize: 16,

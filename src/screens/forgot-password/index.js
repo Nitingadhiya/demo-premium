@@ -5,6 +5,7 @@ import {
   Text,
   KeyboardAvoidingView,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {Appbar} from 'react-native-paper';
 import RNOtpVerify from 'react-native-otp-verify';

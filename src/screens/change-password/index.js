@@ -14,8 +14,10 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Alert,
+  Keyboard,
 } from 'react-native';
 import {changePasswordEndPoint} from '../../config/api-endpoint';
+import Helper from '../../utils/helper';
 import {Color, Matrics} from '../../common/styles';
 import {MIcon, McIcon} from '../../common/assets/vector-icon';
 import APICaller from '../../utils/api-caller';
@@ -32,7 +34,7 @@ class ChangePassword extends Component {
   };
 
   componentDidMount() {
-    this.userInfo();
+    this.getUserInfo();
   }
   async getUserInfo() {
     const userInfo = await Helper.getLocalStorageItem('userInfo');
@@ -54,7 +56,7 @@ class ChangePassword extends Component {
       this.setState({userNameError: 'Please enter new password'});
       return;
     }
-
+    Keyboard.dismiss();
     this.setState({
       loadingData: true,
       userNameError: null,
