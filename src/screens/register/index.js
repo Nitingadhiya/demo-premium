@@ -170,8 +170,6 @@ class Register extends Component {
         },
       ],
     };
-    console.log(body, 'body');
-    return;
     if (!this.genrateUserName) return;
     APICaller(userRegistrationEndPoint, 'POST', JSON.stringify(body)).then(
       json => {
@@ -193,7 +191,6 @@ class Register extends Component {
       registerForm,
       passwordSecure,
       addressModalVisible,
-      modalType,
       loadingData,
     } = this.state;
     return (
@@ -401,7 +398,8 @@ class Register extends Component {
         {addressModalVisible ? (
           <PickAddressModal
             searchPlaceholderText="Search city here"
-            closeModalPress={value => {
+            modalType={'City'}
+            closeModalPress={(type, value) => {
               this.setState(prevState => {
                 let registerForm = Object.assign({}, prevState.registerForm);
                 registerForm.cityText = value;
