@@ -53,7 +53,11 @@ class ProductDetails extends Component {
         productNo: route.params.productNo,
         userInfo,
       });
-      this.getProductDetails(route.params.productNo, userInfo.UserName);
+      let usernameCheck = '';
+      if (userInfo) {
+        usernameCheck = userInfo.UserName;
+      }
+      this.getProductDetails(route.params.productNo, usernameCheck);
     }
   }
 
@@ -154,28 +158,32 @@ class ProductDetails extends Component {
     const {productDetails, imageList, splSpec, splDesc, userInfo} = this.state;
     const {navigation} = this.props;
     const FirstRoute = () => (
-      <View style={{borderTopWidth: 1, borderColor: '#ddd'}}>
-        {splSpec &&
-          splSpec.map((res, index) => (
-            <Text style={styles.welcome} key={`${index}`}>
-              {res}
-            </Text>
-          ))}
+      <View style={styles.mainTechnicalView}>
+        <View style={styles.technicalView}>
+          {splSpec &&
+            splSpec.map((res, index) => (
+              <Text style={styles.welcome} key={`${index}`}>
+                {res}
+              </Text>
+            ))}
+        </View>
       </View>
     );
     const SecondRoute = () => (
-      <View style={{borderTopWidth: 1, borderColor: '#ddd'}}>
-        {splDesc &&
-          splDesc.map((res, index) => (
-            <Text style={styles.welcome} key={`${index}`}>
-              {res}
-            </Text>
-          ))}
+      <View style={styles.mainTechnicalView}>
+        <View style={styles.technicalView}>
+          {splDesc &&
+            splDesc.map((res, index) => (
+              <Text style={styles.welcome} key={`${index}`}>
+                {res}
+              </Text>
+            ))}
+        </View>
       </View>
     );
     const ThirdRoute = () => (
-      <View style={{borderTopWidth: 1, borderColor: '#ddd'}}>
-        <View style={{marginBottom: 0}}>
+      <View style={styles.mainTechnicalView}>
+        <View style={styles.technicalView}>
           {productDetails ? (
             <Text style={styles.welcome}>{productDetails.PortDetails}</Text>
           ) : null}
@@ -197,59 +205,45 @@ class ProductDetails extends Component {
       },
     ];
     return (
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={styles.safeView}>
         {this.state.loadingData ? (
           <View style={styles.spinnerView}>
             <SpinnerView />
           </View>
         ) : null}
-        <Appbar.Header>
+        <Appbar.Header style={styles.headerBg}>
           <Appbar.BackAction onPress={() => navigation.goBack()} />
           <Appbar.Content title={'Product Details'} />
-          <Appbar.Action
-            icon={
-              productDetails && productDetails.Wish ? 'heart' : 'heart-outline'
-            }
-            onPress={() => {
-              if (productDetails && productDetails.Wish) {
-                this.removeWishListCart(productDetails, 'WISH');
-              } else {
-                this.addWishListCart(productDetails, 'WISH');
+          {userInfo ? (
+            <Appbar.Action
+              icon={
+                productDetails && productDetails.Wish
+                  ? 'heart'
+                  : 'heart-outline'
               }
-            }}
-          />
-          <Appbar.Action
-            icon="cart"
-            onPress={() => this.navigateCartList(navigation)}
-          />
+              onPress={() => {
+                if (productDetails && productDetails.Wish) {
+                  this.removeWishListCart(productDetails, 'WISH');
+                } else {
+                  this.addWishListCart(productDetails, 'WISH');
+                }
+              }}
+            />
+          ) : null}
+          {userInfo ? (
+            <Appbar.Action
+              icon="cart"
+              onPress={() => this.navigateCartList(navigation)}
+            />
+          ) : null}
         </Appbar.Header>
-        <ScrollView style={{flex: 1}}>
-          <View
-            style={{
-              padding: 5,
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: '100%',
-            }}>
-            <Text
-              style={{
-                fontSize: 18,
-                color: 'black',
-                textAlign: 'center',
-                fontFamily: 'Roboto-Bold',
-              }}>
+        <ScrollView style={styles.flex1}>
+          <View style={styles.productTitle}>
+            <Text style={styles.titleClass}>
               {productDetails && productDetails.ProductName}
             </Text>
           </View>
-          <View
-            style={{
-              width: '100%',
-              justifyContent: 'center',
-              alignItems: 'center',
-              //height: 230,
-              paddingTop: 0,
-              backgroundColor: '#f5f5f5',
-            }}>
+          <View style={styles.carouselView}>
             {imageList ? (
               <Carousel style={styles.carouselView} pageInfo={false}>
                 {imageList.map((data, index) => {
@@ -268,56 +262,25 @@ class ProductDetails extends Component {
           </View>
           <SegmentControl segments={segments} />
         </ScrollView>
-        {productDetails && productDetails.IsActive ? (
-          <View
-            style={{
-              flexDirection: 'row',
-              height: 50,
-              justifyContent: 'center',
-              borderTopWidth: 1,
-            }}>
-            <View
-              style={{
-                borderRightWidth: 1,
-                borderColor: '#e5e5e5',
-                width: '32.5%',
-              }}>
-              <Text style={{textAlign: 'center'}}>Platinum</Text>
-              <Text
-                style={{
-                  textAlign: 'center',
-                  fontFamily: 'Roboto-Bold',
-                  fontSize: 16,
-                }}>
+        {userInfo && productDetails && productDetails.IsActive ? (
+          <View style={styles.priceView}>
+            <View style={styles.priceSubView}>
+              <Text style={styles.centerText}>Platinum</Text>
+              <Text style={styles.priceValue}>
                 {productDetails.IsPlatinum
                   ? `₹ ${productDetails.PlatinumRate}`
                   : `N/A`}
               </Text>
             </View>
-            <View
-              style={{
-                borderRightWidth: 1,
-                borderColor: '#e5e5e5',
-                width: '32%',
-              }}>
-              <Text style={{textAlign: 'center'}}>Gold</Text>
-              <Text
-                style={{
-                  textAlign: 'center',
-                  fontFamily: 'Roboto-Bold',
-                  fontSize: 16,
-                }}>
+            <View style={styles.priceSubView}>
+              <Text style={styles.centerText}>Gold</Text>
+              <Text style={styles.priceValue}>
                 {productDetails.IsGold ? `₹ ${productDetails.GoldRate}` : `N/A`}
               </Text>
             </View>
-            <View style={{width: '32%'}}>
-              <Text style={{textAlign: 'center'}}>Silver</Text>
-              <Text
-                style={{
-                  textAlign: 'center',
-                  fontFamily: 'Roboto-Bold',
-                  fontSize: 16,
-                }}>
+            <View style={styles.priceSubView}>
+              <Text style={styles.centerText}>Silver</Text>
+              <Text style={styles.priceValue}>
                 {productDetails.IsSilver
                   ? `₹ ${productDetails.SilverRate}`
                   : `N/A`}
@@ -325,40 +288,20 @@ class ProductDetails extends Component {
             </View>
           </View>
         ) : (
-          <View
-            style={{
-              height: 45,
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: '100%',
-            }}>
-            <Text
-              style={{
-                fontSize: 16,
-                fontFamily: 'Roboto-Bold',
-                color: 'black',
-              }}>
-              Coming Soon...
-            </Text>
+          <View>
+            {userInfo ? (
+              <View style={styles.comingsoonView}>
+                <Text style={styles.priceValue}>Coming Soon...</Text>
+              </View>
+            ) : null}
           </View>
         )}
 
         {userInfo && userInfo.LoginType === '5' ? (
-          <View
-            style={{
-              borderTopWidth: 1,
-              borderColor: '#e5e5e5',
-              width: '100%',
-              paddingVertical: 5,
-            }}>
-            <Text style={{textAlign: 'center'}}>
+          <View style={styles.dealerPriceView}>
+            <Text style={styles.centerText}>
               Dealer{' '}
-              <Text
-                style={{
-                  textAlign: 'center',
-                  fontFamily: 'Roboto-Bold',
-                  fontSize: 16,
-                }}>
+              <Text style={styles.priceValue}>
                 ₹ {productDetails && productDetails.DealerRate}
               </Text>
             </Text>
@@ -368,13 +311,7 @@ class ProductDetails extends Component {
           <Button
             mode="contained"
             onPress={() => this.addWishListCart(productDetails, 'CART')}
-            style={{
-              height: 40,
-              backgroundColor: Color.primary,
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 0,
-            }}>
+            style={styles.addToCartButton}>
             Add to cart
           </Button>
         )}
