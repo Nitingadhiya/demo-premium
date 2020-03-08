@@ -98,7 +98,6 @@ class LoginComponent extends Component {
         global.userInfo = userInfo;
         Events.trigger('userInfo-drawer', userInfo);
         await Helper.setLocalStorageItem('userInfo', userInfo);
-        Helper.registerWithtoken(global.fcmToken);
         // global.LoginType = userInfo.LoginType;
         NavigationHelper.reset(this.props.navigation, 'UserNavigation');
       } else {

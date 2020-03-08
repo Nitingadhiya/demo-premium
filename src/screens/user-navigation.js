@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, Text} from 'react-native';
 import {RouteProp} from '@react-navigation/native';
+import {firebase} from '@react-native-firebase/messaging';
 import {createStackNavigator} from '@react-navigation/stack';
 import {AdminBottomTabs} from './bottom-tabs/admin-bottom-tabs';
 import {ManagerBottomTabs} from './bottom-tabs/manager-bottom-tabs';
@@ -29,7 +30,6 @@ type Props = {
   route: RouteProp<StackNavigatorParamlist, 'Splash'>,
 };
 const Stack = createStackNavigator();
-const primary = '#393184';
 export default class UserNavigation extends React.Component {
   state = {
     loading: false,
@@ -43,6 +43,73 @@ export default class UserNavigation extends React.Component {
       if (data.LoginType === '2' || data.LoginType === '3') {
         this.backgroundJobMethod();
       }
+      const channel = new firebase.notifications.Android.Channel(
+        'insider',
+        'insider channel',
+        firebase.notifications.Android.Importance.Max,
+      );
+      firebase.notifications().android.createChannel(channel);
+      this.checkPermission();
+      this.createNotificationListeners();
+    }
+  }
+
+  async getToken() {
+    let fcmToken = await Helper.getLocalStorageItem('fcmToken');
+    console.log('fcmTo', fcmToken);
+    if (!fcmToken) {
+      fcmToken = await firebase.messaging().getToken();
+      if (fcmToken) {
+        Helper.registerWithtoken(fcmToken);
+        await Helper.setLocalStorageItem('fcmToken', fcmToken);
+      }
+    }
+  }
+
+  async checkPermission() {
+    const enabled = await firebase.messaging().hasPermission();
+    if (enabled) {
+      this.getToken();
+    } else {
+      this.requestPermission();
+    }
+  }
+
+  async requestPermission() {
+    try {
+      await firebase.messaging().requestPermission();
+      this.getToken();
+    } catch (error) {
+      console.log('permission rejected');
+    }
+  }
+
+  async createNotificationListeners() {
+    firebase.notifications().onNotification(notification => {
+      notification.android.setChannelId('insider').setSound('default');
+      firebase.notifications().displayNotification(notification);
+    });
+    // Set up your listener
+    firebase.notifications().onNotificationOpened(notificationOpen => {
+      console.log(notificationOpen, 'notificationOpen');
+      const notification = notificationOpen.notification;
+
+      self.setState({
+        webURL: notification.data && notification.data.webURL,
+      });
+      firebase
+        .notifications()
+        .removeDeliveredNotification(notification.notificationId);
+      // notificationOpen.results.inputText will contain the text entered by the user
+    });
+  }
+
+  async checkPermission() {
+    const enabled = await firebase.messaging().hasPermission();
+    if (enabled) {
+      this.getToken();
+    } else {
+      this.requestPermission();
     }
   }
 
