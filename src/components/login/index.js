@@ -21,7 +21,7 @@ class LoginComponent extends Component {
       email: null,
       password: null,
     },
-    passwordSecure: false,
+    passwordSecure: true,
     error: {
       email: null,
       password: null,

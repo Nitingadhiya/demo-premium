@@ -10,7 +10,7 @@ import {
   Picker,
 } from 'react-native';
 import RadioForm from 'react-native-simple-radio-button';
-import CityListModal from '../../components/city-list-modal';
+import PickAddressModal from '../../components/pick-address-modal';
 import {MIcon, McIcon, FIcon} from '../../common/assets/vector-icon';
 import APICaller from '../../utils/api-caller';
 import styles from './styles';
@@ -399,7 +399,7 @@ class Register extends Component {
           </ScrollView>
         </KeyboardAvoidingView>
         {addressModalVisible ? (
-          <CityListModal
+          <PickAddressModal
             searchPlaceholderText="Search city here"
             closeModalPress={value => {
               this.setState(prevState => {

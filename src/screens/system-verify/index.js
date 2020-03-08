@@ -174,7 +174,7 @@ export class SystemVerify extends Component {
             <SpinnerView />
           </View>
         ) : null}
-        {!cameraOpen && !loadingData ? (
+        {/* {!cameraOpen && !loadingData ? (
           <View
             style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <Text style={{marginBottom: 10, fontSize: 14, fontWeight: 'bold'}}>
@@ -194,9 +194,9 @@ export class SystemVerify extends Component {
               </Text>
             </TouchableOpacity>
           </View>
-        ) : null}
-        {this.state.systemOTP && !loadingData ? (
-          <View style={{flex: 1}}>
+        ) : null} */}
+        <View style={{flex: 1}}>
+          {this.state.systemOTP && !loadingData ? (
             <View
               style={{
                 height: Dimensions.get('window').height - 50,
@@ -225,55 +225,24 @@ export class SystemVerify extends Component {
                 codeInputStyle={{borderWidth: 1.5}}
               />
             </View>
-          </View>
-        ) : null}
+          ) : null}
+        </View>
         <SystemVerifyWithQRCode userInfo={userInfo} />
-        {/* <Modal
-          animationType="slide"
-          transparent={false}
-          visible={this.state.qrCode}
-          onRequestClose={() => {
-            this.setState({qrCode: false});
+
+        <Text style={{marginBottom: 10, fontSize: 14, fontWeight: 'bold'}}>
+          {validateError}
+        </Text>
+        <TouchableOpacity
+          onPress={() => Events.trigger('qrCode', 'open again')}
+          style={{
+            paddingHorizontal: 10,
+            height: 45,
+            backgroundColor: Color.primary,
+            justifyContent: 'center',
+            alignItems: 'center',
           }}>
-          <View
-            style={{
-              backgroundColor: '#000',
-              height: Dimensions.get('window').height,
-            }}>
-            <View style={{flex: 1}}>
-              <QRCodeScanner
-                showMarker
-                onRead={this.onSuccess.bind(this)}
-                cameraStyle={{
-                  height: Dimensions.get('window').height - 50,
-                  width: Dimensions.get('window').width,
-                  marginTop: 50,
-                }}
-                customMarker={
-                  <View style={styles.rectangleContainer}>
-                    <View style={styles.topOverlay}>
-                      <Text style={styles.centerText}>
-                        Scan QR code on your products for book your complaint
-                      </Text>
-                    </View>
-
-                    <View style={{flexDirection: 'row'}}>
-                      <View style={styles.leftAndRightOverlay} />
-
-                      <View style={styles.rectangle}>
-                     
-                      </View>
-
-                      <View style={styles.leftAndRightOverlay} />
-                    </View>
-
-                    <View style={styles.bottomOverlay} />
-                  </View>
-                }
-              />
-            </View>
-          </View>
-        </Modal> */}
+          <Text style={{color: '#fff', fontSize: 14}}>Retry, Scan QR-Code</Text>
+        </TouchableOpacity>
       </SafeAreaView>
     );
   }

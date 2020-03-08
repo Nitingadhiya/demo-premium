@@ -43,6 +43,7 @@ export default class Dashboard extends Component {
     this.getUserInfo();
     Events.on('refreshDashboard', 'refresh', async () => {
       const userInfo = await Helper.getLocalStorageItem('userInfo');
+      console.log(userInfo, 'user');
       this.setState({
         userInfo,
       });

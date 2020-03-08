@@ -1,32 +1,86 @@
 import {Color, Matrics, Fonts, ApplicationStyles} from '../../common/styles';
 
 export default styles = {
-  container: {
-    width: '90%',
-    backgroundColor: Color.white,
-    paddingTop: 20,
+  ...ApplicationStyles,
+  safeAreaView: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  validationView: {
     position: 'absolute',
-    borderWidth: 1,
-    borderRadius: 10,
-    margin: 20,
+    zIndex: 1,
     top: 0,
+    left: 0,
+    justifyContent: 'center',
+    width: '100%',
+    height: 50,
+    backgroundColor: '#fff',
+    borderColor: '#ccc',
+    borderBottomWidth: 1,
   },
-  imageStyle: {
-    alignSelf: 'center',
+  errorClass: {textAlign: 'center', color: 'red'},
+  imageViewClass: {
+    height: Matrics.ScaleValue(120),
+    width: Matrics.ScaleValue(120),
+    backgroundColor: '#d3d3d3',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: Matrics.ScaleValue(120) / 2,
   },
-  txtfieldStyle: {
-    paddingTop: Matrics.ScaleValue(9),
+  editTouchClass: {
+    position: 'absolute',
+    zIndex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    padding: 10,
+    borderRadius: 20,
   },
-  textBoxView: {flex: 1, justifyContent: 'flex-start', alignItems: 'center'},
+  formGroup: {flex: 1, padding: 10},
+  birthdayForm: {
+    height: 50,
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'row',
+    borderBottomColor: '#d3d3d3',
+    borderBottomWidth: 1,
+  },
+  birthdayLabel: {width: 120, paddingLeft: 5},
+  birthdayLabelText: {color: '#333', fontSize: 14},
+  datePickerView: {
+    flex: 1,
+    justifyContent: 'flex-start',
+  },
+  genderForm: {
+    width: '100%',
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
+    height: 60,
+    alignItems: 'center',
+  },
+  genderLabelView: {
+    height: 60,
+    justifyContent: 'center',
+    width: 120,
+    paddingLeft: 5,
+  },
+  genderPicker: {height: 50, width: 200, marginLeft: -5},
+  labelClass: {
+    borderBottomWidth: 1,
+    borderColor: '#d3d3d3',
+    flexDirection: 'row',
+    height: 60,
+    alignItems: 'center',
+  },
+  width120: {width: 120},
+  font16_333: {
+    color: '#333',
+    fontSize: 16,
+  },
+  font16_999: {color: '#999', fontSize: 16},
   subTextBoxView: {
     width: '100%',
     borderBottomWidth: 1,
     borderBottomColor: '#d3d3d3',
-  },
-  spinnerView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignSelf: 'center',
   },
   userView: {
     height: Matrics.ScaleValue(120),

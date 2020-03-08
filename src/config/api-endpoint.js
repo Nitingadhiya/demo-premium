@@ -64,6 +64,11 @@ const getPartFromSerialNoEndPoint = tag =>
 const getPartFromSystemTagNoEndPoint = tag =>
   `GetPartFromSystemTag?SystemTag=${tag}`;
 const userCheckEndPoint = mobileNo => `UserCheck?MobileNo=${mobileNo}`;
+const getLandMarksEndPoint = 'GetLandMarks';
+const getAreasEndPoint = 'GetAreas';
+const getRoadsEndPoint = 'GetRoads';
+const uploadUserImageEndPoint = 'UploadUserImage';
+const updateAddressEndPoint = 'UpdateAddress';
 
 module.exports = {
   checkVersionEndPoint,
@@ -106,4 +111,9 @@ module.exports = {
   getPartFromSerialNoEndPoint,
   getPartFromSystemTagNoEndPoint,
   userCheckEndPoint,
+  getLandMarksEndPoint,
+  getAreasEndPoint,
+  getRoadsEndPoint,
+  uploadUserImageEndPoint,
+  updateAddressEndPoint,
 };

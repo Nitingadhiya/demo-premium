@@ -125,7 +125,6 @@ class MyProfile extends Component {
               padding: 10,
               justifyContent: 'center',
               alignItems: 'center',
-              borderWidth: 1,
             }}>
             <View style={styles.imageView}>
               <Image
@@ -161,7 +160,7 @@ class MyProfile extends Component {
               {this.listInfo('Gender', profileInfo.Gender)}
               {this.listInfo('Company Name', profileInfo.CompanyName)}
               {this.listInfo('GST No.', profileInfo.GSTNo)}
-              {this.listInfo('Address', profileInfo.Address)}
+              {this.listInfo('Address', profileInfo.Home)}
               {this.listInfo('Landmark', profileInfo.Landmark)}
               {this.listInfo('Street / Road', profileInfo.Road)}
               {this.listInfo('Area', profileInfo.Area)}
@@ -170,9 +169,9 @@ class MyProfile extends Component {
               {this.listInfo('State', profileInfo.State)}
               {this.listInfo(
                 'Business Type',
-                profileInfo.BusinessType && profileInfo.BusinessType === 'B'
-                  ? 'Business Use'
-                  : 'Home Use',
+                profileInfo.BusinessType && profileInfo.BusinessType === 'H'
+                  ? 'Home Use'
+                  : 'Business Use',
               )}
             </View>
           </View>

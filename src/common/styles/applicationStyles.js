@@ -5,6 +5,12 @@ import Matrics from './matrics';
 import Fonts from '../assets/fonts';
 
 const ApplicationStyles = {
+  flex1: {
+    flex: 1,
+  },
+  headerBg: {
+    backgroundColor: Color.primary,
+  },
   headerStyle: {
     //backgroundColor: Color.darkRed,
     // borderBottomWidth: 0,

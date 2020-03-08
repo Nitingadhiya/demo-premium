@@ -3,30 +3,24 @@ import React, {Component} from 'react';
 import {
   Text,
   View,
-  Image,
   StyleSheet,
   Alert,
   TouchableOpacity,
-  TouchableWithoutFeedback,
-  TextInput,
   Dimensions,
-  FlatList,
   SafeAreaView,
-  ScrollView,
-  Modal,
-  Picker,
   KeyboardAvoidingView,
 } from 'react-native';
 import _ from 'lodash';
+import PickAddressModal from '../../components/pick-address-modal';
 import Events from '../../utils/events';
 import {Color, Matrics} from '../../common/styles';
 import {TextInputView, Header} from '../../common/components';
 import {MIcon} from '../../common/assets/vector-icon';
 import APICaller from '../../utils/api-caller';
 import Helper from '../../utils/helper';
-// CONSTANTS
+import {updateAddressEndPoint} from '../../config/api-endpoint';
+
 const window = Dimensions.get('window');
-let self;
 
 let result;
 
@@ -55,15 +49,15 @@ class UpdateAddress extends Component {
     roadText: null,
     roadSearch: null,
 
+    cityText: null,
+
     modalType: false,
 
     datePicker: false,
     mediaPath: null,
     GSTNo: null,
   };
-  // --->>>Specify Navigation Properties for screen------>>>
 
-  // ------------>>>LifeCycle Methods------------->>>
   componentDidMount() {
     self = this;
     this.year = 2015;
@@ -71,9 +65,6 @@ class UpdateAddress extends Component {
     this.day = 27;
 
     this.getUserInfo();
-    this.getLandMark();
-    this.getArea();
-    this.getRoad();
   }
 
   async getUserInfo() {
@@ -109,7 +100,7 @@ class UpdateAddress extends Component {
       this.setState({
         areaText: Area,
         roadText: Road,
-        City,
+        cityText: City,
         Divison: State,
         landmarkText: Landmark,
         Pincode,
@@ -132,160 +123,78 @@ class UpdateAddress extends Component {
     }
   }
 
-  setIndicator() {
-    const {loader} = getLoader().loader;
-    this.setState({
-      loadingData: this.state.refreshing ? !loader : loader,
-      refreshing: false,
-    });
-  }
+  async updateAddressMethod() {
+    const {
+      UserName,
+      Address,
+      landmarkText,
+      areaText,
+      roadText,
+      cityText,
+      Pincode,
+      Divison,
+    } = this.state;
 
-  async updateAddressFn() {
-    const endPoint = 'UpdateAddress';
-    const method = 'Post';
     const body = {
       An_Master_Users: [
         {
-          UserName: this.state.UserName,
-          Home: this.state.Address,
-          Landmark: this.state.landmarkText,
-          Area: this.state.areaText,
-          Road: this.state.roadText,
-          City: this.state.City,
-          Pincode: this.state.Pincode,
-          State: this.state.Divison,
+          UserName,
+          Home: Address,
+          Landmark: landmarkText,
+          Area: areaText,
+          Road: roadText,
+          City: cityText,
+          Pincode,
+          State: Divison,
         },
       ],
     };
-    APICaller(`${endPoint}`, method, JSON.stringify(body)).then(json => {
-      if (json.data.Success === 1 || json.data.Success === '1') {
-        Events.trigger('updateAddress', json.data.Response);
-        result.Home = this.state.Address;
-        result.Landmark = this.state.landmarkText;
-        result.Area = this.state.areaText;
-        result.Road = this.state.roadText;
-        result.City = this.state.City;
-        result.Pincode = this.state.Pincode;
-        result.State = this.state.Divison;
-        Helper.setLocalStorageItem('userInfo', result);
-        this.props.navigation.goBack();
-      }
-    });
+    APICaller(updateAddressEndPoint, 'POST', JSON.stringify(body)).then(
+      async json => {
+        if (json.data.Success === 1 || json.data.Success === '1') {
+          Events.trigger('updateAddress', json.data.Response);
+          result.Home = this.state.Address;
+          result.Landmark = this.state.landmarkText;
+          result.Area = this.state.areaText;
+          result.Road = this.state.roadText;
+          result.City = this.state.City;
+          result.Pincode = this.state.Pincode;
+          result.State = this.state.Divison;
+          await Helper.setLocalStorageItem('userInfo', result);
+          this.props.navigation.goBack();
+          Events.trigger('refreshDashboard', 'refresh');
+          Alert.alert('Address', 'Your address updated successfully.');
+        } else {
+          Alert.alert('Failed', json.data.Message || 'Failed to save address');
+        }
+      },
+    );
   }
 
-  getLandMark() {
-    const endPoint = `GetLandmarks`;
-    const method = 'GET';
-    APICaller(`${endPoint}`, method).then(json => {
-      if (json.data.Success === 1 || json.data.Success === '1') {
-        let jsonLandmark = json.data.Response;
-        let arr = [];
-        jsonLandmark.map(res => {
-          if (res.Landmark) {
-            arr.push(res);
-          }
-        });
-        this.setState({landmarkList: arr, filterLandmarkList: arr});
-      }
-    });
-  }
-
-  getArea() {
-    const endPoint = `GetAreas`;
-    const method = 'GET';
-    APICaller(`${endPoint}`, method).then(json => {
-      if (json.data.Success === 1 || json.data.Success === '1') {
-        const jsonArea = json.data.Response;
-        const arr = [];
-        jsonArea.map(res => {
-          if (res.Area) {
-            arr.push(res);
-          }
-        });
-        this.setState({areaList: arr, filterAreaList: arr});
-      }
-    });
-  }
-
-  getRoad() {
-    const endPoint = `GetRoads`;
-    const method = 'GET';
-    APICaller(`${endPoint}`, method).then(json => {
-      if (json.data.Success === 1 || json.data.Success === '1') {
-        const jsonRoad = json.data.Response;
-        let arr = [];
-        jsonRoad.map(res => {
-          if (res.Road) {
-            arr.push(res);
-          }
-        });
-        this.setState({roadList: arr, filterRoadList: arr});
-      }
-    });
-  }
-
-  editPress() {
-    this.setState({
-      editProfile: true,
-    });
-  }
   selectedModal(type, val) {
-    this.setState({
-      addressModalVisible: false,
-    });
     if (type === 'Landmark') {
       this.setState({
         landmarkText: val,
+        addressModalVisible: false,
       });
     }
     if (type === 'Area') {
       this.setState({
         areaText: val,
+        addressModalVisible: false,
       });
     }
     if (type === 'Road') {
       this.setState({
         roadText: val,
+        addressModalVisible: false,
       });
     }
-  }
-
-  loadModalFlatListData() {
-    if (this.state.modalType === 'Landmark') {
-      return this.state.filterLandmarkList; //this.state.landmarkList;
-    }
-    if (this.state.modalType === 'Area') {
-      return this.state.filterAreaList; //this.state.areaList;
-    }
-    if (this.state.modalType === 'Road') {
-      return this.state.filterRoadList; //this.state.roadList;
-    }
-  }
-
-  noItemFound = () => {
-    return (
-      <View
-        style={{
-          flex: 1,
-          height: '100%',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <Text style={{color: 'grey', fontSize: 16}}>No items found</Text>
-      </View>
-    );
-  };
-
-  saveSearchValue() {
-    this.setState({addressModalVisible: false});
-    if (this.state.modalType === 'Landmark') {
-      this.setState({landmarkText: this.state.landmarkSearch});
-    }
-    if (this.state.modalType === 'Area') {
-      this.setState({areaText: this.state.areaSearch});
-    }
-    if (this.state.modalType === 'road') {
-      this.setState({roadText: this.state.roadSearch});
+    if (type === 'City') {
+      this.setState({
+        cityText: val,
+        addressModalVisible: false,
+      });
     }
   }
 
@@ -301,156 +210,11 @@ class UpdateAddress extends Component {
     }
   }
 
-  searchTextValue() {
-    if (this.state.modalType === 'Landmark') {
-      return this.state.landmarkSearch;
-    }
-    if (this.state.modalType === 'Area') {
-      return this.state.areaSearch;
-    }
-    if (this.state.modalType === 'Road') {
-      return this.state.roadSearch;
-    }
-  }
-
-  // changeTextForsearch(text) {
-  //   if (this.state.modalType === 'Landmark') {
-  //     this.setState({landmarkSearch: text});
-  //   }
-  //   if (this.state.modalType === 'Area') {
-  //     this.setState({areaSearch: text});
-  //   }
-  //   if (this.state.modalType === 'Road') {
-  //     this.setState({roadSearch: text});
-  //   }
-  // }
-
-  replaceCustomExpression = title => {
-    // console.warn(title.replace(/[^a-zA-Z 0-9 | ]/ig, ""));
-    const result = title.replace(/  +/g, ' '); // Replace multiple whitespace to a whitespace
-    return result.replace(/[^a-zA-Z 0-9 | ]/gi, '').toLowerCase();
-  };
-
-  changeTextForsearch(text) {
-    if (this.state.modalType === 'Landmark') {
-      const epi = this.state.landmarkList.filter(land =>
-        this.replaceCustomExpression(land.Landmark).includes(
-          this.replaceCustomExpression(text),
-        ),
-      );
-      this.setState({landmarkSearch: text, filterLandmarkList: epi});
-    }
-    if (this.state.modalType === 'Area') {
-      const epi = this.state.areaList.filter(land =>
-        this.replaceCustomExpression(land.Area).includes(
-          this.replaceCustomExpression(text),
-        ),
-      );
-      this.setState({areaSearch: text, filterAreaList: epi});
-    }
-    if (this.state.modalType === 'Road') {
-      const epi = this.state.roadList.filter(land =>
-        this.replaceCustomExpression(land.Road).includes(
-          this.replaceCustomExpression(text),
-        ),
-      );
-      this.setState({roadSearch: text, filterRoadList: epi});
-    }
-  }
-
-  // ----------->>>Render Method-------------->>>
-
   render() {
+    const {cityText, addressModalVisible, modalType} = this.state;
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
         <Header title="Update Address" left="back" />
-        <Modal
-          animationType="slide"
-          transparent={false}
-          visible={this.state.addressModalVisible}
-          onRequestClose={() => {
-            //  Alert.alert('Modal has been closed.');
-            this.setState({addressModalVisible: false});
-          }}>
-          <View style={{marginTop: 22, flex: 1}}>
-            <View style={{flexDirection: 'row', padding: 5}}>
-              <TouchableOpacity
-                style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  width: 50,
-                }}
-                onPress={() => {
-                  this.setState({addressModalVisible: false});
-                }}>
-                <Text style={{color: '#000', fontWeight: 'bold'}}>Back</Text>
-              </TouchableOpacity>
-              <TextInput
-                placeholder={this.searchPlaceholder()}
-                value={this.searchTextValue()}
-                onChangeText={text => this.changeTextForsearch(text)}
-                style={{
-                  height: 40,
-                  width: Dimensions.get('window').width - 110,
-                  borderWidth: 1,
-                  padding: 0,
-                  paddingLeft: 10,
-                  borderColor: '#d3d3d3',
-                }}
-              />
-              <TouchableOpacity
-                style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  width: 50,
-                }}
-                onPress={() => this.saveSearchValue()}>
-                <Text style={{color: '#000', fontWeight: 'bold'}}>Done</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={{flex: 1}}>
-              {this.state.modalType ? (
-                <FlatList
-                  data={this.loadModalFlatListData()}
-                  keyboardShouldPersistTaps={'handled'}
-                  contentContainerStyle={{flexGrow: 1}}
-                  ListEmptyComponent={() => this.noItemFound()}
-                  style={{flex: 1}}
-                  extraData={this.state}
-                  renderItem={({item}) => (
-                    <TouchableOpacity
-                      style={{
-                        height: 40,
-                        flex: 1,
-                        borderTopWidth: 1,
-                        justifyContent: 'center',
-                        padding: 5,
-                        borderColor: '#d3d3d3',
-                      }}
-                      onPress={() => {
-                        if (this.state.modalType === 'Landmark') {
-                          this.selectedModal('Landmark', item.Landmark);
-                        }
-                        if (this.state.modalType === 'Area') {
-                          this.selectedModal('Area', item.Area);
-                        }
-                        if (this.state.modalType === 'Road') {
-                          this.selectedModal('Road', item.Road);
-                        }
-                      }}>
-                      <Text style={{color: '#333'}}>
-                        {this.state.modalType === 'Area' && item.Area}
-                        {this.state.modalType === 'Landmark' && item.Landmark}
-                        {this.state.modalType === 'Road' && item.Road}
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-                />
-              ) : null}
-            </View>
-          </View>
-        </Modal>
-
         <KeyboardAvoidingView style={{flex: 1}}>
           <View style={{flex: 1}}>
             <View style={{flex: 1, padding: 10}}>
@@ -529,16 +293,33 @@ class UpdateAddress extends Component {
                   {this.state.areaText || 'Area'}
                 </Text>
               </TouchableOpacity>
-              <View style={styles.subTextBoxView}>
-                <TextInputView
-                  placeholder="City"
-                  value={this.state.City}
-                  autoCorrect={false}
-                  onChangeText={value => this.setState({City: value})}
-                  blurOnSubmit={false}
-                  customStyle={styles.plml0}
-                />
-              </View>
+              <TouchableOpacity
+                style={{
+                  borderBottomWidth: 1,
+                  borderColor: '#d3d3d3',
+                  flexDirection: 'row',
+                  height: 60,
+                  alignItems: 'center',
+                }}
+                onPress={() =>
+                  this.setState({
+                    addressModalVisible: true,
+                    modalType: 'City',
+                  })
+                }>
+                <View style={{width: 120}}>
+                  <Text style={{color: '#333', fontSize: 14}}>City</Text>
+                </View>
+                <View style={{flex: 1}}>
+                  {cityText ? (
+                    <Text style={{color: '#333', fontSize: 16}}>
+                      {cityText}
+                    </Text>
+                  ) : (
+                    <Text style={{color: '#999', fontSize: 16}}>City</Text>
+                  )}
+                </View>
+              </TouchableOpacity>
               <View style={styles.subTextBoxView}>
                 <TextInputView
                   placeholder="Pincode"
@@ -562,11 +343,22 @@ class UpdateAddress extends Component {
             </View>
           </View>
           <TouchableOpacity
-            onPress={() => this.updateAddressFn()}
+            onPress={() => this.updateAddressMethod()}
             style={styles.checkout}>
             <Text style={styles.checkoutText}> Save</Text>
           </TouchableOpacity>
         </KeyboardAvoidingView>
+
+        {addressModalVisible ? (
+          <PickAddressModal
+            searchPlaceholderText={this.searchPlaceholder()}
+            modalType={modalType}
+            closeModalPress={(type, item) => {
+              this.selectedModal(type, item);
+              this.setState({addressModalVisible: false});
+            }}
+          />
+        ) : null}
       </SafeAreaView>
     );
   }
