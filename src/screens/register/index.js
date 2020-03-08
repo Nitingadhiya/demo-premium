@@ -186,6 +186,24 @@ class Register extends Component {
     );
   }
 
+  // We not used anywhere just put in backlog
+  getBusinessList = () => {
+    const endPoint = 'GetBusinessList';
+    APICaller(`${endPoint}`, 'GET').then(json => {
+      if (json.data.Success === '0' || json.data.Success === 0) {
+        Alert.alert('Alert', json.data.Message);
+      }
+      this.setState({
+        loadingData: false,
+      });
+      if (json.data.Success === '1') {
+        this.setState({
+          businessList: json.data.Response,
+        });
+      }
+    });
+  };
+
   render() {
     const {
       registerForm,

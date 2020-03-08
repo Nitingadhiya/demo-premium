@@ -43,7 +43,7 @@ const insertWishCartEndPoint = (productNo, userName, type) =>
   `InsertWishCart?ProductNo=${productNo}&Username=${userName}&WishCart=${type}`;
 const removeWishCartEndPoint = (productNo, userName, type) =>
   `RemoveWishCart?ProductNo=${productNo}&Username=${userName}&WishCart=${type}`;
-const getOrderReadyEndPoint = userName => `GetOrderList?Username=${userName}`;
+// const getOrderReadyEndPoint = userName => `GetOrderList?Username=${userName}`;
 const getPolicyEndPoint = 'GetPolicyList';
 const uploadSignatureEndPoint = 'UploadSignatureImage';
 const forgotPasswordendPoint = mobileNo =>
@@ -102,7 +102,7 @@ module.exports = {
   changePasswordEndPoint,
   insertWishCartEndPoint,
   removeWishCartEndPoint,
-  getOrderReadyEndPoint,
+  // getOrderReadyEndPoint,
   getPolicyEndPoint,
   uploadSignatureEndPoint,
   forgotPasswordendPoint,

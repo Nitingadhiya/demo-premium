@@ -9,6 +9,8 @@ import {
   FlatList,
 } from 'react-native';
 import _ from 'lodash';
+import {StackActions} from '@react-navigation/native';
+
 import RNOtpVerify from 'react-native-otp-verify';
 import CodeInput from 'react-native-confirmation-code-input';
 import APICaller from '../../utils/api-caller';
@@ -196,6 +198,29 @@ class PlaceOrder extends Component {
   async onRefresh() {
     await this.setState({refreshing: true});
     this.getProductList(this.state.userInfo.UserName);
+  }
+
+  proceedPlaceOrder() {
+    // NavigationHelper.navigate(this.props.navigation, 'UserNavigation');
+    // return;
+    this.setState({loadingData: true});
+
+    const endPoint = `PlaceOrder?Username=${userInfo.UserName}`;
+    const method = 'GET';
+    APICaller(`${endPoint}`, method).then(json => {
+      if (json.data.Success === '1') {
+        this.props.navigation.dispatch(StackActions.popToTop());
+
+        //NavigationHelper.navigate(this.props.navigation, 'Dashboard');
+        Alert.alert(
+          'Order',
+          `Order Successfully completed #${json.data.Response[0].OrderNo}`,
+        );
+      } else {
+        Alert.alert('Something went to wrong, please try again');
+      }
+      this.setState({loadingData: false});
+    });
   }
 
   render() {

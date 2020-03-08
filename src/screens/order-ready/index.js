@@ -21,7 +21,7 @@ import APICaller from '../../utils/api-caller';
 import {Images, Color, Matrics} from '../../common/styles';
 import POrder from '../../components/pending-order';
 import {Header} from '../../common/components';
-import {getOrderReadyEndPoint} from '../../config/api-endpoint';
+import {getOrderListEndPoint} from '../../config/api-endpoint';
 import Helper from '../../utils/helper';
 
 let self;
@@ -52,7 +52,7 @@ class OrderReady extends Component {
 
   getOrderList(userName) {
     if (!this.state.refreshing) this.setState({loadingData: true});
-    APICaller(getOrderReadyEndPoint(userName), 'GET').then(json => {
+    APICaller(getOrderListEndPoint(userName), 'GET').then(json => {
       if (json.data.Success === 1 || json.data.Success === '1') {
         if (result.LoginType === '1') {
           this.setState({
