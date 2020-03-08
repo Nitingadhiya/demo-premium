@@ -1,6 +1,7 @@
-import {Color, Matrics} from '../../common/styles';
+import {Color, Matrics, ApplicationStyles} from '../../common/styles';
 
 export default styles = {
+  ...ApplicationStyles,
   container: {
     backgroundColor: Color.white,
     padding: 10,
