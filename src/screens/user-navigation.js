@@ -1,7 +1,8 @@
 import React from 'react';
 import {View, Text} from 'react-native';
 import {RouteProp} from '@react-navigation/native';
-import {firebase} from '@react-native-firebase/messaging';
+import firebase from 'react-native-firebase';
+
 import {createStackNavigator} from '@react-navigation/stack';
 import {AdminBottomTabs} from './bottom-tabs/admin-bottom-tabs';
 import {ManagerBottomTabs} from './bottom-tabs/manager-bottom-tabs';
@@ -23,6 +24,7 @@ import OTPScreen from './otp';
 import BackgroundJob from 'react-native-background-job';
 import BackgroundServiceHelper from '../utils/background-job';
 import ProductList from '../screens/product-list';
+import NavigationHelper from '../utils/navigation-helper';
 
 BackgroundServiceHelper.BackgroundServiceJob();
 
@@ -43,12 +45,12 @@ export default class UserNavigation extends React.Component {
       if (data.LoginType === '2' || data.LoginType === '3') {
         this.backgroundJobMethod();
       }
-      const channel = new firebase.notifications.Android.Channel(
-        'insider',
-        'insider channel',
-        firebase.notifications.Android.Importance.Max,
-      );
-      firebase.notifications().android.createChannel(channel);
+      // const channel = new firebase.notifications.Android.Channel(
+      //   'insider',
+      //   'insider channel',
+      //   firebase.notifications.Android.Importance.Max,
+      // );
+      // firebase.notifications().android.createChannel(channel);
       this.checkPermission();
       this.createNotificationListeners();
     }
@@ -84,19 +86,38 @@ export default class UserNavigation extends React.Component {
     }
   }
 
+  navigationProductDetail(notif) {
+    if (notif.type && notif.type === 'ProductDetail') {
+      const data = {
+        Product: '',
+        productNo: notif.ProductId,
+      };
+      NavigationHelper.navigate(this.props.navigation, 'ProductDetails', data);
+    }
+  }
+
   async createNotificationListeners() {
+    const notificationOpen: NotificationOpen = await firebase
+      .notifications()
+      .getInitialNotification();
+    if (notificationOpen) {
+      const notification = notificationOpen.notification;
+      const notifcationData = notification.data || null;
+      this.navigationProductDetail(notifcationData);
+    }
+
     firebase.notifications().onNotification(notification => {
       notification.android.setChannelId('insider').setSound('default');
       firebase.notifications().displayNotification(notification);
     });
     // Set up your listener
     firebase.notifications().onNotificationOpened(notificationOpen => {
-      console.log(notificationOpen, 'notificationOpen');
       const notification = notificationOpen.notification;
-
-      self.setState({
-        webURL: notification.data && notification.data.webURL,
-      });
+      const notifcationData = notification.data || null;
+      this.navigationProductDetail(notifcationData);
+      // self.setState({
+      //   webURL: notification.data && notification.data.webURL,
+      // });
       firebase
         .notifications()
         .removeDeliveredNotification(notification.notificationId);

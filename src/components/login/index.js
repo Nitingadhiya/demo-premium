@@ -32,11 +32,12 @@ class LoginComponent extends Component {
 
   async componentDidMount() {
     const loginForm = await Helper.getLocalStorageItem('userCredentials');
-    const rememberme = await Helper.getLocalStorageItem('userCredentials');
-    this.setState({
-      loginForm,
-      rememberme: loginForm.email,
-    });
+    if (loginForm) {
+      this.setState({
+        loginForm,
+        rememberme: loginForm.email,
+      });
+    }
   }
 
   changeTexInputValue(type, value) {

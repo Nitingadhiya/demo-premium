@@ -48,6 +48,7 @@ class ProductDetails extends Component {
   async getUserInfo() {
     const userInfo = await Helper.getLocalStorageItem('userInfo');
     const {route} = this.props;
+    console.log('route', route);
     if (route.params) {
       this.setState({
         productNo: route.params.productNo,
