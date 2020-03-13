@@ -17,6 +17,8 @@ import {MIcon} from '../../common/assets/vector-icon';
 import APICaller from '../../utils/api-caller';
 import {SpinnerView, Header} from '../../common/components';
 import Helper from '../../utils/helper';
+import Events from '../../utils/events';
+import ComplaintPriceModal from '../../components/complaint-price-modal';
 
 let filterComplainDesc = [];
 //= ===CLASS DECLARATION====//
@@ -40,9 +42,8 @@ export default class submitComplaint extends Component {
     selectedtempSYS: null,
     complainCharge: 0,
     complainChargeCOS: 350,
-    ComplaintID: null,
+    complaintId: null,
     paymentMethod: '0',
-    paymentServiceModal: false,
     paramsData: null,
     selectedServices: 'Advance',
     userInfo: null,
@@ -54,6 +55,7 @@ export default class submitComplaint extends Component {
     const {route} = this.props;
     const params = route.params;
     this.systemTag = '';
+    this.getcompDescList();
     if (params) {
       this.setState({
         systemTag: params.systemTag,
@@ -69,14 +71,21 @@ export default class submitComplaint extends Component {
         this.systemTag = params.tmpSystemName[0].sysTag;
       }
       if (params.complainCharge > 0) {
-        this.setState({
-          paymentServiceModal: true,
-        });
+        // this.setState({
+        //   paymentServiceModal: true,
+        // });
       }
       this.getUserInfo();
     }
     self = this;
-    this.getcompDescList();
+
+    Events.on('complaint-advance-payment', 'complaint', res => {
+      this.setState({
+        webviewShow: res.visible,
+        complaintId: res.complaintId,
+        complainCharge: res.complainCharge,
+      });
+    });
   }
 
   async getUserInfo() {
@@ -84,45 +93,13 @@ export default class submitComplaint extends Component {
     this.setState({
       userInfo,
     });
-    this.getComplainCharge(this.systemTag, userInfo.UserName);
-  }
-
-  getComplainCharge(result, userName) {
-    if (userName) {
-      this.setState({
-        loadingData: true,
-      });
-      const endPoint = `GetComplaintCharges?SystemTag=${result}&BaseUserName=${userName}`;
-      const method = 'GET';
-      APICaller(`${endPoint}`, method).then(json => {
-        this.setState({
-          loadingData: false,
-        });
-        if (json.data.Success === '1') {
-          this.setState({
-            complainCharge: json.data.Response.ComplaintCharge,
-            complainChargeCOS: json.data.Response.ComplaintChargeCOS,
-          });
-        }
-      });
-    }
-  }
-
-  // ------------->>>Controllers/Functions------------>>>>
-  setIndicator() {
-    const {loader} = getLoader().loader;
-    this.setState({
-      loadingData: this.state.refreshing ? !loader : loader,
-      refreshing: false,
-    });
   }
 
   getcompDescList() {
     if (!this.state.refreshing) {
       this.setState({loadingData: true});
     }
-    //setLoader({loader: true});
-    //  APIController.getProduct();
+
     this.setState({
       loadingData: true,
     });
@@ -175,71 +152,6 @@ export default class submitComplaint extends Component {
     });
   }
 
-  submitComplaintFn() {
-    const {userInfo} = this.state;
-    if (userInfo.UserName) {
-      this.setState({
-        loadingData: true,
-      });
-      const endPoint = `ComplaintSubmit`;
-      const method = 'POST';
-      const body = {
-        An_Master_Complaint: [
-          {
-            ComplaintSubject: this.state.selectedCompSubject,
-            ComplaintDesc: this.state.selectedCompDesc,
-            ComplaintBy: userInfo.UserName,
-            SystemTag: this.state.systemTag,
-            TotalCharges:
-              this.state.paymentMethod === '1'
-                ? this.state.complainChargeCOS
-                : this.state.complainCharge,
-            PaymentMode: this.state.paymentMethod,
-          },
-        ],
-      };
-      APICaller(`${endPoint}`, method, JSON.stringify(body)).then(json => {
-        this.setState({
-          loadingData: false,
-        });
-        if (!json) {
-          Alert.alert('Something went to wrong');
-        }
-        if (json.status !== 200) {
-          Alert.alert('Error Status', `${json.status}`);
-          return;
-        }
-        if (json.data.Success === '1') {
-          if (json.data.Response) {
-            this.setState({
-              ComplaintID: json.data.Response[0].ComplaintID,
-            });
-            if (
-              this.state.complainCharge > 0 &&
-              this.state.selectedServices !== 'Cash on Service'
-            ) {
-              this.setState({webviewShow: true});
-            } else {
-              Alert.alert(
-                'Complaint',
-                'Complaint successfully submitted.',
-                [{text: 'OK', onPress: () => this.props.navigation.goBack()}],
-                {cancelable: false},
-              );
-            }
-          } else {
-            Alert.alert('Complaint', json.data.Message);
-          }
-        } else if (json.data.Success === '2') {
-          Alert.alert('Alert', 'Complaint Already Booked');
-        } else {
-          Alert.alert('Alert', json.data.Message);
-          // Alert.alert('Error -','Something went to wrong, please try again')
-        }
-      });
-    }
-  }
-
   subjectChange(value) {
     let dataTypeId = null;
     this.state.subject.map(data => {
@@ -267,13 +179,12 @@ export default class submitComplaint extends Component {
     });
   }
 
-  checkAndSubmit() {
-    this.submitComplaintFn();
-    // if (this.state.complainCharge > 0) {
-    //   this.setState({ webviewShow: true });
-    // } else {
-    //   this.submitComplaintFn();
-    // }
+  nextAndSubmit() {
+    const data = {
+      visible: true,
+      sysTag: this.state.systemTag,
+    };
+    Events.trigger('complaintPriceModal', 'visible', data);
   }
 
   webviewStartLoad() {
@@ -287,38 +198,25 @@ export default class submitComplaint extends Component {
       webviewLoad: true,
     });
   }
-  selectPackageServices(value) {
-    this.setState({
-      paymentMethod: value,
-      selectedServices: value === '1' ? 'Cash on Service' : 'Advance',
-    });
-  }
-  // ----------->>>Render Method-------------->>>
-  //'http://premiumsales.in/Home/CreatePaymentMobile?mobilenumber=9725682497&email=arkeshkorat404@gmail.com&amount=',
+
   render() {
-    const {paymentMethod, selectedServices, paramsData, userInfo} = this.state;
-    const {navigation} = this.props;
+    const {userInfo} = this.state;
     return (
       <SafeAreaView style={{flex: 1}}>
         <Header title="Submit Complaint" left="back" />
 
         {!this.state.webviewLoad && this.state.webviewShow ? (
-          <View
-            style={{
-              position: 'absolute',
-              zIndex: 1,
-              top: '45%',
-              alignSelf: 'center',
-            }}>
+          <View style={styles.spinnerViewCenter}>
             <SpinnerView />
           </View>
         ) : null}
+
         {userInfo && this.state.webviewShow ? (
           <WebView
             onLoadStart={() => this.webviewStartLoad()}
             onLoadEnd={() => this.webviewEndLoad()}
             source={{
-              uri: `http://premiumitware.com/Home/CreatePaymentMobile?mobilenumber=${userInfo.MobileNo}&email=${userInfo.EmailId}&amount=${this.state.complainCharge}&DocumentNo=${this.state.ComplaintID}&UserName=${userInfo.UserName}`,
+              uri: `http://premiumitware.com/Home/CreatePaymentMobile?mobilenumber=${userInfo.MobileNo}&email=${userInfo.EmailId}&amount=${this.state.complainCharge}&DocumentNo=${this.state.complaintId}&UserName=${userInfo.UserName}`,
             }}
             style={{flex: 1}}
             onLoad={syntheticEvent => {
@@ -359,10 +257,10 @@ export default class submitComplaint extends Component {
           />
         ) : (
           <View style={styles.container}>
-            <View style={{height: 40, justifyContent: 'center'}}>
+            <View style={styles.viewSystemName}>
               <Text>Enter Complaint Subject</Text>
             </View>
-            <View style={{borderColor: '#d3d3d3', borderWidth: 1}}>
+            <View style={styles.borderW1}>
               <Picker
                 prompt="Enter Complaint Subject"
                 selectedValue={this.state.selectedCompSubject || 0}
@@ -381,10 +279,10 @@ export default class submitComplaint extends Component {
                 })}
               </Picker>
             </View>
-            <View style={{height: 40, justifyContent: 'center', marginTop: 10}}>
+            <View style={styles.viewSystemName}>
               <Text>Enter Complaint Subject</Text>
             </View>
-            <View style={{borderColor: '#d3d3d3', borderWidth: 1}}>
+            <View style={styles.borderW1}>
               <Picker
                 prompt="What is the problem"
                 selectedValue={this.state.selectedCompDesc || 0}
@@ -404,15 +302,10 @@ export default class submitComplaint extends Component {
             </View>
             {this.state.tmpSYS && this.state.tmpSYS.length > 0 && (
               <View>
-                <View
-                  style={{
-                    height: 40,
-                    justifyContent: 'center',
-                    marginTop: 10,
-                  }}>
+                <View style={styles.viewSystemName}>
                   <Text>Enter System Name</Text>
                 </View>
-                <View style={{borderColor: '#d3d3d3', borderWidth: 1}}>
+                <View style={styles.borderW1}>
                   <Picker
                     prompt="Enter System Name"
                     selectedValue={this.state.systemTag || 0}
@@ -432,165 +325,19 @@ export default class submitComplaint extends Component {
                 </View>
               </View>
             )}
-            <View style={styles.selectedView}>
-              <Text style={styles.selectedText}>
-                You have Selected{' '}
-                <Text style={styles.selectedTextService}>
-                  {selectedServices}
-                </Text>{' '}
-                payment method
-              </Text>
-            </View>
-            <View style={{height: 45, alignItems: 'center', marginTop: 10}}>
+            <View style={styles.nextandSubmitClass}>
               <TouchableOpacity
-                onPress={() => this.checkAndSubmit()}
-                style={{
-                  width: '60%',
-                  height: 45,
-                  backgroundColor: Color.primary,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderRadius: 5,
-                }}>
-                <Text style={{color: '#fff', fontSize: 16}}>Submit</Text>
+                onPress={() => this.nextAndSubmit()}
+                style={styles.touchNextButton}>
+                <Text style={styles.font16White}>Next</Text>
               </TouchableOpacity>
             </View>
           </View>
         )}
-        <Modal
-          animationType="slide"
-          transparent={false}
-          visible={this.state.paymentServiceModal}
-          onRequestClose={() => {
-            this.setState({paymentServiceModal: false});
-          }}>
-          <View
-            style={{
-              backgroundColor: '#fff',
-            }}>
-            <View>
-              <View style={styles.paymentMethodHeader}>
-                <Text style={styles.SelectPaymentText}>
-                  Select Payment Method
-                </Text>
-              </View>
-              <View>
-                <View style={styles.subHeader}>
-                  <View style={styles.paymentView}>
-                    <Text style={styles.PaymentMText}>Advance</Text>
-                    <Text style={styles.PaymentMText}>(PrePaid)</Text>
-                  </View>
-                  <View style={styles.paymentView}>
-                    <Text style={styles.PaymentMText}>Cash on Service</Text>
-                    <Text style={styles.PaymentMText}>(PostPaid)</Text>
-                  </View>
-                </View>
-                <View style={styles.subHeader}>
-                  <View style={styles.servicetView}>
-                    <Text>1st Service </Text>
-                    <Text>{_.get(paramsData, 'ComplaintCharge1st', '-')}</Text>
-                  </View>
-                  <View style={styles.servicetView}>
-                    <Text>1st Service </Text>
-                    <Text>{_.get(paramsData, 'ComplaintChargeCOS', '-')}</Text>
-                  </View>
-                </View>
-                <View style={styles.subHeader}>
-                  <View style={styles.servicetView}>
-                    <Text>2nd Service </Text>
-                    <Text>{_.get(paramsData, 'ComplaintCharge2nd', '-')}</Text>
-                  </View>
-                  <View style={styles.servicetView}>
-                    <Text>2nd Service </Text>
-                    <Text>{_.get(paramsData, 'ComplaintChargeCOS', '-')}</Text>
-                  </View>
-                </View>
-                <View style={styles.subHeader}>
-                  <View style={styles.servicetView}>
-                    <Text>3rd Service </Text>
-                    <Text>{_.get(paramsData, 'ComplaintCharge3rd', '-')}</Text>
-                  </View>
-                  <View style={styles.servicetView}>
-                    <Text>3rd Service </Text>
-                    <Text>{_.get(paramsData, 'ComplaintChargeCOS', '-')}</Text>
-                  </View>
-                </View>
-                <View style={{height: Matrics.ScaleValue(100)}}>
-                  <View style={styles.servicetView}>
-                    <Text>|</Text>
-                  </View>
-                  <View style={styles.servicetView}>
-                    <Text>|</Text>
-                  </View>
-                  <View style={styles.servicetView}>
-                    <Text>|</Text>
-                  </View>
-                  <View style={styles.servicetView}>
-                    <Text>|</Text>
-                  </View>
-                </View>
-                <View style={styles.subHeader}>
-                  <View style={styles.servicetView}>
-                    <Text>nth Service </Text>
-                    <Text>{_.get(paramsData, 'ComplaintCharge3rd', '-')}</Text>
-                  </View>
-                  <View style={styles.servicetView}>
-                    <Text>nth Service </Text>
-                    <Text>{_.get(paramsData, 'ComplaintChargeCOS', '-')}</Text>
-                  </View>
-                </View>
-                <View style={styles.subHeader}>
-                  <View style={[styles.servicetView, styles.bgAppview]}>
-                    <TouchableOpacity
-                      onPress={() => this.selectPackageServices('0')}
-                      style={styles.touchRadioButton}>
-                      <Text style={styles.txtpayment}>Advance </Text>
-                      <MIcon
-                        name={
-                          paymentMethod === '0'
-                            ? 'radio-button-checked'
-                            : 'radio-button-unchecked'
-                        }
-                        size={Matrics.ScaleValue(20)}
-                        color={'white'}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                  <View style={[styles.servicetView, styles.bgAppview]}>
-                    <TouchableOpacity
-                      onPress={() => this.selectPackageServices('1')}
-                      style={styles.touchRadioButton}>
-                      <Text style={styles.txtpayment}>Cash on Service </Text>
-                      <MIcon
-                        name={
-                          paymentMethod === '1'
-                            ? 'radio-button-checked'
-                            : 'radio-button-unchecked'
-                        }
-                        size={Matrics.ScaleValue(20)}
-                        color={'white'}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                <View style={styles.selectedView}>
-                  <Text style={styles.selectedText}>
-                    You have Selected{' '}
-                    <Text style={styles.selectedTextService}>
-                      {selectedServices}
-                    </Text>{' '}
-                    payment method
-                  </Text>
-                </View>
-                <TouchableOpacity
-                  onPress={() => this.setState({paymentServiceModal: false})}
-                  style={styles.btnSave}>
-                  <Text style={styles.btnText}>Save</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </Modal>
+        <ComplaintPriceModal
+          stateAll={this.state}
+          navigation={this.props.navigation}
+        />
       </SafeAreaView>
     );
   }
