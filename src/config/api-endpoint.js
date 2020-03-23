@@ -69,6 +69,7 @@ const getAreasEndPoint = 'GetAreas';
 const getRoadsEndPoint = 'GetRoads';
 const uploadUserImageEndPoint = 'UploadUserImage';
 const updateAddressEndPoint = 'UpdateAddress';
+const systemAddressUpdateEndPoint = 'SystemAddressUpdate';
 
 module.exports = {
   checkVersionEndPoint,
@@ -116,4 +117,5 @@ module.exports = {
   getRoadsEndPoint,
   uploadUserImageEndPoint,
   updateAddressEndPoint,
+  systemAddressUpdateEndPoint,
 };

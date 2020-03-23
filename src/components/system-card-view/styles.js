@@ -77,7 +77,7 @@ export default styles = {
     textAlign: 'center',
   },
   serviceText: {
-    fontSize: Matrics.ScaleValue(16),
+    fontSize: Matrics.ScaleValue(14),
     color: Color.black,
     marginTop: Matrics.ScaleValue(10),
     textAlign: 'center',
@@ -152,5 +152,16 @@ export default styles = {
   complaintText: {
     color: '#fff',
     fontSize: Matrics.ScaleValue(12),
+  },
+  addressShowView: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    width: '100%',
+    padding: 10,
+  },
+  addressText: {
+    fontSize: 12,
+    color: '#333',
+    marginRight: 5,
   },
 };

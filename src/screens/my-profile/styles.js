@@ -23,8 +23,8 @@ export default styles = {
     color: '#000',
   },
   imageView: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    //justifyContent: 'center',
+    //alignItems: 'center',
     backgroundColor: '#eee',
     width: Matrics.screenWidth / 5,
     height: Matrics.screenWidth / 5,

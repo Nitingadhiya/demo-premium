@@ -245,7 +245,9 @@ export default class UserNavigation extends React.Component {
           component={Details}
           options={{headerTitle: 'Tweet'}}
         />
-        {userInfo.LoginType === '3' || userInfo.LoginType === '2' ? (
+        {userInfo.LoginType === '1' ||
+        userInfo.LoginType === '3' ||
+        userInfo.LoginType === '2' ? (
           <Stack.Screen
             name="ProductList"
             component={ProductList}

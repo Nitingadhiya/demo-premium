@@ -112,6 +112,9 @@ class ComplainList extends Component {
     this.getComplainList(statusC);
     this.getComplaintStatus();
     this.getAntivirusList();
+    if (LoginType) {
+      this.getUser(LoginType);
+    }
   }
 
   setModalVisible(visible, index) {
@@ -293,9 +296,9 @@ class ComplainList extends Component {
     });
   }
 
-  getUser() {
+  getUser(LoginType) {
     this.setState({loadingData: true, refreshing: false});
-    const endPoint = `GetUsers?UserType=${this.state.LoginType}`;
+    const endPoint = `GetUsers?UserType=${LoginType}`;
     const method = 'GET';
     APICaller(`${endPoint}`, method).then(json => {
       this.setState({loadingData: false, refreshing: false});
@@ -649,7 +652,7 @@ class ComplainList extends Component {
                       }}
                       selectedValue={this.state.selectAntivirus}>
                       <Picker.Item
-                        label={'Please choose below user'}
+                        label={'Select Antivirus'}
                         value={''}
                         disabled={true}
                       />

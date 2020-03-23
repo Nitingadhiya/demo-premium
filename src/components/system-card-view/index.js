@@ -8,6 +8,7 @@ import {
   Alert,
   FlatList,
 } from 'react-native';
+import _ from 'lodash';
 import {VersionNumber, AnimatedCircularProgress} from '../../package';
 import styles from './styles';
 import {Images, Color, Matrics} from '../../common/styles';
@@ -208,12 +209,34 @@ class SystemCardView extends Component {
             <Text style={styles.complaintText}>{item.ComplaintID}</Text>
           </TouchableOpacity>
         ) : null}
+        <TouchableOpacity
+          style={styles.addressShowView}
+          onPress={() => self.editAddress(item)}>
+          <Text style={styles.addressText}>
+            {item.Home ? item.Home + ' ' : 'No Address Found'}
+            {item.Landmark && item.Landmark + ' '}
+            {item.Area && item.Area + ' '}
+            {item.Road && item.Road + ' '}
+            {item.City && item.City + ' '}
+            {item.State && item.State + ' '}
+            {item.Pincode && item.Pincode}
+          </Text>
+          <MIcon name="edit" size={16} color={Color.primary} />
+        </TouchableOpacity>
       </View>
     );
   }
 
   getcomplainList() {
     NavigationHelper.navigate(this.props.navigation, 'ComplaintList');
+  }
+
+  editAddress(item) {
+    const {navigation} = this.props;
+    NavigationHelper.navigate(navigation, 'UpdateAddress', {
+      systemAddress: true,
+      item,
+    });
   }
 
   render() {

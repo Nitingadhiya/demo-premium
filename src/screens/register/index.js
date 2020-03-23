@@ -93,6 +93,19 @@ class Register extends Component {
       return {error};
     });
   }
+  passwordVisible() {
+    if (this.state.passwordSecure) {
+      this.setState({password: null, passwordSecure: false});
+      setTimeout(() => {
+        this.setState({password: this.password});
+      }, 10);
+    } else {
+      this.setState({password: null, passwordSecure: true});
+      setTimeout(() => {
+        this.setState({password: this.password});
+      }, 10);
+    }
+  }
 
   signupWithCredentials() {
     const {

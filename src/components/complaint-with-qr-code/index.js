@@ -93,6 +93,7 @@ class ComplaintWithQRCode extends Component {
       const params = {
         isOpen: true,
         item,
+        newQrCode: result,
       };
       Events.trigger('closeRemarkModal', params);
 

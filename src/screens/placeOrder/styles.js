@@ -5,6 +5,15 @@ export default styles = {
     backgroundColor: Color.white,
     padding: 10,
   },
+  spinnerView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignSelf: 'center',
+    position: 'absolute',
+    zIndex: 1,
+    alignItems: 'center',
+    top: '45%',
+  },
   viewItemTypeText: {
     height: 40,
     justifyContent: 'center',

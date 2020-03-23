@@ -45,4 +45,11 @@ export default styles = {
     paddingLeft: 0,
     marginLeft: 0,
   },
+  errorView: {
+    padding: 10,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+  },
 };

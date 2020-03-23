@@ -66,6 +66,12 @@ class ProductList extends Component {
     Events.on('refresh-product-list', 'refresh', () => {
       this.getUserInfo();
     });
+
+    Events.on('fetch-cart-count', 'Product count', count => {
+      this.setState({
+        badge: count,
+      });
+    });
   }
   componentWillUnmount() {
     this._unsubscribe();
@@ -211,9 +217,10 @@ class ProductList extends Component {
         list.some(res => {
           if (res.Cart === true) badgeCount++;
         });
+        //console.log(_.sortBy(list, {IsNew: false}), 'sorttt');
         this.setState({
-          productItemList: list,
-          filterResult: list,
+          productItemList: _.sortBy(list, {IsNew: false}),
+          filterResult: _.sortBy(list, {IsNew: false}),
           refreshing: false,
           loadingData: false,
           badge: badgeCount,

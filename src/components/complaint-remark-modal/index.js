@@ -38,8 +38,9 @@ class ComplaintRemarkModal extends Component {
   };
 
   componentDidMount() {
-    Events.on('closeRemarkModal', 'Event', res => {
-      this.setState({
+    this.newQrCode = '';
+    Events.on('closeRemarkModal', 'Event', async res => {
+      await this.setState({
         closeRemarkModal: res.isOpen,
         item: res.item,
         antivirusCheckbox: false,
@@ -47,6 +48,9 @@ class ComplaintRemarkModal extends Component {
         antivirusKey: '',
         selectAntivirus: '',
       });
+      if (res.newQrCode) {
+        this.newQrCode = res.newQrCode;
+      }
     });
     this.getAntivirusList();
   }
@@ -82,17 +86,17 @@ class ComplaintRemarkModal extends Component {
       });
       return;
     }
-
     this.setState({
       closeRemarkModal: false,
     });
+
     const {userInfo} = this.props;
     APICaller(
       complaintCompleteEndPoint(
         item.ComplaintID,
         userInfo.UserName,
         closeRemarkText,
-        item.SystemTag,
+        this.newQrCode ? this.newQrCode : item.SystemTag,
         antivirusCheckbox,
         selectAntivirus,
         antivirusKey,
@@ -219,7 +223,7 @@ class ComplaintRemarkModal extends Component {
                       }}
                       selectedValue={selectAntivirus}>
                       <Picker.Item
-                        label={'Please choose below user'}
+                        label={'Please select antivirus'}
                         value={''}
                         disabled={true}
                       />

@@ -93,7 +93,7 @@ class PlaceOrder extends Component {
         const productList = {product: json.data.Response};
 
         this.rspData = json.data;
-        Events.trigger('fetchCartCount', json.data.Response.length || 0);
+        Events.trigger('fetch-cart-count', json.data.Response.length || 0);
         this.setState({
           cartListArr: json.data.Response,
           totalAmount: json.data.TotalAmountWithDiscount || 0,
@@ -174,6 +174,7 @@ class PlaceOrder extends Component {
     APICaller(`${endPoint}`, method).then(json => {
       this.setState({loadingData: false});
       if (json.data.Success === 1 || json.data.Success === '1') {
+        Events.trigger('fetch-cart-count', json.data.Response.length || 0);
         if (this.state.cartListArr[index].CartQty === 1) {
           this.state.cartListArr.splice(index, 1);
           let cartItm = JSON.stringify(this.state.cartListArr);
@@ -187,8 +188,10 @@ class PlaceOrder extends Component {
           this.state.cartListArr[index].CartQty--;
         }
       } else {
+        Events.trigger('fetch-cart-count', json.data.Response.length || 0);
         this.setState({
           loginError: json.data.Message,
+          cartListArr: json.data.Response,
         });
       }
       this.setState({loadingData: false});
@@ -209,9 +212,9 @@ class PlaceOrder extends Component {
     const method = 'GET';
     APICaller(`${endPoint}`, method).then(json => {
       if (json.data.Success === '1') {
-        this.props.navigation.dispatch(StackActions.popToTop());
+        //this.props.navigation.dispatch(StackActions.popToTop());
 
-        //NavigationHelper.navigate(this.props.navigation, 'Dashboard');
+        NavigationHelper.reset(this.props.navigation, 'UserNavigation');
         Alert.alert(
           'Order',
           `Order Successfully completed #${json.data.Response[0].OrderNo}`,
@@ -229,7 +232,11 @@ class PlaceOrder extends Component {
     return (
       <SafeAreaView style={{flex: 1}}>
         <Header title="Place Order" left="back" />
-        {loadingData ? <SpinnerView /> : null}
+        {loadingData ? (
+          <View style={styles.spinnerView}>
+            <SpinnerView />
+          </View>
+        ) : null}
         {this.state.cartListArr && this.state.cartListArr.length > 0 ? (
           <View style={{flex: 1}}>
             <FlatList

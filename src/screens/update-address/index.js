@@ -14,15 +14,20 @@ import _ from 'lodash';
 import PickAddressModal from '../../components/pick-address-modal';
 import Events from '../../utils/events';
 import {Color, Matrics, ApplicationStyles} from '../../common/styles';
-import {TextInputView, Header} from '../../common/components';
+import {TextInputView, Header, SpinnerView} from '../../common/components';
 import {MIcon} from '../../common/assets/vector-icon';
 import APICaller from '../../utils/api-caller';
 import Helper from '../../utils/helper';
-import {updateAddressEndPoint} from '../../config/api-endpoint';
+import {
+  updateAddressEndPoint,
+  systemAddressUpdateEndPoint,
+} from '../../config/api-endpoint';
 import styles from './styles';
+import {ScrollView} from 'react-native-gesture-handler';
 
 let result;
-
+let systemAddress = false;
+let goBack;
 class UpdateAddress extends Component {
   state = {
     FirstName: null,
@@ -55,14 +60,36 @@ class UpdateAddress extends Component {
     datePicker: false,
     mediaPath: null,
     GSTNo: null,
+    systemAddress: false,
+    item: null,
+    error: null,
+    loadingData: false,
   };
 
   componentDidMount() {
     self = this;
+    goBack = false;
     this.year = 2015;
     this.month = 1;
     this.day = 27;
-
+    const {params} = this.props.route;
+    console.log(params, 'params');
+    if (params) {
+      systemAddress = params.systemAddress;
+      const paramsitem = params.item;
+      this.setState({
+        areaText: paramsitem.Area,
+        roadText: paramsitem.Road,
+        cityText: paramsitem.City,
+        Divison: paramsitem.State,
+        landmarkText: paramsitem.Landmark,
+        Pincode: paramsitem.Pincode,
+        Address: paramsitem.Home,
+        SystemTag: paramsitem.SystemTag,
+      });
+    } else {
+      systemAddress = false;
+    }
     this.getUserInfo();
   }
 
@@ -72,6 +99,14 @@ class UpdateAddress extends Component {
       userInfo,
     });
     result = userInfo;
+    console.log('CCC', systemAddress);
+    if (!systemAddress) {
+      console.log('IFFF');
+      this.getUserState(userInfo);
+    }
+  }
+
+  getUserState(userInfo) {
     if (userInfo) {
       const {
         FirstName,
@@ -96,6 +131,7 @@ class UpdateAddress extends Component {
         Home,
         BusinessType,
       } = userInfo;
+      console.log('user', userInfo);
       this.setState({
         areaText: Area,
         roadText: Road,
@@ -123,6 +159,10 @@ class UpdateAddress extends Component {
   }
 
   async updateAddressMethod() {
+    if (systemAddress) {
+      this.systemAddressUpdate();
+      return;
+    }
     const {
       UserName,
       Address,
@@ -209,6 +249,126 @@ class UpdateAddress extends Component {
     }
   }
 
+  systemAddressUpdate() {
+    const {
+      UserName,
+      Address,
+      landmarkText,
+      areaText,
+      roadText,
+      cityText,
+      Pincode,
+      Divison,
+      SystemTag,
+    } = this.state;
+
+    const body = {
+      System: [
+        {
+          UserName: userInfo.UserName,
+          SystemTag: SystemTag,
+          Home: Address,
+          Landmark: landmarkText,
+          Area: areaText,
+          Road: roadText,
+          City: cityText,
+          Pincode,
+          State: Divison,
+        },
+      ],
+    };
+
+    if (!userInfo.UserName) {
+      this.setState({
+        error: 'Username not found',
+      });
+      return;
+    }
+    if (!SystemTag) {
+      this.setState({
+        error: 'System tag not found',
+      });
+      return;
+    }
+
+    if (!Address) {
+      this.setState({
+        error: 'Address filled required',
+      });
+      return;
+    }
+    if (Address) {
+      console.log((Address.match(/,/g) || []).length); //logs 3
+
+      if ((Address.match(/,/g) || []).length > 1) {
+        // Address.split(',');
+        this.setState({
+          error: 'Address filled only one "," allowed',
+        });
+        return;
+      }
+    }
+    if (!landmarkText) {
+      this.setState({
+        error: 'Landmark filled required',
+      });
+      return;
+    }
+    if (!areaText) {
+      this.setState({
+        error: 'Area filled required',
+      });
+      return;
+    }
+    if (!roadText) {
+      this.setState({
+        error: 'Road filled required',
+      });
+    }
+    if (!cityText) {
+      this.setState({
+        error: 'City filled required',
+      });
+      return;
+    }
+    if (!Pincode) {
+      this.setState({
+        error: 'Pincode filled required',
+      });
+      return;
+    }
+    if (!Divison) {
+      this.setState({
+        error: 'State filled required',
+      });
+      return;
+    }
+    this.setState({
+      loadingData: true,
+    });
+
+    if (goBack) {
+      return;
+    }
+    APICaller(systemAddressUpdateEndPoint, 'POST', JSON.stringify(body)).then(
+      async json => {
+        if (json.data.Success === 1 || json.data.Success === '1') {
+          Events.trigger('systemAdded'); //this for update address
+          Alert.alert('Address', 'Your address updated successfully.');
+          this.setState({
+            loadingData: false,
+          });
+
+          this.props.navigation.goBack();
+          goBack = true;
+        } else {
+          goBack = true;
+          Alert.alert('Failed', json.data.Message || 'Failed to save address');
+        }
+      },
+    );
+  }
+
   render() {
     const {
       cityText,
@@ -221,119 +381,129 @@ class UpdateAddress extends Component {
     return (
       <SafeAreaView style={styles.safeAreaView}>
         <Header title="Update Address" left="back" />
+        {this.state.loadingData ? (
+          <View style={styles.spinnerView}>
+            <SpinnerView />
+          </View>
+        ) : null}
         <KeyboardAvoidingView style={styles.flex1}>
-          <View style={styles.flex1}>
-            <View style={styles.formGroup}>
-              <View style={styles.subTextBoxView}>
-                <TextInputView
-                  placeholder="Address"
-                  value={this.state.Address}
-                  autoCorrect={false}
-                  onChangeText={value => this.setState({Address: value})}
-                  blurOnSubmit={false}
-                  customStyle={styles.plml0}
-                />
-              </View>
-              <TouchableOpacity
-                style={styles.labelClass}
-                onPress={() =>
-                  this.setState({
-                    addressModalVisible: true,
-                    modalType: 'Landmark',
-                  })
-                }>
-                <View style={styles.width120}>
-                  <Text style={styles.font14_999}>Landmark</Text>
+          <ScrollView>
+            <View style={styles.flex1}>
+              <View style={styles.formGroup}>
+                <View style={styles.subTextBoxView}>
+                  <TextInputView
+                    placeholder="Address"
+                    value={this.state.Address}
+                    autoCorrect={false}
+                    onChangeText={value => this.setState({Address: value})}
+                    blurOnSubmit={false}
+                    customStyle={styles.plml0}
+                  />
                 </View>
-                <View style={styles.flex1}>
-                  {landmarkText ? (
-                    <Text style={styles.font16_333}>{landmarkText}</Text>
-                  ) : (
-                    <Text style={styles.font16_999}>Landmark</Text>
-                  )}
-                </View>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.labelClass}
+                  onPress={() =>
+                    this.setState({
+                      addressModalVisible: true,
+                      modalType: 'Landmark',
+                    })
+                  }>
+                  <View style={styles.width120}>
+                    <Text style={styles.font14_999}>Landmark</Text>
+                  </View>
+                  <View style={styles.flex1}>
+                    {landmarkText ? (
+                      <Text style={styles.font16_333}>{landmarkText}</Text>
+                    ) : (
+                      <Text style={styles.font16_999}>Landmark</Text>
+                    )}
+                  </View>
+                </TouchableOpacity>
 
-              <TouchableOpacity
-                style={styles.labelClass}
-                onPress={() =>
-                  this.setState({
-                    addressModalVisible: true,
-                    modalType: 'Road',
-                  })
-                }>
-                <View style={styles.width120}>
-                  <Text style={styles.font14_999}>Road</Text>
-                </View>
-                <View style={styles.flex1}>
-                  {roadText ? (
-                    <Text style={styles.font16_333}>{roadText}</Text>
-                  ) : (
-                    <Text style={styles.font16_999}>Road</Text>
-                  )}
-                </View>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.labelClass}
+                  onPress={() =>
+                    this.setState({
+                      addressModalVisible: true,
+                      modalType: 'Road',
+                    })
+                  }>
+                  <View style={styles.width120}>
+                    <Text style={styles.font14_999}>Road</Text>
+                  </View>
+                  <View style={styles.flex1}>
+                    {roadText ? (
+                      <Text style={styles.font16_333}>{roadText}</Text>
+                    ) : (
+                      <Text style={styles.font16_999}>Road</Text>
+                    )}
+                  </View>
+                </TouchableOpacity>
 
-              <TouchableOpacity
-                style={styles.labelClass}
-                onPress={() =>
-                  this.setState({
-                    addressModalVisible: true,
-                    modalType: 'Area',
-                  })
-                }>
-                <View style={styles.width120}>
-                  <Text style={styles.font14_999}>Area</Text>
+                <TouchableOpacity
+                  style={styles.labelClass}
+                  onPress={() =>
+                    this.setState({
+                      addressModalVisible: true,
+                      modalType: 'Area',
+                    })
+                  }>
+                  <View style={styles.width120}>
+                    <Text style={styles.font14_999}>Area</Text>
+                  </View>
+                  <View style={styles.flex1}>
+                    {areaText ? (
+                      <Text style={styles.font16_333}>{areaText}</Text>
+                    ) : (
+                      <Text style={styles.font16_999}>Area</Text>
+                    )}
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.labelClass}
+                  onPress={() =>
+                    this.setState({
+                      addressModalVisible: true,
+                      modalType: 'City',
+                    })
+                  }>
+                  <View style={styles.width120}>
+                    <Text style={styles.font14_999}>City</Text>
+                  </View>
+                  <View style={styles.flex1}>
+                    {cityText ? (
+                      <Text style={styles.font16_333}>{cityText}</Text>
+                    ) : (
+                      <Text style={styles.font16_999}>City</Text>
+                    )}
+                  </View>
+                </TouchableOpacity>
+                <View style={styles.subTextBoxView}>
+                  <TextInputView
+                    placeholder="Pincode"
+                    value={this.state.Pincode}
+                    autoCorrect={false}
+                    onChangeText={value => this.setState({Pincode: value})}
+                    blurOnSubmit={false}
+                    customStyle={styles.plml0}
+                  />
                 </View>
-                <View style={styles.flex1}>
-                  {areaText ? (
-                    <Text style={styles.font16_333}>{areaText}</Text>
-                  ) : (
-                    <Text style={styles.font16_999}>Area</Text>
-                  )}
+                <View style={styles.subTextBoxView}>
+                  <TextInputView
+                    placeholder="State"
+                    value={this.state.Divison}
+                    autoCorrect={false}
+                    onChangeText={value => this.setState({Divison: value})}
+                    blurOnSubmit={false}
+                    customStyle={styles.plml0}
+                  />
                 </View>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.labelClass}
-                onPress={() =>
-                  this.setState({
-                    addressModalVisible: true,
-                    modalType: 'City',
-                  })
-                }>
-                <View style={styles.width120}>
-                  <Text style={styles.font14_999}>City</Text>
+                <View style={styles.errorView}>
+                  <Text style={styles.errorText}>{this.state.error}</Text>
                 </View>
-                <View style={styles.flex1}>
-                  {cityText ? (
-                    <Text style={styles.font16_333}>{cityText}</Text>
-                  ) : (
-                    <Text style={styles.font16_999}>City</Text>
-                  )}
-                </View>
-              </TouchableOpacity>
-              <View style={styles.subTextBoxView}>
-                <TextInputView
-                  placeholder="Pincode"
-                  value={this.state.Pincode}
-                  autoCorrect={false}
-                  onChangeText={value => this.setState({Pincode: value})}
-                  blurOnSubmit={false}
-                  customStyle={styles.plml0}
-                />
-              </View>
-              <View style={styles.subTextBoxView}>
-                <TextInputView
-                  placeholder="State"
-                  value={this.state.Divison}
-                  autoCorrect={false}
-                  onChangeText={value => this.setState({Divison: value})}
-                  blurOnSubmit={false}
-                  customStyle={styles.plml0}
-                />
               </View>
             </View>
-          </View>
+          </ScrollView>
           <TouchableOpacity
             onPress={() => this.updateAddressMethod()}
             style={styles.checkout}>

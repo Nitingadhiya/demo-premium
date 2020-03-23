@@ -11,9 +11,11 @@ import {
   TouchableOpacity,
   TextInput,
   LayoutAnimation,
-  Image,
+  // Image,
 } from 'react-native';
 import _ from 'lodash';
+import Image from 'react-native-image-progress';
+import ProgressBar from 'react-native-progress/Bar';
 import {Appbar, Avatar, useTheme, Badge} from 'react-native-paper';
 import CodeInput from 'react-native-confirmation-code-input';
 import APICaller from '../../utils/api-caller';
@@ -26,6 +28,7 @@ import Helper from '../../utils/helper';
 import NavigationHelper from '../../utils/navigation-helper';
 import {SpinnerView, Header} from '../../common/components';
 import POrder from '../../components/order';
+import moment from 'moment';
 
 class MyProfile extends Component {
   state = {
@@ -131,7 +134,10 @@ class MyProfile extends Component {
                 source={{
                   uri: `${profileInfo.UserImage}?${Math.random()}`,
                 }}
-                style={styles.UserImage}
+                imageStyle={styles.UserImage}
+                indicatorContainerStyle={{
+                  marginTop: Matrics.screenWidth / 10,
+                }}
               />
             </View>
             <View style={{flex: 1, marginTop: 5}}>
@@ -156,7 +162,10 @@ class MyProfile extends Component {
               {this.listInfo('Last Name', profileInfo.LastName)}
               {this.listInfo('Email', profileInfo.EmailId)}
               {this.listInfo('Mobile No', profileInfo.MobileNo)}
-              {this.listInfo('Birthday', profileInfo.DateOfBirth)}
+              {this.listInfo(
+                'Birthday',
+                moment(profileInfo.DateOfBirth).format('YYYY-MM-DD'),
+              )}
               {this.listInfo('Gender', profileInfo.Gender)}
               {this.listInfo('Company Name', profileInfo.CompanyName)}
               {this.listInfo('GST No.', profileInfo.GSTNo)}

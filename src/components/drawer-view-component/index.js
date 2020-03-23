@@ -90,6 +90,13 @@ class DrawerViewComponent extends Component {
           />
           <DrawerItem
             icon={({color, size}) => (
+              <McIcon name="cart" color={color} size={size} />
+            )}
+            label="Cart"
+            onPress={() => NavigationHelper.navigate(navigation, 'PlaceOrder')}
+          />
+          <DrawerItem
+            icon={({color, size}) => (
               <McIcon name="shopping" color={color} size={size} />
             )}
             label="Pending order"
