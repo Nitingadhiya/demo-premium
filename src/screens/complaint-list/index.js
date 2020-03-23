@@ -356,6 +356,12 @@ class ComplainList extends Component {
     return spl[0] || null;
   }
 
+  sysTagMethod(tag) {
+    if (!tag) return tag;
+    const splitTag = tag.split('-');
+    return splitTag[0];
+  }
+
   // ----------->>>Render Method-------------->>>
 
   render() {
@@ -484,8 +490,9 @@ class ComplainList extends Component {
                   }}>
                   <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
                     <Text style={{fontSize: 16, fontWeight: 'bold', flex: 0.8}}>
-                      {this.state.compDetails.Name} #
-                      {this.state.compDetails.SystemTag}
+                      {this.state.compDetails.Name} #{' '}
+                      {this.sysTagMethod(this.state.compDetails.SystemTag)}
+                      <Text style={{color: Color.lightGray}}>-XXXXXX</Text>
                     </Text>
                     {this.state.compDetails.ComplaintStatus === 'Completed' && (
                       <Text

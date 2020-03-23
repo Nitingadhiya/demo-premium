@@ -259,6 +259,7 @@ class ProductList extends Component {
   }
 
   async removeWishListCart(item, type) {
+    console.log(item);
     this.setState({loadingData: true});
     const userInfo = await Helper.getLocalStorageItem('userInfo');
     if (!userInfo) return;
@@ -275,8 +276,7 @@ class ProductList extends Component {
         return;
       }
       if (json.data.Success === 1 || json.data.Success === '1') {
-        let prd = this.state.productItemList;
-        const index = _.findIndex(prd, {ProductNo: productNumber});
+        this.fetchProductList(userInfo.UserName);
         this.setState({loadingData: false});
       }
     });

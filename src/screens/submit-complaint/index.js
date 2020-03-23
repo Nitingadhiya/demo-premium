@@ -57,6 +57,7 @@ export default class submitComplaint extends Component {
     this.systemTag = '';
     this.getcompDescList();
     if (params) {
+      console.log(this.props);
       this.setState({
         systemTag: params.systemTag,
         complainCharge: params.complainCharge,
@@ -199,8 +200,81 @@ export default class submitComplaint extends Component {
     });
   }
 
+  submitComplaintMethod() {
+    const {
+      userInfo,
+      selectedCompSubject,
+      selectedCompDesc,
+      systemTag,
+      complainCharge,
+    } = this.state;
+
+    if (userInfo.UserName) {
+      this.setState({
+        loadingData: true,
+      });
+
+      const endPoint = `ComplaintSubmit`;
+      const method = 'POST';
+      const body = {
+        An_Master_Complaint: [
+          {
+            ComplaintSubject: selectedCompSubject,
+            ComplaintDesc: selectedCompDesc,
+            ComplaintBy: userInfo.UserName,
+            SystemTag: systemTag,
+            TotalCharges: complainCharge,
+            PaymentMode: null,
+          },
+        ],
+      };
+
+      APICaller(`${endPoint}`, method, JSON.stringify(body)).then(json => {
+        this.setState({
+          loadingData: false,
+        });
+        if (!json) {
+          Alert.alert('Something went to wrong');
+        }
+        if (json.status !== 200) {
+          Alert.alert('Error Status', `${json.status}`);
+          return;
+        }
+        if (json.data.Success === '1') {
+          if (json.data.Response) {
+            if (
+              complainCharge > 0 &&
+              this.state.selectedServices !== 'Cash on Service'
+            ) {
+              const dataEvent = {
+                complaintId: _.get(json, 'data.Response[0].ComplaintID', ''), //json.data.Response[0].ComplaintID
+                complainCharge: totalCharge,
+                visible: true,
+              };
+              Events.trigger('complaint-advance-payment', dataEvent);
+            } else {
+              Alert.alert(
+                'Complaint',
+                'Complaint successfully submitted.',
+                [{text: 'OK', onPress: () => this.props.navigation.goBack()}],
+                {cancelable: false},
+              );
+            }
+          } else {
+            Alert.alert('Complaint', json.data.Message);
+          }
+        } else if (json.data.Success === '2') {
+          Alert.alert('Alert', 'Complaint Already Booked');
+        } else {
+          Alert.alert('Alert', json.data.Message);
+          // Alert.alert('Error -','Something went to wrong, please try again')
+        }
+      });
+    }
+  }
+
   render() {
-    const {userInfo} = this.state;
+    const {userInfo, complainCharge} = this.state;
     return (
       <SafeAreaView style={{flex: 1}}>
         <Header title="Submit Complaint" left="back" />
@@ -327,9 +401,15 @@ export default class submitComplaint extends Component {
             )}
             <View style={styles.nextandSubmitClass}>
               <TouchableOpacity
-                onPress={() => this.nextAndSubmit()}
+                onPress={() => {
+                  complainCharge > 0
+                    ? this.nextAndSubmit()
+                    : this.submitComplaintMethod();
+                }}
                 style={styles.touchNextButton}>
-                <Text style={styles.font16White}>Next</Text>
+                <Text style={styles.font16White}>
+                  {complainCharge > 0 ? 'Next' : 'Submit'}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>

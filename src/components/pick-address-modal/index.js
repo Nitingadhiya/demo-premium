@@ -6,6 +6,7 @@ import {
   Modal,
   FlatList,
   TextInput,
+  Keyboard,
 } from 'react-native';
 import {CommonActions} from '@react-navigation/native';
 import {TextInputView, SpinnerView} from '../../common/components';
@@ -42,7 +43,9 @@ class PickAddressModal extends Component {
     if (modalType === 'City') {
       this.getCityList();
     }
-    console.log('Poin');
+    setTimeout(() => {
+      this.searchTextInput.focus();
+    }, 400);
   }
 
   replaceCustomExpression = title => {
@@ -234,6 +237,9 @@ class PickAddressModal extends Component {
                 padding: 0,
                 paddingLeft: 10,
                 borderColor: '#d3d3d3',
+              }}
+              ref={input => {
+                this.searchTextInput = input;
               }}
             />
             <TouchableOpacity
