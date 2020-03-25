@@ -9,7 +9,7 @@ export default styles = {
   validationView: {
     position: 'absolute',
     zIndex: 1,
-    top: 0,
+    top: 50,
     left: 0,
     justifyContent: 'center',
     width: '100%',

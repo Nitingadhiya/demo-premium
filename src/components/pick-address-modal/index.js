@@ -44,7 +44,7 @@ class PickAddressModal extends Component {
       this.getCityList();
     }
     setTimeout(() => {
-      this.searchTextInput.focus();
+      if (this.searchTextInput) this.searchTextInput.focus();
     }, 400);
   }
 
@@ -271,7 +271,6 @@ class PickAddressModal extends Component {
                     borderColor: '#d3d3d3',
                   }}
                   onPress={() => {
-                    console.log(item, 'iiyyyy');
                     if (modalType === 'City') {
                       this.props.closeModalPress(modalType, item.CityName);
                     }

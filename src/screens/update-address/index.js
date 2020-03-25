@@ -21,6 +21,8 @@ import Helper from '../../utils/helper';
 import {
   updateAddressEndPoint,
   systemAddressUpdateEndPoint,
+  getAreaFromRoadEndPoint,
+  getAreaFromPincodeEndPoint,
 } from '../../config/api-endpoint';
 import styles from './styles';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -64,10 +66,15 @@ class UpdateAddress extends Component {
     item: null,
     error: null,
     loadingData: false,
+    getRoadValue: false,
+    getPincodeValue: false,
   };
 
   componentDidMount() {
     self = this;
+    this.searchingDelayed = _.debounce(text => {
+      this.getAreaFromPincode(text);
+    }, 300);
     goBack = false;
     this.year = 2015;
     this.month = 1;
@@ -228,6 +235,7 @@ class UpdateAddress extends Component {
         roadText: val,
         addressModalVisible: false,
       });
+      this.getAreaFromRoad(val);
     }
     if (type === 'City') {
       this.setState({
@@ -369,6 +377,74 @@ class UpdateAddress extends Component {
     );
   }
 
+  getAreaFromRoad(road) {
+    this.selectPincode = false;
+    APICaller(getAreaFromRoadEndPoint(road), 'GET').then(async json => {
+      if (json.data.Success === 1 || json.data.Success === '1') {
+        //Events.trigger('systemAdded'); //this for update address
+        const data = _.get(json, 'data.Response[0]', '');
+        if (!data) return;
+        this.setState({
+          areaText: data.Area,
+          cityText: data.City,
+          Pincode: data.Pincode,
+          Divison: data.State,
+          getRoadValue: true,
+          loadingData: false,
+        });
+      } else {
+        this.setState({
+          getRoadValue: false,
+        });
+        //Alert.alert('Failed', json.data.Message || 'Failed to save address');
+      }
+    });
+  }
+
+  getAreaFromPincode(pincode) {
+    this.setState({
+      loadingData: true,
+    });
+    if (!pincode) return;
+    if (pincode.length < 2) return;
+    APICaller(getAreaFromPincodeEndPoint(pincode), 'GET').then(async json => {
+      if (json.data.Success === 1 || json.data.Success === '1') {
+        //Events.trigger('systemAdded'); //this for update address
+        const data = _.get(json, 'data.Response[0]', '');
+        if (!data) return;
+        this.setState({
+          areaText: data.Area,
+          cityText: data.City,
+          roadText: data.Road,
+          Divison: data.State,
+          getPincodeValue: true,
+          loadingData: false,
+        });
+      } else {
+        this.setState({
+          getPincodeValue: false,
+          loadingData: false,
+        });
+        //Alert.alert('Failed', json.data.Message || 'Failed to save address');
+      }
+    });
+  }
+
+  pincodeChange(value) {
+    this.selectPincode = true;
+    this.setState({Pincode: value});
+    this.searchingDelayed(value);
+  }
+
+  editableState() {
+    if (this.selectPincode) {
+      return !this.state.getPincodeValue === false ? false : true;
+    } else {
+      return !this.state.getRoadValue === false ? false : true;
+    }
+  }
+
+  //http://appservices.premiumitware.com/AndroidService.svc/Getareafrompincode?Pincode=395004
   render() {
     const {
       cityText,
@@ -377,6 +453,8 @@ class UpdateAddress extends Component {
       areaText,
       addressModalVisible,
       modalType,
+      getRoadValue,
+      getPincodeValue,
     } = this.state;
     return (
       <SafeAreaView style={styles.safeAreaView}>
@@ -421,7 +499,11 @@ class UpdateAddress extends Component {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={styles.labelClass}
+                  style={[
+                    styles.labelClass,
+                    {opacity: getPincodeValue ? 0.5 : 1},
+                  ]}
+                  disabled={getPincodeValue}
                   onPress={() =>
                     this.setState({
                       addressModalVisible: true,
@@ -441,7 +523,11 @@ class UpdateAddress extends Component {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={styles.labelClass}
+                  style={[
+                    styles.labelClass,
+                    {opacity: getRoadValue || getPincodeValue ? 0.5 : 1},
+                  ]}
+                  disabled={getRoadValue || getPincodeValue}
                   onPress={() =>
                     this.setState({
                       addressModalVisible: true,
@@ -460,7 +546,11 @@ class UpdateAddress extends Component {
                   </View>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={styles.labelClass}
+                  style={[
+                    styles.labelClass,
+                    {opacity: getRoadValue || getPincodeValue ? 0.5 : 1},
+                  ]}
+                  disabled={getRoadValue || getPincodeValue}
                   onPress={() =>
                     this.setState({
                       addressModalVisible: true,
@@ -483,9 +573,10 @@ class UpdateAddress extends Component {
                     placeholder="Pincode"
                     value={this.state.Pincode}
                     autoCorrect={false}
-                    onChangeText={value => this.setState({Pincode: value})}
+                    onChangeText={value => this.pincodeChange(value)}
                     blurOnSubmit={false}
                     customStyle={styles.plml0}
+                    editable={!getRoadValue}
                   />
                 </View>
                 <View style={styles.subTextBoxView}>
@@ -496,6 +587,7 @@ class UpdateAddress extends Component {
                     onChangeText={value => this.setState({Divison: value})}
                     blurOnSubmit={false}
                     customStyle={styles.plml0}
+                    editable={this.editableState()}
                   />
                 </View>
                 <View style={styles.errorView}>
