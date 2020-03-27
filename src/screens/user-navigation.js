@@ -65,15 +65,8 @@ export default class UserNavigation extends React.Component {
         Helper.registerWithtoken(fcmToken);
         await Helper.setLocalStorageItem('fcmToken', fcmToken);
       }
-    }
-  }
-
-  async checkPermission() {
-    const enabled = await firebase.messaging().hasPermission();
-    if (enabled) {
-      this.getToken();
     } else {
-      this.requestPermission();
+      Helper.registerWithtoken(fcmToken);
     }
   }
 
