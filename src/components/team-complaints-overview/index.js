@@ -30,6 +30,7 @@ class TeamComplaintOverview extends Component {
           const bgcolor = assignWork >= i ? 'red' : 'yellow';
           complaintOverView.push(
             <View
+              key={`${i}_index`}
               style={[styles.square, {width: width, backgroundColor: bgcolor}]}
             />,
           );

@@ -140,6 +140,20 @@ class DrawerViewComponent extends Component {
               onPress={() => NavigationHelper.navigate(navigation, 'Parts')}
             />
           ) : null}
+          {userInfo &&
+          (userInfo.LoginType === '1' ||
+            userInfo.LoginType === '2' ||
+            userInfo.LoginType === '3') ? (
+            <DrawerItem
+              icon={({color, size}) => (
+                <McIcon name="bookmark-outline" color={color} size={size} />
+              )}
+              label="Inventory OTP"
+              onPress={() =>
+                NavigationHelper.navigate(navigation, 'OTPListInhandInventory')
+              }
+            />
+          ) : null}
           <DrawerItem
             icon={({color, size}) => (
               <McIcon name="lock" color={color} size={size} />

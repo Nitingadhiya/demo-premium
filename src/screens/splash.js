@@ -36,6 +36,9 @@ import OrderReady from './order-ready';
 import UpdateAddress from './update-address';
 import ProductList from '../screens/product-list';
 import SignCapture from './signature-capture';
+import ComponentRequest from './component-request';
+import TeamComponentStock from './team-component-stock';
+import OTPListInhandInventory from './otp-list-inhand-inventory';
 
 type Props = {
   route: RouteProp<StackNavigatorParamlist, 'Splash'>,
@@ -249,6 +252,21 @@ export default class Splash extends React.Component {
           name="SignatureCapture"
           component={SignCapture}
           options={{headerTitle: 'Signature Capture'}}
+        />
+        <Stack.Screen
+          name="ComponentRequest"
+          component={ComponentRequest}
+          options={{headerTitle: 'Component Request'}}
+        />
+        <Stack.Screen
+          name="TeamComponentStock"
+          component={TeamComponentStock}
+          options={{headerTitle: 'Team Component Stock'}}
+        />
+        <Stack.Screen
+          name="OTPListInhandInventory"
+          component={OTPListInhandInventory}
+          options={{headerTitle: 'OTP List For Inventory'}}
         />
         {/* <Stack.Screen
           name="Details"

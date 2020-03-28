@@ -73,6 +73,16 @@ const systemAddressUpdateEndPoint = 'SystemAddressUpdate';
 const getAreaFromRoadEndPoint = road => `GetAreaFromRoad?Road=${road}`;
 const getAreaFromPincodeEndPoint = pincode =>
   `GetAreaFromPincode?Pincode=${pincode}`;
+const getPartFromSerialNoForHandOverEndPoint = searialNo =>
+  `GetPartFromSerialNoForHandOver?SerialNo=${searialNo}`;
+
+const getUsersForHandOverEndPoint = 'getUsersForHandOver';
+const inHandlInventoryOTPRequestEndPoint = `InhandInventoryOTPRequest`;
+const ItemHandOverSubmitEndPoint = 'ItemHandOverSubmit';
+const InhandResponsibleInventoryEndPoint = username =>
+  `InhandResponsibleInventory?LoginUser=${username}`;
+const getOTPListForInhandInventoryEndPoint = username =>
+  `GetOTPListForInhandInventory?LoginUser=${username}`;
 
 module.exports = {
   checkVersionEndPoint,
@@ -123,4 +133,10 @@ module.exports = {
   systemAddressUpdateEndPoint,
   getAreaFromRoadEndPoint,
   getAreaFromPincodeEndPoint,
+  getPartFromSerialNoForHandOverEndPoint,
+  getUsersForHandOverEndPoint,
+  inHandlInventoryOTPRequestEndPoint,
+  ItemHandOverSubmitEndPoint,
+  InhandResponsibleInventoryEndPoint,
+  getOTPListForInhandInventoryEndPoint,
 };

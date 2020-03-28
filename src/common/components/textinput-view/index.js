@@ -19,6 +19,7 @@ export const TextInputView = ({
   customStyle,
   placeholderTextColor,
   editable,
+  multiline,
 }) => {
   return (
     <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -41,6 +42,7 @@ export const TextInputView = ({
           customStyle,
         ]}
         editable={editable}
+        multiline
       />
     </View>
   );

@@ -16,6 +16,7 @@ const APICaller = (endPoint, method, body) => {
       return response;
     })
     .catch(error => {
+      console.log(error.response);
       console.log(
         `there is an error from ["${BasicURL.path}/${endPoint}] >>`,
         error,

@@ -28,8 +28,9 @@ class TeamTasksOverview extends Component {
         <Text style={styles.font16Center}>{text}</Text>
         <View style={styles.bodyView}>
           {taskOverView &&
-            taskOverView.map(res => (
+            taskOverView.map((res, index) => (
               <View
+                key={`${index}`}
                 style={[
                   styles.square,
                   {

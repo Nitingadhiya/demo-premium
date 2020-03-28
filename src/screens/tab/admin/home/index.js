@@ -147,13 +147,21 @@ export default class Dashboard extends Component {
               onPress={() => this.registerComplain()}>
               <Text style={styles.dashBtnText}>Complaint Booking</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.TouchBTN}>
-              <Text style={styles.dashBtnText}>Team's Components Stocks</Text>
+            <TouchableOpacity
+              style={styles.TouchBTN}
+              onPress={() =>
+                NavigationHelper.navigate(navigation, 'ComponentRequest')
+              }>
+              <Text style={styles.dashBtnText}>Component Request</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.TouchBTN}>
               <Text style={styles.dashBtnText}>Reports Accept from Team</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.TouchBTN}>
+            <TouchableOpacity
+              style={styles.TouchBTN}
+              onPress={() =>
+                NavigationHelper.navigate(navigation, 'TeamComponentStock')
+              }>
               <Text style={styles.dashBtnText}>Team's Components Stocks</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.TouchBTN}>
