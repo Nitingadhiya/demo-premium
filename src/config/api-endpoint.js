@@ -75,7 +75,6 @@ const getAreaFromPincodeEndPoint = pincode =>
   `GetAreaFromPincode?Pincode=${pincode}`;
 const getPartFromSerialNoForHandOverEndPoint = searialNo =>
   `GetPartFromSerialNoForHandOver?SerialNo=${searialNo}`;
-
 const getUsersForHandOverEndPoint = 'getUsersForHandOver';
 const inHandlInventoryOTPRequestEndPoint = `InhandInventoryOTPRequest`;
 const ItemHandOverSubmitEndPoint = 'ItemHandOverSubmit';
@@ -83,6 +82,8 @@ const InhandResponsibleInventoryEndPoint = username =>
   `InhandResponsibleInventory?LoginUser=${username}`;
 const getOTPListForInhandInventoryEndPoint = username =>
   `GetOTPListForInhandInventory?LoginUser=${username}`;
+const getRestockHandoverPartFromSerialNoEndPoint = (serialNo, username) =>
+  `GetRestockHandoverPartFromSerialNo?SerialNo=${serialNo}&LoginUser=${username}`;
 
 module.exports = {
   checkVersionEndPoint,
@@ -139,4 +140,5 @@ module.exports = {
   ItemHandOverSubmitEndPoint,
   InhandResponsibleInventoryEndPoint,
   getOTPListForInhandInventoryEndPoint,
+  getRestockHandoverPartFromSerialNoEndPoint,
 };

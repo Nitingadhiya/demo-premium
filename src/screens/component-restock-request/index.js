@@ -16,6 +16,7 @@ import {
   getUsersForHandOverEndPoint,
   inHandlInventoryOTPRequestEndPoint,
   ItemHandOverSubmitEndPoint,
+  getRestockHandoverPartFromSerialNoEndPoint,
 } from '../../config/api-endpoint';
 import styles from './styles';
 import Events from '../../utils/events';
@@ -26,7 +27,7 @@ import {MIcon, McIcon} from '../../common/assets/vector-icon';
 import {Color} from '../../common/styles';
 import ComponentRequestWithQRCode from '../../components/component-request-with-qr-code';
 
-class ComponentRequest extends Component {
+class ComponentRestockRequest extends Component {
   state = {
     loadSystemPart: null,
     loadingData: false,
@@ -76,39 +77,39 @@ class ComponentRequest extends Component {
   }
 
   getPartFromSerialNo() {
-    const {serialNo, loadSystemPart} = this.state;
+    const {serialNo, loadSystemPart, userInfo} = this.state;
 
-    if (!serialNo) return;
+    if (!serialNo || !userInfo) return;
     let serialNum = serialNo.split(' ').join('');
 
     // if already exists in array
     if (_.find(loadSystemPart, {SerialNo: serialNo})) return;
 
     this.setState({loadingData: true, errorMessage: false});
-
-    APICaller(getPartFromSerialNoForHandOverEndPoint(serialNum), 'GET').then(
-      json => {
-        this.setState({
-          loadingData: false,
-        });
-        if (json.data.Success === '1') {
-          let arr = [];
-          if (loadSystemPart) {
-            arr = _.concat(loadSystemPart, json.data.Response);
-          } else {
-            arr = json.data.Response;
-          }
-          console.log(arr);
-          this.setState({
-            loadSystemPart: _.uniqBy(arr, 'ID'),
-          });
+    APICaller(
+      getRestockHandoverPartFromSerialNoEndPoint(userInfo.UserName, serialNum),
+      'GET',
+    ).then(json => {
+      this.setState({
+        loadingData: false,
+      });
+      if (json.data.Success === '1') {
+        let arr = [];
+        if (loadSystemPart) {
+          arr = _.concat(loadSystemPart, json.data.Response);
         } else {
-          this.setState({
-            errorMessage: json.data.Message,
-          });
+          arr = json.data.Response;
         }
-      },
-    );
+        console.log(arr);
+        this.setState({
+          loadSystemPart: _.uniqBy(arr, 'ID'),
+        });
+      } else {
+        this.setState({
+          errorMessage: json.data.Message,
+        });
+      }
+    });
   }
 
   textBold = text => <Text style={styles.labelText}>{text}:</Text>;
@@ -153,46 +154,6 @@ class ComponentRequest extends Component {
     }
   }
 
-  getChangeValue(value) {
-    this.setState({responsibleUser: value});
-  }
-
-  otpRequest() {
-    const {userInfo, responsibleUser, remark, loadSystemPart} = this.state;
-    if (!loadSystemPart || loadSystemPart.length === 0) return;
-    let systemPartsNo = [];
-    _.map(loadSystemPart, res => systemPartsNo.push({SearialNo: res.SerialNo}));
-    const body = {
-      HandoverUser: userInfo.UserName,
-      ResponsibleUser: responsibleUser,
-      HandoverRemark: remark,
-      Parts: systemPartsNo,
-    };
-
-    this.setState({
-      loadingData: true,
-    });
-    APICaller(
-      inHandlInventoryOTPRequestEndPoint,
-      'POST',
-      JSON.stringify(body),
-    ).then(json => {
-      this.setState({
-        loadingData: false,
-      });
-      if (json.data.Success === '1') {
-        this.setState({
-          otpField: true,
-          responseOTP: _.get(json, 'data.Response[0].OTP', ''),
-        });
-      } else {
-        this.setState({
-          errorMessage: json.data.Message,
-        });
-      }
-    });
-  }
-
   savePartRequest() {
     const {
       userInfo,
@@ -201,7 +162,6 @@ class ComponentRequest extends Component {
       loadSystemPart,
       otp,
       responseOTP,
-      userList,
     } = this.state;
     if (responseOTP != otp || !responseOTP || !otp) {
       Alert.alert('Failed', 'OTP does not match');
@@ -224,15 +184,10 @@ class ComponentRequest extends Component {
     });
     APICaller(ItemHandOverSubmitEndPoint, 'POST', JSON.stringify(body)).then(
       json => {
+        this.setState({
+          loadingData: false,
+        });
         if (json.data.Success === '1') {
-          this.setState({
-            loadingData: false,
-            otp: null,
-            remark: null,
-            responsibleUser: userList[0].UserName,
-            loadSystemPart: null,
-            otpField: false,
-          });
           Alert.alert('Success', json.data.Message);
           NavigationHelper.navigate(
             this.props.navigation,
@@ -241,7 +196,6 @@ class ComponentRequest extends Component {
         } else {
           this.setState({
             errorMessage: json.data.Message,
-            loadingData: false,
           });
         }
       },
@@ -327,69 +281,11 @@ class ComponentRequest extends Component {
               renderItem={({item, index}) => this.renderItem(item, index)}
             />
             <View>
-              <View style={[styles.subTextBoxView, styles.extraTextBoxView]}>
-                <TextInputView
-                  placeholder="Remark"
-                  multline={true}
-                  placeholderTextColor={Color.greyishBrown30}
-                  value={remark}
-                  autoCorrect={false}
-                  onChangeText={value => this.setState({remark: value})}
-                  blurOnSubmit={false}
-                  customStyle={[styles.customStyle, styles.multilineStyle]}
-                  onSubmitEditing={() => this.getPartFromSerialNo()}
-                />
-              </View>
-              {otpField ? (
-                <View style={styles.spaceMange}>
-                  <View
-                    style={[styles.subTextBoxView, styles.extraTextBoxView]}>
-                    <TextInputView
-                      placeholder="Enter otp"
-                      placeholderTextColor={Color.greyishBrown30}
-                      value={otp}
-                      autoCorrect={false}
-                      onChangeText={value => this.setState({otp: value})}
-                      blurOnSubmit={false}
-                      customStyle={styles.customStyle}
-                      onSubmitEditing={() => this.getPartFromSerialNo()}
-                    />
-                  </View>
-                </View>
-              ) : null}
-              <View style={styles.pickerView}>
-                <Picker
-                  prompt="Choose below user"
-                  style={styles.picker}
-                  selectedValue={responsibleUser}
-                  onValueChange={(itemValue, itemIndex) => {
-                    this.getChangeValue(itemValue);
-                  }}>
-                  {userList &&
-                    userList.map((data, index) => {
-                      return (
-                        <Picker.Item
-                          label={data.FullName + ' (' + data.UserType + ')'}
-                          value={data.UserName}
-                          key={`${index.toString()}`}
-                        />
-                      );
-                    })}
-                </Picker>
-              </View>
-              {!otpField ? (
-                <TouchableOpacity
-                  style={styles.saveButtonCss}
-                  onPress={() => this.otpRequest()}>
-                  <Text style={styles.saveButtonText}>Request OTP</Text>
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  style={styles.saveButtonCss}
-                  onPress={() => this.savePartRequest()}>
-                  <Text style={styles.saveButtonText}>Submit</Text>
-                </TouchableOpacity>
-              )}
+              <TouchableOpacity
+                style={styles.saveButtonCss}
+                onPress={() => this.savePartRequest()}>
+                <Text style={styles.saveButtonText}>Submit</Text>
+              </TouchableOpacity>
             </View>
           </View>
           <ComponentRequestWithQRCode userInfo={userInfo} />
@@ -398,4 +294,4 @@ class ComponentRequest extends Component {
     );
   }
 }
-export default ComponentRequest;
+export default ComponentRestockRequest;

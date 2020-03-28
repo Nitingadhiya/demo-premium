@@ -164,6 +164,14 @@ export default class Dashboard extends Component {
               }>
               <Text style={styles.dashBtnText}>Team's Components Stocks</Text>
             </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.TouchBTN}
+              onPress={() =>
+                NavigationHelper.navigate(navigation, 'ComponentRestockRequest')
+              }>
+              <Text style={styles.dashBtnText}>Components Re-stocks</Text>
+            </TouchableOpacity>
+
             <TouchableOpacity style={styles.TouchBTN}>
               <Text style={styles.dashBtnText}>Reports Accept from Team</Text>
             </TouchableOpacity>
