@@ -31,6 +31,9 @@ class WishList extends Component {
 
   componentDidMount() {
     this.getUserInfo();
+    this._unsubscribe = this.props.navigation.addListener('focus', async () => {
+      this.getUserInfo();
+    });
   }
 
   async getUserInfo() {

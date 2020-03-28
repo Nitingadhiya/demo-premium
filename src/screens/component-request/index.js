@@ -24,6 +24,7 @@ import NavigationHelper from '../../utils/navigation-helper';
 import {SpinnerView, TextInputView, Header} from '../../common/components';
 import {MIcon, McIcon} from '../../common/assets/vector-icon';
 import {Color} from '../../common/styles';
+import ComponentRequestWithQRCode from '../../components/component-request-with-qr-code';
 
 class ComponentRequest extends Component {
   state = {
@@ -43,6 +44,13 @@ class ComponentRequest extends Component {
   componentDidMount() {
     this.getUserInfo();
     this.getUsersForHandOver();
+    Events.on('serial-scan', 'Event', async val => {
+      console.log(val, 'val');
+      await this.setState({
+        serialNo: val,
+      });
+      this.getPartFromSerialNo();
+    });
   }
 
   async getUserInfo() {
@@ -233,6 +241,19 @@ class ComponentRequest extends Component {
     );
   }
 
+  noItemFound = () => {
+    if (this.state.loadingData) return <View />;
+    return (
+      <View style={styles.noItemView}>
+        <Text style={styles.noItemText}>No items found</Text>
+      </View>
+    );
+  };
+
+  openQRCode() {
+    Events.trigger('ComponentRequestWithQRCodeEvent');
+  }
+
   render() {
     const {
       loadingData,
@@ -244,6 +265,7 @@ class ComponentRequest extends Component {
       userList,
       responsibleUser,
       otpField,
+      userInfo,
     } = this.state;
 
     return (
@@ -255,9 +277,10 @@ class ComponentRequest extends Component {
           </View>
         ) : null}
         <View style={styles.container}>
-          {/* <KeyboardAvoidingView behavior={'padding'}> */}
           <View style={styles.searchPartsView}>
-            <TouchableOpacity style={styles.paddingH}>
+            <TouchableOpacity
+              style={styles.paddingH}
+              onPress={() => this.openQRCode()}>
               <McIcon name="qrcode-scan" size={24} color={Color.primary} />
             </TouchableOpacity>
 
@@ -291,7 +314,7 @@ class ComponentRequest extends Component {
               keyboardShouldPersistTaps={'handled'}
               contentContainerStyle={{flexGrow: 1}}
               keyExtractor={(item, index) => `${index}`}
-              //ListEmptyComponent={() => this.noItemFound()}
+              ListEmptyComponent={() => this.noItemFound()}
               style={styles.flatListCss}
               extraData={this.state}
               renderItem={({item, index}) => this.renderItem(item, index)}
@@ -362,7 +385,7 @@ class ComponentRequest extends Component {
               )}
             </View>
           </View>
-          {/* </KeyboardAvoidingView> */}
+          <ComponentRequestWithQRCode userInfo={userInfo} />
         </View>
       </SafeAreaView>
     );

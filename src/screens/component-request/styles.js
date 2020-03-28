@@ -91,4 +91,11 @@ export default styles = {
     bottom: 5,
     right: 10,
   },
+  noItemText: {color: 'grey', fontSize: 16},
+  noItemView: {
+    flex: 1,
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 };
