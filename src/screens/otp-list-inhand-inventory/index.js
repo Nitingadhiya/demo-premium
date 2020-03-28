@@ -27,10 +27,6 @@ class OTPListInhandInventory extends Component {
 
   componentDidMount() {
     this.getUserInfo();
-    Events.on('refresh-inventory-stock', 'refresh', () => {
-      this.setState({refreshing: true});
-      this.getUserInfo();
-    });
   }
 
   async getUserInfo() {
@@ -49,9 +45,9 @@ class OTPListInhandInventory extends Component {
     APICaller(getOTPListForInhandInventoryEndPoint(username), 'GET').then(
       json => {
         console.log(json);
-        if (!this.state.refreshing) {
-          this.setState({loadingData: false});
-        }
+
+        this.setState({loadingData: false, refreshing: false});
+
         if (json.data.Success === '1') {
           this.setState({
             otpList: _.get(json, 'data.Response'),
@@ -111,8 +107,7 @@ class OTPListInhandInventory extends Component {
     this.setState({
       refreshing: true,
     });
-    Events.trigger('refresh-inventory-stock');
-    setTimeout(() => this.setState({refreshing: false}), 2000);
+    this.getUserInfo();
   }
 
   render() {
