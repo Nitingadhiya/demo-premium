@@ -12,11 +12,9 @@ import {
 import APICaller from '../../utils/api-caller';
 import _ from 'lodash';
 import {
-  getPartFromSerialNoForHandOverEndPoint,
   getUsersForHandOverEndPoint,
-  inHandlInventoryOTPRequestEndPoint,
-  ItemHandOverSubmitEndPoint,
   getRestockHandoverPartFromSerialNoEndPoint,
+  restockInhandInventoryEndPoint,
 } from '../../config/api-endpoint';
 import styles from './styles';
 import Events from '../../utils/events';
@@ -26,6 +24,7 @@ import {SpinnerView, TextInputView, Header} from '../../common/components';
 import {MIcon, McIcon} from '../../common/assets/vector-icon';
 import {Color} from '../../common/styles';
 import ComponentRequestWithQRCode from '../../components/component-request-with-qr-code';
+import ComponentRestockRequestWithQRCode from '../../components/component-restock-request-with-qr-code';
 
 class ComponentRestockRequest extends Component {
   state = {
@@ -44,9 +43,8 @@ class ComponentRestockRequest extends Component {
 
   componentDidMount() {
     this.getUserInfo();
-    this.getUsersForHandOver();
-    Events.on('serial-scan', 'Event', async val => {
-      console.log(val, 'val');
+
+    Events.on('restock-serial-scan', 'Event', async val => {
       await this.setState({
         serialNo: val,
       });
@@ -57,23 +55,33 @@ class ComponentRestockRequest extends Component {
   async getUserInfo() {
     const userInfo = await Helper.getLocalStorageItem('userInfo');
     this.setState({userInfo: userInfo});
+    if (userInfo) this.getUsersForHandOver(userInfo.UserName);
   }
 
-  getUsersForHandOver() {
+  getUsersForHandOver(userName) {
     this.setState({
       loadingData: true,
     });
     APICaller(getUsersForHandOverEndPoint, 'GET').then(json => {
-      console.log(json);
       this.setState({
         loadingData: false,
       });
       if (json.data.Success === '1') {
+        const list = json.data.Response;
+        const arr = [];
+        list.map(
+          res =>
+            res.UserName.toLowerCase() != userName.toLowerCase() &&
+            arr.push(res),
+        );
         this.setState({
-          userList: json.data.Response,
+          userList: arr,
         });
       }
     });
+  }
+  getChangeValue(value) {
+    this.setState({responsibleUser: value});
   }
 
   getPartFromSerialNo() {
@@ -100,7 +108,6 @@ class ComponentRestockRequest extends Component {
         } else {
           arr = json.data.Response;
         }
-        console.log(arr);
         this.setState({
           loadSystemPart: _.uniqBy(arr, 'ID'),
         });
@@ -138,15 +145,12 @@ class ComponentRestockRequest extends Component {
   removeItem(id) {
     const {loadSystemPart} = this.state;
     if (loadSystemPart) {
-      console.log(id);
       let arr = [];
       _.map(loadSystemPart, res => {
         if (res.ID != id) {
           arr.push(res);
         }
       });
-
-      console.log(arr);
 
       this.setState({
         loadSystemPart: arr,
@@ -155,51 +159,40 @@ class ComponentRestockRequest extends Component {
   }
 
   savePartRequest() {
-    const {
-      userInfo,
-      responsibleUser,
-      remark,
-      loadSystemPart,
-      otp,
-      responseOTP,
-    } = this.state;
-    if (responseOTP != otp || !responseOTP || !otp) {
-      Alert.alert('Failed', 'OTP does not match');
-      return;
-    }
+    const {userInfo, loadSystemPart} = this.state;
 
     if (!loadSystemPart || loadSystemPart.length === 0) return;
     let systemPartsNo = [];
-    _.map(loadSystemPart, res => systemPartsNo.push({SearialNo: res.SerialNo}));
+    _.map(loadSystemPart, res => systemPartsNo.push({SerialNo: res.SerialNo}));
     const body = {
-      HandoverUser: userInfo.UserName,
-      ResponsibleUser: responsibleUser,
-      HandoverRemark: remark,
-      OTP: otp,
+      LoginUser: userInfo.UserName,
       Parts: systemPartsNo,
     };
 
     this.setState({
       loadingData: true,
     });
-    APICaller(ItemHandOverSubmitEndPoint, 'POST', JSON.stringify(body)).then(
-      json => {
+    APICaller(
+      restockInhandInventoryEndPoint,
+      'POST',
+      JSON.stringify(body),
+    ).then(json => {
+      this.setState({
+        loadingData: false,
+      });
+      if (json.data.Success === '1') {
+        Alert.alert('Success', json.data.Message);
         this.setState({
-          loadingData: false,
+          loadSystemPart: null,
+          serialNo: null,
         });
-        if (json.data.Success === '1') {
-          Alert.alert('Success', json.data.Message);
-          NavigationHelper.navigate(
-            this.props.navigation,
-            'TeamComponentStock',
-          );
-        } else {
-          this.setState({
-            errorMessage: json.data.Message,
-          });
-        }
-      },
-    );
+        NavigationHelper.navigate(this.props.navigation, 'TeamComponentStock');
+      } else {
+        this.setState({
+          errorMessage: json.data.Message,
+        });
+      }
+    });
   }
 
   noItemFound = () => {
@@ -212,7 +205,7 @@ class ComponentRestockRequest extends Component {
   };
 
   openQRCode() {
-    Events.trigger('ComponentRequestWithQRCodeEvent');
+    Events.trigger('component-restock-request-with-QRCodeEvent');
   }
 
   render() {
@@ -231,7 +224,7 @@ class ComponentRestockRequest extends Component {
 
     return (
       <SafeAreaView style={styles.flex1}>
-        <Header title={'Component Request'} left="back" />
+        <Header title={'Component Restock'} left="back" />
         {loadingData ? (
           <View style={styles.spinnerView}>
             <SpinnerView />
@@ -288,7 +281,7 @@ class ComponentRestockRequest extends Component {
               </TouchableOpacity>
             </View>
           </View>
-          <ComponentRequestWithQRCode userInfo={userInfo} />
+          <ComponentRestockRequestWithQRCode userInfo={userInfo} />
         </View>
       </SafeAreaView>
     );

@@ -44,8 +44,6 @@ class OTPListInhandInventory extends Component {
 
     APICaller(getOTPListForInhandInventoryEndPoint(username), 'GET').then(
       json => {
-        console.log(json);
-
         this.setState({loadingData: false, refreshing: false});
 
         if (json.data.Success === '1') {

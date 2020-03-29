@@ -12,11 +12,11 @@ const APICaller = (endPoint, method, body) => {
     responseType: 'json',
   })
     .then(response => {
-      console.log(response);
+      // console.log(response);
       return response;
     })
     .catch(error => {
-      console.log(error.response);
+      //console.log(error.response);
       console.log(
         `there is an error from ["${BasicURL.path}/${endPoint}] >>`,
         error,

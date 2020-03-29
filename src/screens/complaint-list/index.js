@@ -225,7 +225,6 @@ class ComplainList extends Component {
   closeComplaint(item) {
     this.complaintCloseQRcode = item.SystemTag;
     this.complaintId = item.ComplaintID;
-    console.log('Loogg');
     const params = {
       isOpen: true,
       item: item,

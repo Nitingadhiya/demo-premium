@@ -44,7 +44,6 @@ class TeamComponentStock extends Component {
     }
     APICaller(InhandResponsibleInventoryEndPoint(username), 'GET').then(
       json => {
-        console.log(json);
         if (!this.state.refreshing) {
           this.setState({loadingData: false});
         }

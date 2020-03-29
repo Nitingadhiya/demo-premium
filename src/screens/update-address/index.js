@@ -80,7 +80,6 @@ class UpdateAddress extends Component {
     this.month = 1;
     this.day = 27;
     const {params} = this.props.route;
-    console.log(params, 'params');
     if (params) {
       systemAddress = params.systemAddress;
       const paramsitem = params.item;
@@ -106,9 +105,7 @@ class UpdateAddress extends Component {
       userInfo,
     });
     result = userInfo;
-    console.log('CCC', systemAddress);
     if (!systemAddress) {
-      console.log('IFFF');
       this.getUserState(userInfo);
     }
   }
@@ -138,7 +135,6 @@ class UpdateAddress extends Component {
         Home,
         BusinessType,
       } = userInfo;
-      console.log('user', userInfo);
       this.setState({
         areaText: Area,
         roadText: Road,
@@ -306,8 +302,6 @@ class UpdateAddress extends Component {
       return;
     }
     if (Address) {
-      console.log((Address.match(/,/g) || []).length); //logs 3
-
       if ((Address.match(/,/g) || []).length > 1) {
         // Address.split(',');
         this.setState({

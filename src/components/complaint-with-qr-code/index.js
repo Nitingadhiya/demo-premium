@@ -69,13 +69,11 @@ class ComplaintWithQRCode extends Component {
   complaintClose(result) {
     const {item} = this.state;
     if (!item) return;
-    console.log(item, '*************' + result);
 
     const splt = item.SystemTag.split('-');
     const checksplt = splt[0];
     if (checksplt === 'SYS' || checksplt === 'SER') {
       if (item.SystemTag === result) {
-        console.log('Close Remark modal');
         const params = {
           isOpen: true,
           item,
@@ -89,7 +87,6 @@ class ComplaintWithQRCode extends Component {
         );
       }
     } else {
-      console.log('Close Remark modal ***');
       const params = {
         isOpen: true,
         item,

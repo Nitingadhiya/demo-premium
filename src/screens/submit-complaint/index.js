@@ -57,7 +57,6 @@ export default class submitComplaint extends Component {
     this.systemTag = '';
     this.getcompDescList();
     if (params) {
-      console.log(this.props);
       this.setState({
         systemTag: params.systemTag,
         complainCharge: params.complainCharge,

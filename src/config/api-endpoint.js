@@ -73,8 +73,8 @@ const systemAddressUpdateEndPoint = 'SystemAddressUpdate';
 const getAreaFromRoadEndPoint = road => `GetAreaFromRoad?Road=${road}`;
 const getAreaFromPincodeEndPoint = pincode =>
   `GetAreaFromPincode?Pincode=${pincode}`;
-const getPartFromSerialNoForHandOverEndPoint = searialNo =>
-  `GetPartFromSerialNoForHandOver?SerialNo=${searialNo}`;
+const getPartFromSerialNoForHandOverEndPoint = serialNo =>
+  `GetPartFromSerialNoForHandOver?SerialNo=${serialNo}`;
 const getUsersForHandOverEndPoint = 'getUsersForHandOver';
 const inHandlInventoryOTPRequestEndPoint = `InhandInventoryOTPRequest`;
 const ItemHandOverSubmitEndPoint = 'ItemHandOverSubmit';
@@ -82,8 +82,9 @@ const InhandResponsibleInventoryEndPoint = username =>
   `InhandResponsibleInventory?LoginUser=${username}`;
 const getOTPListForInhandInventoryEndPoint = username =>
   `GetOTPListForInhandInventory?LoginUser=${username}`;
-const getRestockHandoverPartFromSerialNoEndPoint = (serialNo, username) =>
+const getRestockHandoverPartFromSerialNoEndPoint = (username, serialNo) =>
   `GetRestockHandoverPartFromSerialNo?SerialNo=${serialNo}&LoginUser=${username}`;
+const restockInhandInventoryEndPoint = 'RestockInhandInventory';
 
 module.exports = {
   checkVersionEndPoint,
@@ -141,4 +142,5 @@ module.exports = {
   InhandResponsibleInventoryEndPoint,
   getOTPListForInhandInventoryEndPoint,
   getRestockHandoverPartFromSerialNoEndPoint,
+  restockInhandInventoryEndPoint,
 };

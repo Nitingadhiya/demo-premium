@@ -52,7 +52,6 @@ class ProductList extends Component {
     }
     this.getUserInfo();
     this._unsubscribe = this.props.navigation.addListener('focus', async () => {
-      console.log('Looks');
       // do something
       const {route} = this.props;
       if (route.params) {
@@ -217,7 +216,6 @@ class ProductList extends Component {
         list.some(res => {
           if (res.Cart === true) badgeCount++;
         });
-        //console.log(_.sortBy(list, {IsNew: false}), 'sorttt');
         this.setState({
           productItemList: _.sortBy(list, {IsNew: false}),
           filterResult: _.sortBy(list, {IsNew: false}),
@@ -259,7 +257,6 @@ class ProductList extends Component {
   }
 
   async removeWishListCart(item, type) {
-    console.log(item);
     this.setState({loadingData: true});
     const userInfo = await Helper.getLocalStorageItem('userInfo');
     if (!userInfo) return;
@@ -339,7 +336,7 @@ class ProductList extends Component {
 
   // latestProduct() {
   //   if (this.state.productItemList && this.state.productItemList.length > 0) {
-  //     console.log('LLL');
+  //
   //     const productItem = JSON.stringify(this.state.productItemList);
   //     const PRD = JSON.parse(productItem);
   //     _.reverse(PRD);

@@ -3,6 +3,7 @@ import {Text, View, FlatList, RefreshControl} from 'react-native';
 import _ from 'lodash';
 import styles from './styles';
 import moment from 'moment';
+import Events from '../../utils/events';
 
 class InhandInventoryForResponsiblePerson extends Component {
   state = {

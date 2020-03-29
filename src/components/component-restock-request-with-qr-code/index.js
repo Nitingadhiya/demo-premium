@@ -25,9 +25,8 @@ import Events from '../../utils/events';
 import {useNavigation} from '@react-navigation/native';
 import style from 'react-native-datepicker/style';
 
-let tmpSys = [];
 let self;
-class ComponentRequestWithQRCode extends Component {
+class ComponentRestockRequestWithQRCode extends Component {
   state = {
     qrCode: false,
     item: null,
@@ -36,7 +35,7 @@ class ComponentRequestWithQRCode extends Component {
 
   componentDidMount() {
     self = this;
-    Events.on('ComponentRequestWithQRCodeEvent', 'Event', res => {
+    Events.on('component-restock-request-with-QRCodeEvent', 'Event', res => {
       this.setState({
         qrCode: res.isOpen,
         item: res.item,
@@ -55,7 +54,7 @@ class ComponentRequestWithQRCode extends Component {
       self.setState({
         itemScanSerialNo: self.state.itemScanSerialNo + 1,
       });
-      Events.trigger('serial-scan', result);
+      Events.trigger('restock-serial-scan', result);
     }
   }
 
@@ -104,4 +103,4 @@ class ComponentRequestWithQRCode extends Component {
     );
   }
 }
-export default ComponentRequestWithQRCode;
+export default ComponentRestockRequestWithQRCode;

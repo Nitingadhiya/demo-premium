@@ -22,6 +22,7 @@ import {
 } from '../../../../common/components';
 import TeamComplaintOverview from '../../../../components/team-complaints-overview';
 import TeamTasksOverview from '../../../../components/team-tasks-overview';
+import NavigationHelper from '../../../../utils/navigation-helper';
 
 export default class Dashboard extends Component {
   state = {
@@ -159,8 +160,26 @@ export default class Dashboard extends Component {
             <TouchableOpacity style={styles.TouchBTN}>
               <Text style={styles.dashBtnText}>More 1 Complaint Request</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.TouchBTN}>
-              <Text style={styles.dashBtnText}>Components Request</Text>
+            <TouchableOpacity
+              style={styles.TouchBTN}
+              onPress={() =>
+                NavigationHelper.navigate(navigation, 'ComponentRequest')
+              }>
+              <Text style={styles.dashBtnText}>Component Request</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.TouchBTN}
+              onPress={() =>
+                NavigationHelper.navigate(navigation, 'TeamComponentStock')
+              }>
+              <Text style={styles.dashBtnText}>Team's Components Stocks</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.TouchBTN}
+              onPress={() =>
+                NavigationHelper.navigate(navigation, 'ComponentRestockRequest')
+              }>
+              <Text style={styles.dashBtnText}>Components Re-stocks</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

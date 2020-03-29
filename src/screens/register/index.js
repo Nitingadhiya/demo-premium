@@ -395,7 +395,6 @@ class Register extends Component {
                   selectedValue={this.state.registerForm.businessType}
                   style={styles.cityList}
                   onValueChange={(itemValue, itemIndex) => {
-                    console.log(itemValue, 'value');
                     this.changeTexInputValue('businessType', itemValue);
                   }}>
                   <Picker.Item label="Business Use" value="B" />

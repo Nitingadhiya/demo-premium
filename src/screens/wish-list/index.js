@@ -87,7 +87,6 @@ class WishList extends Component {
   }
 
   onRefresh = () => {
-    console.log('Refrsh');
     this.setState({refreshing: true});
     this.getUserInfo();
   };

@@ -43,9 +43,8 @@ class ComponentRequest extends Component {
 
   componentDidMount() {
     this.getUserInfo();
-    this.getUsersForHandOver();
+
     Events.on('serial-scan', 'Event', async val => {
-      console.log(val, 'val');
       await this.setState({
         serialNo: val,
       });
@@ -56,20 +55,27 @@ class ComponentRequest extends Component {
   async getUserInfo() {
     const userInfo = await Helper.getLocalStorageItem('userInfo');
     this.setState({userInfo: userInfo});
+    if (userInfo) this.getUsersForHandOver(userInfo.UserName);
   }
 
-  getUsersForHandOver() {
+  getUsersForHandOver(userName) {
     this.setState({
       loadingData: true,
     });
     APICaller(getUsersForHandOverEndPoint, 'GET').then(json => {
-      console.log(json);
       this.setState({
         loadingData: false,
       });
       if (json.data.Success === '1') {
+        const list = json.data.Response;
+        const arr = [];
+        list.map(
+          res =>
+            res.UserName.toLowerCase() != userName.toLowerCase() &&
+            arr.push(res),
+        );
         this.setState({
-          userList: json.data.Response,
+          userList: arr,
         });
       }
     });
@@ -98,7 +104,6 @@ class ComponentRequest extends Component {
           } else {
             arr = json.data.Response;
           }
-          console.log(arr);
           this.setState({
             loadSystemPart: _.uniqBy(arr, 'ID'),
           });
@@ -137,15 +142,12 @@ class ComponentRequest extends Component {
   removeItem(id) {
     const {loadSystemPart} = this.state;
     if (loadSystemPart) {
-      console.log(id);
       let arr = [];
       _.map(loadSystemPart, res => {
         if (res.ID != id) {
           arr.push(res);
         }
       });
-
-      console.log(arr);
 
       this.setState({
         loadSystemPart: arr,
@@ -160,8 +162,14 @@ class ComponentRequest extends Component {
   otpRequest() {
     const {userInfo, responsibleUser, remark, loadSystemPart} = this.state;
     if (!loadSystemPart || loadSystemPart.length === 0) return;
+    if (!remark) {
+      this.setState({
+        errorMessage: 'Remark field required',
+      });
+      return;
+    }
     let systemPartsNo = [];
-    _.map(loadSystemPart, res => systemPartsNo.push({SearialNo: res.SerialNo}));
+    _.map(loadSystemPart, res => systemPartsNo.push({SerialNo: res.SerialNo}));
     const body = {
       HandoverUser: userInfo.UserName,
       ResponsibleUser: responsibleUser,
@@ -210,7 +218,7 @@ class ComponentRequest extends Component {
 
     if (!loadSystemPart || loadSystemPart.length === 0) return;
     let systemPartsNo = [];
-    _.map(loadSystemPart, res => systemPartsNo.push({SearialNo: res.SerialNo}));
+    _.map(loadSystemPart, res => systemPartsNo.push({SerialNo: res.SerialNo}));
     const body = {
       HandoverUser: userInfo.UserName,
       ResponsibleUser: responsibleUser,
