@@ -12,7 +12,6 @@ import {
 import APICaller from '../../utils/api-caller';
 import _ from 'lodash';
 import {
-  getUsersForHandOverEndPoint,
   getRestockHandoverPartFromSerialNoEndPoint,
   restockInhandInventoryEndPoint,
 } from '../../config/api-endpoint';
@@ -34,7 +33,6 @@ class ComponentRestockRequest extends Component {
     serialNo: '',
     remark: null,
     otp: null,
-    userList: null,
     responsibleUser: null,
     otpField: false,
     userInfo: null,
@@ -55,33 +53,6 @@ class ComponentRestockRequest extends Component {
   async getUserInfo() {
     const userInfo = await Helper.getLocalStorageItem('userInfo');
     this.setState({userInfo: userInfo});
-    if (userInfo) this.getUsersForHandOver(userInfo.UserName);
-  }
-
-  getUsersForHandOver(userName) {
-    this.setState({
-      loadingData: true,
-    });
-    APICaller(getUsersForHandOverEndPoint, 'GET').then(json => {
-      this.setState({
-        loadingData: false,
-      });
-      if (json.data.Success === '1') {
-        const list = json.data.Response;
-        const arr = [];
-        list.map(
-          res =>
-            res.UserName.toLowerCase() != userName.toLowerCase() &&
-            arr.push(res),
-        );
-        this.setState({
-          userList: arr,
-        });
-      }
-    });
-  }
-  getChangeValue(value) {
-    this.setState({responsibleUser: value});
   }
 
   getPartFromSerialNo() {
@@ -98,6 +69,7 @@ class ComponentRestockRequest extends Component {
       getRestockHandoverPartFromSerialNoEndPoint(userInfo.UserName, serialNum),
       'GET',
     ).then(json => {
+      console.log(json, 'json');
       this.setState({
         loadingData: false,
       });
@@ -108,10 +80,12 @@ class ComponentRestockRequest extends Component {
         } else {
           arr = json.data.Response;
         }
+        Events.trigger('restock-serial-no-added', _.size(_.uniqBy(arr, 'ID')));
         this.setState({
           loadSystemPart: _.uniqBy(arr, 'ID'),
         });
       } else {
+        Events.trigger('restock-serial-no-added-error', json.data.Message);
         this.setState({
           errorMessage: json.data.Message,
         });
@@ -125,14 +99,15 @@ class ComponentRestockRequest extends Component {
     return (
       <View style={styles.seprationView}>
         <Text style={styles.description}>
-          {this.textBold('Description')} {item.PartDescription} -{item.SerialNo}
+          {item.Initial} - {item.SerialNo}
+          {/* {this.textBold('Description')} {item.PartDescription} -{item.SerialNo} */}
         </Text>
-        <Text style={styles.description}>
+        {/* <Text style={styles.description}>
           {this.textBold('Warranty')}: {item.WarrantyOutwardMonths}
         </Text>
         <Text style={styles.description}>
           {this.textBold('Part Category')}: {item.PartCategoryName}
-        </Text>
+        </Text> */}
         <TouchableOpacity
           onPress={() => this.removeItem(item.ID)}
           style={styles.closeIcon}>
@@ -216,7 +191,6 @@ class ComponentRestockRequest extends Component {
       errorMessage,
       remark,
       otp,
-      userList,
       responsibleUser,
       otpField,
       userInfo,
@@ -248,6 +222,7 @@ class ComponentRestockRequest extends Component {
                 blurOnSubmit={false}
                 customStyle={styles.customStyle}
                 onSubmitEditing={() => this.getPartFromSerialNo()}
+                capitalize={'characters'}
               />
             </View>
             <TouchableOpacity

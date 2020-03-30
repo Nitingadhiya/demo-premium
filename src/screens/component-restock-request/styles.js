@@ -49,6 +49,7 @@ export default styles = {
     borderBottomWidth: 1,
     borderColor: Color.paleGrey,
     padding: 10,
+    paddingHorizontal: 5,
   },
   paddingH: {
     paddingHorizontal: 5,

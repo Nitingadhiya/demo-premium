@@ -314,6 +314,7 @@ class ComponentRequest extends Component {
                 blurOnSubmit={false}
                 customStyle={styles.customStyle}
                 onSubmitEditing={() => this.getPartFromSerialNo()}
+                capitalize={'characters'}
               />
             </View>
             <TouchableOpacity

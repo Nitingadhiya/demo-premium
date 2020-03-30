@@ -44,13 +44,17 @@ class TeamComponentStock extends Component {
     }
     APICaller(InhandResponsibleInventoryEndPoint(username), 'GET').then(
       json => {
+        console.log(json);
         if (!this.state.refreshing) {
           this.setState({loadingData: false});
         }
         if (json.data.Success === '1') {
           this.setState({
-            InhandinventoryList: this.getData(json, 'InhandInventories'),
-            responsibleInventory: this.getData(json, 'ResponsibleInventories'),
+            InhandinventoryList: _.concat(
+              this.getData(json, 'InhandInventories'),
+              this.getData(json, 'ResponsibleInventories'),
+            ),
+            //responsibleInventory: ,
           });
         }
       },
@@ -88,6 +92,7 @@ class TeamComponentStock extends Component {
       InhandinventoryList,
       responsibleInventory,
       activeTab,
+      userInfo,
     } = this.state;
 
     return (
@@ -99,12 +104,12 @@ class TeamComponentStock extends Component {
           </View>
         ) : null}
         <View style={styles.container}>
-          {this.tabView()}
-          {activeTab === '1' ? (
-            <InhandInventory data={InhandinventoryList} />
-          ) : (
-            <InhandInventoryForResponsiblePerson data={responsibleInventory} />
-          )}
+          {/* {this.tabView()} */}
+          {/* {activeTab === '1' ? ( */}
+          <InhandInventory data={InhandinventoryList} userInfo={userInfo} />
+          {/* // ) : ( */}
+          {/* <InhandInventoryForResponsiblePerson data={responsibleInventory} /> */}
+          {/* )} */}
         </View>
       </SafeAreaView>
     );

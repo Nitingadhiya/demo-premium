@@ -17,19 +17,65 @@ class InhandInventory extends Component {
       </View>
     );
   };
-  textBold = text => <Text style={styles.labelText}>{text}</Text>;
 
-  oneLineMethod = (key, value) => (
+  textBold = text => <Text style={styles.labelText}>{text}</Text>;
+  textNormal = text => (
+    <Text style={styles.textShow} numberOfLines={1}>
+      {text}
+    </Text>
+  );
+
+  oneLineMethod = (key, value, value1) => (
     <View style={styles.oneLineView}>
-      <View style={styles.leftView}>{this.textBold(key)}</View>
+      <View style={styles.leftView}>{this.textNormal(key)}</View>
+      <View style={[styles.rightView, styles.borderRight]}>
+        <Text style={styles.descriptionText}>{value}</Text>
+      </View>
+      <Text style={styles.descriptionText}>{value1}</Text>
+    </View>
+  );
+
+  arrayLineMethod = (key, value) => (
+    <View style={[styles.oneLineView, styles.paddingBottom5]}>
+      {/* <View style={styles.leftView}>{this.textBold(key)}</View> */}
       <View style={styles.rightView}>
-        <Text style={styles.description}>{value}</Text>
+        {value &&
+          value.split(',').map((res, index) => (
+            <View style={styles.viewSerialNo} key={`${index}_string`}>
+              <Text style={styles.descriptionText}>{res}</Text>
+            </View>
+          ))}
       </View>
     </View>
   );
+
+  checkLoggedIn = item =>
+    item.ResponsibleUser.toLowerCase() ===
+    this.props.userInfo.UserName.toLowerCase();
+
   renderItem = item => (
     <View style={styles.seprationView}>
-      {this.oneLineMethod('Description', item.PartDescription)}
+      <View style={styles.spView} />
+      <View
+        style={{
+          paddingTop: 5,
+          backgroundColor: this.checkLoggedIn(item)
+            ? 'transparent'
+            : 'rgba(255, 255, 0,0.3)',
+        }}>
+        {this.arrayLineMethod('Serial No', item.PartDescription)}
+        {this.oneLineMethod(
+          this.checkLoggedIn(item) ? 'Inhand Inventory' : 'Responsible',
+          item.ResponsibleUser,
+          item.SerialNo,
+        )}
+        {this.oneLineMethod(
+          'Remark',
+          item.HandoverRemark,
+          moment(item.OTPDate).format('YYYY-MM-DD'),
+        )}
+      </View>
+      {/* {this.oneLineMethod('Description', item.PartDescription)}
       {this.oneLineMethod('Serial No', item.SerialNo)}
       {this.oneLineMethod('Warranty', item.WarrantyOutwardMonths)}
       {this.oneLineMethod('Part Category', item.PartCategoryName)}
@@ -38,7 +84,7 @@ class InhandInventory extends Component {
       {this.oneLineMethod(
         'issue Date',
         moment(item.OTPDate).format('YYYY-MM-DD'),
-      )}
+      )} */}
     </View>
   );
 

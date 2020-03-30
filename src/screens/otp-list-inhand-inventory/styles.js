@@ -67,7 +67,7 @@ export default styles = {
     // flex: 1,
   },
   spView: {
-    height: 20,
+    height: 10,
     width: '100%',
     backgroundColor: Color.paleGrey,
     borderBottomWidth: 1,

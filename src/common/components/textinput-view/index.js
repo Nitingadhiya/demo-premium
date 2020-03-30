@@ -20,6 +20,7 @@ export const TextInputView = ({
   placeholderTextColor,
   editable,
   multiline,
+  capitalize,
 }) => {
   return (
     <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -42,7 +43,8 @@ export const TextInputView = ({
           customStyle,
         ]}
         editable={editable}
-        multiline
+        multiline={multiline}
+        autoCapitalize={capitalize}
       />
     </View>
   );
