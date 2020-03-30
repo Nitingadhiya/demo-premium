@@ -32,6 +32,7 @@ class ComponentRequestWithQRCode extends Component {
     qrCode: false,
     item: null,
     itemScanSerialNo: 0,
+    errorMessage: null,
   };
 
   componentDidMount() {
@@ -40,6 +41,17 @@ class ComponentRequestWithQRCode extends Component {
       this.setState({
         qrCode: res.isOpen,
         item: res.item,
+      });
+    });
+    Events.on('serial-no-added', 'Event', res => {
+      self.setState({
+        itemScanSerialNo: res,
+        errorMessage: null,
+      });
+    });
+    Events.on('serial-no-added-error', 'Event', res => {
+      self.setState({
+        errorMessage: res,
       });
     });
   }
@@ -52,15 +64,15 @@ class ComponentRequestWithQRCode extends Component {
       if (!userInfo) {
         Alert.alert('No User Found, Please Login again.');
       }
-      self.setState({
-        itemScanSerialNo: self.state.itemScanSerialNo + 1,
-      });
+      // self.setState({
+      //   itemScanSerialNo: self.state.itemScanSerialNo + 1,
+      // });
       Events.trigger('serial-scan', result);
     }
   }
 
   render() {
-    const {qrCode, itemScanSerialNo} = this.state;
+    const {qrCode, itemScanSerialNo, errorMessage} = this.state;
     return (
       <View>
         <Modal
@@ -79,21 +91,41 @@ class ComponentRequestWithQRCode extends Component {
                 reactivateTimeout={2000}
                 cameraStyle={styles.cameraStyles}
                 customMarker={
-                  <View style={styles.rectangleContainer}>
-                    {itemScanSerialNo ? (
-                      <View style={styles.itemScanView}>
-                        <Text style={styles.textColorCamera}>
-                          {itemScanSerialNo}
-                        </Text>
+                  <View style={styles.customView}>
+                    <View style={styles.rectangleContainer}>
+                      <View style={styles.topOverlay} />
+
+                      <View style={{flexDirection: 'row'}}>
+                        <View style={styles.leftAndRightOverlay} />
+
+                        <View style={styles.rectangle} />
+
+                        <View style={styles.leftAndRightOverlay} />
                       </View>
-                    ) : (
-                      <View />
-                    )}
-                    <TouchableOpacity
-                      style={styles.finishTouchButton}
-                      onPress={() => this.setState({qrCode: false})}>
-                      <Text style={styles.finishText}>Finish</Text>
-                    </TouchableOpacity>
+
+                      <View style={styles.bottomOverlay} />
+                      {errorMessage ? (
+                        <View style={styles.errorView}>
+                          <Text style={styles.errorText}>{errorMessage}</Text>
+                        </View>
+                      ) : (
+                        <View />
+                      )}
+                      {itemScanSerialNo ? (
+                        <View style={styles.itemScanView}>
+                          <Text style={styles.textColorCamera}>
+                            {itemScanSerialNo}
+                          </Text>
+                        </View>
+                      ) : (
+                        <View />
+                      )}
+                      <TouchableOpacity
+                        style={styles.finishTouchButton}
+                        onPress={() => this.setState({qrCode: false})}>
+                        <Text style={styles.finishText}>Finish</Text>
+                      </TouchableOpacity>
+                    </View>
                   </View>
                 }
               />

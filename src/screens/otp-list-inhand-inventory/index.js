@@ -44,6 +44,7 @@ class OTPListInhandInventory extends Component {
 
     APICaller(getOTPListForInhandInventoryEndPoint(username), 'GET').then(
       json => {
+        console.log(json);
         this.setState({loadingData: false, refreshing: false});
 
         if (json.data.Success === '1') {
@@ -64,23 +65,34 @@ class OTPListInhandInventory extends Component {
     );
   };
   textBold = text => <Text style={styles.labelText}>{text}</Text>;
+  textNormal = text => <Text style={styles.textShow}>{text}</Text>;
 
-  oneLineMethod = (key, value) => (
+  oneLineMethod = (key, value, value1) => (
     <View style={styles.oneLineView}>
-      <View style={styles.leftView}>{this.textBold(key)}</View>
-      <View style={styles.rightView}>
+      <View style={styles.leftView}>{this.textNormal(key)}</View>
+      <View style={[styles.rightView, styles.borderRight]}>
         <Text style={styles.descriptionText}>{value}</Text>
       </View>
+      <Text style={styles.descriptionText}>{value1}</Text>
+    </View>
+  );
+  secondLineMethod = (key, value, value1) => (
+    <View style={styles.oneLineView}>
+      <View style={styles.leftView}>{this.textNormal(key)}</View>
+      <View style={[styles.rightView, styles.borderRight]}>
+        <Text style={styles.descriptionText}>{value}</Text>
+      </View>
+      <Text style={styles.labelText}>OTP: {value1}</Text>
     </View>
   );
 
   arrayLineMethod = (key, value) => (
-    <View style={styles.oneLineView}>
-      <View style={styles.leftView}>{this.textBold(key)}</View>
+    <View style={[styles.oneLineView, styles.paddingBottom5]}>
+      {/* <View style={styles.leftView}>{this.textBold(key)}</View> */}
       <View style={styles.rightView}>
         {value &&
-          value.split(',').map(res => (
-            <View style={styles.viewSerialNo}>
+          value.split(',').map((res, index) => (
+            <View style={styles.viewSerialNo} key={`${index}_string`}>
               <Text style={styles.descriptionText}>{res}</Text>
             </View>
           ))}
@@ -92,13 +104,18 @@ class OTPListInhandInventory extends Component {
     <View style={styles.seprationView}>
       <View style={styles.spView} />
       {this.arrayLineMethod('Serial No', item.Serials)}
-      {this.oneLineMethod('Remark', item.HandoverRemark)}
-      {this.oneLineMethod('OTP', item.OTP)}
+      {this.oneLineMethod(
+        'Remark',
+        item.HandoverRemark,
+        moment(item.OTPDate).format('YYYY-MM-DD'),
+      )}
+      {this.secondLineMethod('Request By', item.OTPFor, item.OTP)}
+      {/* {this.oneLineMethod('OTP', item.OTP)}
       {this.oneLineMethod(
         'OTP Date',
         moment(item.OTPDate).format('YYYY-MM-DD HH:MM'),
       )}
-      {this.oneLineMethod('OTP For', item.OTPFor)}
+      {this.oneLineMethod('OTP For', item.OTPFor)} */}
     </View>
   );
   _onRefresh() {

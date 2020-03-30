@@ -18,28 +18,45 @@ export default styles = {
     fontWeight: 'bold',
   },
   leftView: {
-    width: 140,
+    width: 80,
     borderRightWidth: 1,
     borderColor: Color.paleGreyTwo,
     marginRight: 5,
     padding: 5,
+    paddingLeft: 0,
   },
   oneLineView: {
     flexDirection: 'row',
     paddingHorizontal: 10,
+    borderBottomWidth: 1,
+    borderColor: Color.paleGreyTwo,
+    alignItems: 'center',
+  },
+  paddingBottom5: {
+    paddingBottom: 10,
   },
   rightView: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     flex: 1,
   },
+  borderRight: {
+    borderRightWidth: 1,
+    borderColor: Color.paleGreyThree,
+    marginRight: 3,
+  },
   labelText: {
     fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: 12,
+    color: Color.black,
+    textAlign: 'right',
+  },
+  textShow: {
+    fontSize: 12,
     color: Color.black,
   },
   descriptionText: {
-    fontSize: 14,
+    fontSize: 12,
     color: Color.black,
   },
   seprationView: {
@@ -47,10 +64,10 @@ export default styles = {
     borderColor: Color.paleGreyThree,
   },
   viewSerialNo: {
-    width: Matrics.screenWidth - 150,
+    // flex: 1,
   },
   spView: {
-    height: 30,
+    height: 20,
     width: '100%',
     backgroundColor: Color.paleGrey,
     borderBottomWidth: 1,

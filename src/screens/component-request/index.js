@@ -94,6 +94,7 @@ class ComponentRequest extends Component {
 
     APICaller(getPartFromSerialNoForHandOverEndPoint(serialNum), 'GET').then(
       json => {
+        console.log(json);
         this.setState({
           loadingData: false,
         });
@@ -104,10 +105,12 @@ class ComponentRequest extends Component {
           } else {
             arr = json.data.Response;
           }
+          Events.trigger('serial-no-added', _.size(_.uniqBy(arr, 'ID')));
           this.setState({
             loadSystemPart: _.uniqBy(arr, 'ID'),
           });
         } else {
+          Events.trigger('serial-no-added-error', json.data.Message);
           this.setState({
             errorMessage: json.data.Message,
           });
@@ -122,14 +125,15 @@ class ComponentRequest extends Component {
     return (
       <View style={styles.seprationView}>
         <Text style={styles.description}>
-          {this.textBold('Description')} {item.PartDescription} -{item.SerialNo}
+          {item.Initial} - {item.SerialNo}
+          {/* {this.textBold('Description')} {item.PartDescription}*/}
         </Text>
-        <Text style={styles.description}>
+        {/* <Text style={styles.description}>
           {this.textBold('Warranty')}: {item.WarrantyOutwardMonths}
         </Text>
         <Text style={styles.description}>
           {this.textBold('Part Category')}: {item.PartCategoryName}
-        </Text>
+        </Text> */}
         <TouchableOpacity
           onPress={() => this.removeItem(item.ID)}
           style={styles.closeIcon}>
@@ -185,6 +189,7 @@ class ComponentRequest extends Component {
       'POST',
       JSON.stringify(body),
     ).then(json => {
+      console.log(json);
       this.setState({
         loadingData: false,
       });

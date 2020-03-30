@@ -10,14 +10,7 @@ export default styles = {
     height: Matrics.screenHeight,
     width: Matrics.screenWidth,
   },
-  rectangleContainer: {
-    height: Matrics.screenHeight,
-    width: Matrics.screenWidth,
 
-    // alignItems: 'flex-end',
-    // justifyContent: 'flex-end',
-    backgroundColor: 'transparent',
-  },
   itemScanView: {
     position: 'absolute',
     zIndex: 2,
@@ -52,6 +45,13 @@ export default styles = {
     fontSize: 16,
     fontWeight: 'bold',
   },
+  rectangleContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+  },
+
   rectangle: {
     height: Matrics.screenWidth * 0.65,
     width: Matrics.screenWidth * 0.65,
@@ -59,8 +59,43 @@ export default styles = {
     borderColor: Matrics.screenWidth * 0.005,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'transparent',
+  },
+
+  topOverlay: {
+    flex: 1,
+    height: Matrics.screenWidth,
+    width: Matrics.screenWidth,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  bottomOverlay: {
+    flex: 1,
+    height: Matrics.screenWidth,
+    width: Matrics.screenWidth,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    paddingBottom: Matrics.screenWidth * 0.25,
+  },
+
+  leftAndRightOverlay: {
+    height: Matrics.screenWidth * 0.65,
+    width: Matrics.screenWidth,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  customView: {
+    width: Matrics.screenWidth,
+    height: Matrics.screenHeight,
+  },
+  errorView: {
     position: 'absolute',
     zIndex: 1,
-    backgroundColor: 'transparent',
+    top: 10,
+  },
+  errorText: {
+    color: 'red',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 };
