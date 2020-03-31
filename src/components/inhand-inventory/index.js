@@ -31,7 +31,9 @@ class InhandInventory extends Component {
       <View style={[styles.rightView, styles.borderRight]}>
         <Text style={styles.descriptionText}>{value}</Text>
       </View>
-      <Text style={styles.descriptionText}>{value1}</Text>
+      <View style={styles.rightLable}>
+        <Text style={[styles.descriptionText, styles.textRight]}>{value1}</Text>
+      </View>
     </View>
   );
 

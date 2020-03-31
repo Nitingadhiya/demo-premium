@@ -64,7 +64,7 @@ export default styles = {
     borderColor: Color.paleGreyThree,
   },
   viewSerialNo: {
-    // flex: 1,
+    width: Matrics.screenWidth - 20,
   },
   spView: {
     height: 10,
@@ -73,5 +73,11 @@ export default styles = {
     borderBottomWidth: 1,
     borderColor: Color.paleGrey,
     marginBottom: 5,
+  },
+  rightLable: {
+    width: 60,
+  },
+  textRight: {
+    textAlign: 'right',
   },
 };

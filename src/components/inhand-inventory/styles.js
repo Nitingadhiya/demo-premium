@@ -76,4 +76,10 @@ export default styles = {
     justifyContent: 'center',
     alignItems: 'center',
   },
+  rightLable: {
+    width: 70,
+  },
+  textRight: {
+    textAlign: 'right',
+  },
 };
