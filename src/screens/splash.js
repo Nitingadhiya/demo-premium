@@ -40,6 +40,7 @@ import ComponentRequest from './component-request';
 import TeamComponentStock from './team-component-stock';
 import OTPListInhandInventory from './otp-list-inhand-inventory';
 import ComponentRestockRequest from './component-restock-request';
+import OrderComponentRequest from './order-component-request';
 
 type Props = {
   route: RouteProp<StackNavigatorParamlist, 'Splash'>,
@@ -271,6 +272,10 @@ export default class Splash extends React.Component {
         <Stack.Screen
           name="ComponentRestockRequest"
           component={ComponentRestockRequest}
+        />
+        <Stack.Screen
+          name="OrderComponentRequest"
+          component={OrderComponentRequest}
         />
 
         {/* <Stack.Screen

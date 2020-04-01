@@ -1,6 +1,7 @@
-import {Color, Matrics} from '../../common/styles';
+import {Color, Matrics, ApplicationStyles} from '../../common/styles';
 
 export default styles = {
+  ...ApplicationStyles,
   safeView: {
     flex: 1,
   },

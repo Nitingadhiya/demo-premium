@@ -85,6 +85,16 @@ const getOTPListForInhandInventoryEndPoint = username =>
 const getRestockHandoverPartFromSerialNoEndPoint = (username, serialNo) =>
   `GetRestockHandoverPartFromSerialNo?SerialNo=${serialNo}&LoginUser=${username}`;
 const restockInhandInventoryEndPoint = 'RestockInhandInventory';
+const getPartFromSerialNoForOrderEndPoint = serialNo =>
+  `GetPartFromSerialNoForOrder?SerialNo=${serialNo}`;
+const orderEditSubmitEndPoint = `orderEditSubmit`;
+const getSystemFromSystemTagEndPoint = sysTag =>
+  `GetSystemFromSystemTag?SystemTag=${sysTag}`;
+
+const forwardOrderEndPoint = (orderNo, userName, orderForUser) =>
+  `ForwardOrder?OrderNo=${orderNo}&LoginUser=${userName}&OrderFor=${orderForUser}`;
+const orderReadyToDeliverEndPoint = (orderNo, userName, customerUserName) =>
+  `OrderReadyToDeliver?OrderNo=${orderNo}&LoginUser=${userName}&CustomerUserName=${customerUserName}`;
 
 module.exports = {
   checkVersionEndPoint,
@@ -143,4 +153,9 @@ module.exports = {
   getOTPListForInhandInventoryEndPoint,
   getRestockHandoverPartFromSerialNoEndPoint,
   restockInhandInventoryEndPoint,
+  getPartFromSerialNoForOrderEndPoint,
+  orderEditSubmitEndPoint,
+  getSystemFromSystemTagEndPoint,
+  forwardOrderEndPoint,
+  orderReadyToDeliverEndPoint,
 };

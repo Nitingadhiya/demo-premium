@@ -26,6 +26,7 @@ import Helper from '../../utils/helper';
 import NavigationHelper from '../../utils/navigation-helper';
 import {SpinnerView} from '../../common/components';
 import POrder from '../../components/order';
+import OrderInformationModal from '../../components/order-information-modal';
 
 class Order extends Component {
   state = {
@@ -34,10 +35,18 @@ class Order extends Component {
     leadInfoModal: false,
     systemConfig: [],
     systemName: '',
+    loadingData: false,
   };
 
   componentDidMount() {
     this.getUserInfo();
+    Events.on('order-refresh', 'refresh', () => this.getUserInfo());
+    Events.on('loader-show', 'loader', val => {
+      console.log(val);
+      this.setState({
+        loadingData: val,
+      });
+    });
   }
 
   async getUserInfo() {
@@ -73,9 +82,7 @@ class Order extends Component {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <Text style={{color: 'grey', fontSize: 16}}>
-          Your Wishlist is empty
-        </Text>
+        <Text style={{color: 'grey', fontSize: 16}}>No Order Found</Text>
       </View>
     );
   };
@@ -87,15 +94,16 @@ class Order extends Component {
 
   onRefresh = () => {
     this.setState({refreshing: true});
-    this.getWishlist();
+    this.getUserInfo();
   };
 
   LeadInfo(lead) {
-    this.setState({
-      leadInfoModal: true,
-      systemName: lead.SystemName,
-      systemConfig: lead.SystemConfig.split(','),
-    });
+    Events.trigger('order-information-show', lead);
+    // this.setState({
+    //   leadInfoModal: true,
+    //   systemName: lead.SystemName,
+    //   systemConfig: lead.SystemConfig.split(','),
+    // });
   }
 
   render() {
@@ -103,11 +111,11 @@ class Order extends Component {
     const {navigation} = this.props;
     return (
       <SafeAreaView style={styles.safeView}>
-        <Appbar.Header>
+        <Appbar.Header style={styles.headerBg}>
           <Appbar.Action icon="menu" onPress={() => navigation.openDrawer()} />
           <Appbar.Content title={'Order'} />
         </Appbar.Header>
-        {loadingData ? <SpinnerView /> : null}
+
         <ScrollView
           style={{padding: 10, backgroundColor: '#eee', flex: 1}}
           refreshControl={
@@ -133,93 +141,13 @@ class Order extends Component {
           )}
           <View style={{marginBottom: 10}} />
         </ScrollView>
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={this.state.leadInfoModal}
-          onRequestClose={() => {
-            this.setState({leadInfoModal: false});
-          }}>
-          <View
-            style={{
-              height: '100%',
-              backgroundColor: 'rgba(0,0,0,00.5)',
-              width: Matrics.screenWidth,
-              //margin: 20,
-              alignSelf: 'center',
-              shadowColor: '#000',
-              shadowOffset: {width: 5, height: 5},
-              elevation: 8,
-              alignItems: 'center',
-              justifyContent: 'center',
-              //marginTop: Matrics.screenHeight / 2 - 75,
-            }}>
-            <View
-              style={{
-                backgroundColor: '#fff',
-                // height: Matrics.ScaleValue(160),
-                width: Matrics.screenWidth - 40,
-                alignItems: 'center',
-              }}>
-              <View
-                style={{
-                  height: 40,
-                  width: '100%',
-                  borderColor: '#ccc',
-                  borderBottomWidth: 1,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Text style={{color: 'black', fontSize: 16}}>Lead Info</Text>
-              </View>
-              <View
-                style={{
-                  justifyContent: 'center',
-                  padding: 10,
-                  width: '100%',
-                }}>
-                <Text
-                  style={{
-                    color: 'black',
-                    fontSize: 16,
-                    marginTop: 10,
-                  }}>
-                  <Text style={{fontWeight: 'bold'}}>
-                    {this.state.systemName || 'No Lead info Found'}
-                  </Text>{' '}
-                </Text>
 
-                {this.state.systemConfig.map(res => {
-                  return (
-                    <Text
-                      style={{
-                        color: 'black',
-                        fontSize: 14,
-                        marginTop: 5,
-                        textAlign: 'left',
-                      }}>
-                      {res.replace(/^\s+/g, '')}
-                    </Text>
-                  );
-                })}
-              </View>
-              <TouchableOpacity
-                style={{
-                  backgroundColor: Color.primary,
-                  height: 40,
-                  width: '100%',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-                onPress={() => this.setState({leadInfoModal: false})}>
-                <Text
-                  style={{color: 'white', fontSize: 16, fontWeight: 'bold'}}>
-                  Close
-                </Text>
-              </TouchableOpacity>
-            </View>
+        <OrderInformationModal userInfo={userInfo} navigation={navigation} />
+        {loadingData ? (
+          <View style={styles.spinnerView}>
+            <SpinnerView />
           </View>
-        </Modal>
+        ) : null}
       </SafeAreaView>
     );
   }

@@ -64,6 +64,7 @@ class ProductDetails extends Component {
   getProductDetails(productNo, userName) {
     APICaller(getProductDetailsEndPoint(productNo, userName), 'GET').then(
       json => {
+        console.log(json, 'json');
         if (json.data.Success === 1 || json.data.Success === '1') {
           const res = json.data.Response[0];
           this.setState({
@@ -174,7 +175,7 @@ class ProductDetails extends Component {
           {splDesc &&
             splDesc.map((res, index) => (
               <Text style={styles.welcome} key={`${index}`}>
-                {res}
+                {_.trimStart(res)}
               </Text>
             ))}
         </View>

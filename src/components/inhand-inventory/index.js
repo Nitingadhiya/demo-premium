@@ -68,7 +68,9 @@ class InhandInventory extends Component {
         {this.arrayLineMethod('Serial No', item.PartDescription)}
         {this.oneLineMethod(
           this.checkLoggedIn(item) ? 'Inhand Inventory' : 'Responsible',
-          item.ResponsibleUser,
+          this.checkLoggedIn(item)
+            ? item.HandoverUserName
+            : item.ResponsibleUserName,
           item.SerialNo,
         )}
         {this.oneLineMethod(
