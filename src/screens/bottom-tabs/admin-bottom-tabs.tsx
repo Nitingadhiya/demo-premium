@@ -11,10 +11,10 @@ import Dashboard from '../tab/admin/home';
 import {Message} from '../message';
 import {StackNavigatorParamlist} from '../types';
 import Offer from '../offer';
-import Chat from '../chat';
 import ComplainList from '../complaint-list';
 import WishList from '../wish-list';
 import Order from '../order';
+import ChatList from '../chat-list';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -106,8 +106,8 @@ export const AdminBottomTabs = (props: Props) => {
           }}
         />
         <Tab.Screen
-          name="Chat"
-          component={Chat}
+          name="ChatList"
+          component={ChatList}
           options={{
             tabBarIcon: 'message-text-outline',
             tabBarLabel: 'chat',

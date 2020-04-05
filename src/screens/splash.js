@@ -41,6 +41,7 @@ import TeamComponentStock from './team-component-stock';
 import OTPListInhandInventory from './otp-list-inhand-inventory';
 import ComponentRestockRequest from './component-restock-request';
 import OrderComponentRequest from './order-component-request';
+import ChatMessage from './chat-message';
 
 type Props = {
   route: RouteProp<StackNavigatorParamlist, 'Splash'>,
@@ -277,6 +278,7 @@ export default class Splash extends React.Component {
           name="OrderComponentRequest"
           component={OrderComponentRequest}
         />
+        <Stack.Screen name="ChatMessage" component={ChatMessage} />
 
         {/* <Stack.Screen
           name="Details"

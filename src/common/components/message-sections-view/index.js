@@ -1,44 +1,41 @@
-import React from "react";
-import { View, Text, SectionList } from "react-native";
-import _ from "lodash";
-import Moment from "react-moment";
-import Styles from "./styles";
-import { Helper } from "../../../util";
-import { Color, Matrics } from "../../styles";
-import HeroesVar from "../../../../config/heroes-config";
-import "moment/locale/de";
-import "moment/locale/pl";
+import React from 'react';
+import {View, Text, SectionList} from 'react-native';
+import _ from 'lodash';
+import Moment from 'react-moment';
+import Styles from './styles';
+import Helper from '../../../utils/helper';
+import {Color, Matrics} from '../../styles';
 
 const timeCalendarStrings = {
-  lastDay: "LT",
-  sameDay: "LT",
-  nextDay: "LT",
-  lastWeek: "LT",
-  nextWeek: "LT",
-  sameElse: "LT"
+  lastDay: 'LT',
+  sameDay: 'LT',
+  nextDay: 'LT',
+  lastWeek: 'LT',
+  nextWeek: 'LT',
+  sameElse: 'LT',
 };
 
 userStatus = recipient => {
-  if (recipient && recipient.status === "away") {
+  if (recipient && recipient.status === 'away') {
     return Color.orangish;
-  } else if (recipient && recipient.status === "online") {
+  } else if (recipient && recipient.status === 'online') {
     return Color.green;
-  } else if (recipient && recipient.status === "offline") {
+  } else if (recipient && recipient.status === 'offline') {
     return Color.darkGray;
   }
 };
 
 export default class MessageSectionsView extends React.PureComponent {
   state = {
-    headerDate: ""
+    headerDate: '',
   };
   setcolor(senderId, userId, bg) {
     const id = senderId !== userId ? true : false;
-    if (bg === "background")
-      return { backgroundColor: id ? Color.white : "#efffff" };
-    if (bg === "time")
-      return { color: id ? Color.greyishBrown30 : Color.greyishBrown30 };
-    return { color: id ? Color.black30 : Color.black30 };
+    if (bg === 'background')
+      return {backgroundColor: id ? Color.white : '#efffff'};
+    if (bg === 'time')
+      return {color: id ? Color.greyishBrown30 : Color.greyishBrown30};
+    return {color: id ? Color.black30 : Color.black30};
   }
 
   _onViewableItemsChanged = (
@@ -46,28 +43,28 @@ export default class MessageSectionsView extends React.PureComponent {
       viewableItems: {
         key,
         isViewable,
-        item: { columns },
+        item: {columns},
         index,
-        section
+        section,
       },
       changed: {
         key,
         isViewable,
-        item: { columns },
+        item: {columns},
         index,
-        section
-      }
-    }
+        section,
+      },
+    },
   ) => {
     const getDate = _.get(
       _.last(info.viewableItems, `[${info.viewableItems.length}]section.title`),
-      "section.title",
-      ""
+      'section.title',
+      '',
     );
 
     if (this.state.headerDate !== getDate) {
       this.setState({
-        headerDate: getDate
+        headerDate: getDate,
       });
     }
     // you will see here the current visible items from top to bottom...
@@ -78,31 +75,28 @@ export default class MessageSectionsView extends React.PureComponent {
     <SectionList
       ref={Ref}
       onViewableItemsChanged={this._onViewableItemsChanged}
-      renderItem={({ item, index, section }) => (
+      renderItem={({item, index, section}) => (
         <View key={`${index.toString()}`} style={Styles.messageBody}>
           <View
             style={[
               {
-                alignSelf: item.user.id !== userId ? "flex-start" : "flex-end",
-                flexDirection: "row"
-              }
-            ]}
-          >
+                alignSelf: item.user.id !== userId ? 'flex-start' : 'flex-end',
+                flexDirection: 'row',
+              },
+            ]}>
             <View
               style={[
                 Styles.innerMessageBody,
-                this.setcolor(item.user.id, userId, "background")
-              ]}
-            >
+                this.setcolor(item.user.id, userId, 'background'),
+              ]}>
               {item.user.id !== userId ? (
                 <Text style={Styles.senderName}>{item.user.full_name}</Text>
               ) : null}
               <Text
                 style={[
                   Styles.messageText,
-                  this.setcolor(item.user.id, userId)
-                ]}
-              >
+                  this.setcolor(item.user.id, userId),
+                ]}>
                 {item.body}
               </Text>
               <View style={Styles.dateView}>
@@ -111,25 +105,22 @@ export default class MessageSectionsView extends React.PureComponent {
                   element={Text}
                   style={[
                     Styles.dateText,
-                    this.setcolor(item.user.id, userId, "time")
-                  ]}
-                >
-                  {Helper.localDateTime(item.sent_at)}
+                    this.setcolor(item.user.id, userId, 'time'),
+                  ]}>
+                  {item.sent_at}
                 </Moment>
               </View>
             </View>
           </View>
         </View>
       )}
-      renderSectionFooter={({ section: { title } }) => (
+      renderSectionFooter={({section: {title}}) => (
         <View style={Styles.renderHeaderView}>
           <Moment
             calendar={calendarStrings}
             element={Text}
-            style={[Styles.textTitle]}
-            locale={HeroesVar.language}
-          >
-            {Helper.localDateTime(title)}
+            style={[Styles.textTitle]}>
+            {title}
           </Moment>
         </View>
       )}
@@ -147,27 +138,25 @@ export default class MessageSectionsView extends React.PureComponent {
   );
 
   render() {
-    const { data, onRefresh, userId, Ref } = this.props;
-    const { headerDate } = this.state;
+    const {data, onRefresh, userId, Ref} = this.props;
+    const {headerDate} = this.state;
     const calendarStrings = {
-      lastDay: `[${Helper.translation("Words.Yesterday", "Yesterday")}]`,
-      sameDay: `[${Helper.translation("Words.Today", "Today")}]`,
-      nextDay: "DD MMM YYYY",
-      lastWeek: "DD MMM YYYY",
-      nextWeek: "DD MMM YYYY",
-      sameElse: "DD MMM YYYY"
+      lastDay: '[Yesterday at] LT',
+      sameDay: '[Today at] LT',
+      nextDay: 'DD MMM YYYY',
+      lastWeek: 'DD MMM YYYY',
+      nextWeek: 'DD MMM YYYY',
+      sameElse: 'DD MMM YYYY',
     };
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{flex: 1}}>
         {headerDate ? (
           <View style={Styles.renderHeaderViewStyles}>
             <Moment
               calendar={calendarStrings}
               element={Text}
-              style={[Styles.headerDate]}
-              locale={HeroesVar.language}
-            >
-              {Helper.localDateTime(headerDate)}
+              style={[Styles.headerDate]}>
+              {headerDate}
             </Moment>
           </View>
         ) : null}

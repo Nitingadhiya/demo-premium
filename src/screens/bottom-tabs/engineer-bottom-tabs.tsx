@@ -14,6 +14,7 @@ import Order from '../order';
 import Offer from '../offer';
 import {Message} from '../message';
 import {StackNavigatorParamlist} from '../types';
+import ChatList from '../chat-list';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -105,8 +106,8 @@ export const EngineerBottomTabs = (props: Props) => {
           }}
         />
         <Tab.Screen
-          name="Messages"
-          component={Message}
+          name="ChatList"
+          component={ChatList}
           options={{
             tabBarIcon: 'message-text-outline',
             tabBarLabel: 'chat',

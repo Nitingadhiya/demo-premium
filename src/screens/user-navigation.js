@@ -26,6 +26,9 @@ import BackgroundServiceHelper from '../utils/background-job';
 import ProductList from '../screens/product-list';
 import NavigationHelper from '../utils/navigation-helper';
 
+import SocketIOClient from 'socket.io-client';
+import BasicURL from '../config';
+
 BackgroundServiceHelper.BackgroundServiceJob();
 
 type Props = {
@@ -38,9 +41,34 @@ export default class UserNavigation extends React.Component {
     userInfo: null,
   };
   async componentDidMount() {
+    global.socket = SocketIOClient(`${BasicURL.socketURL}`, {
+      transports: ['websocket', 'polling'],
+      forceWebsockets: true,
+    });
+    global.socket.on('connect', () => {
+      console.log('connect');
+    });
+
+    global.socket.on('disconnect', () => {
+      console.log('Disconected');
+    });
+
+    // setTimeout(() => {
+    //   var data = {
+    //     fromUser: 'anitin',
+    //     toUser: 'arkesh',
+    //     message: 'Kem 60?',
+    //   };
+    //   global.socket.emit('chat', data);
+    // }, 2000);
+    // socket.on('chat', responsedata => {
+    //   console.log(responsedata);
+    // });
+
     this.cancelAllJob();
     const data = await Helper.getLocalStorageItem('userInfo');
     if (data) {
+      global.socket.emit('username', data.UserName);
       this.setState({userInfo: data});
       if (data.LoginType === '2' || data.LoginType === '3') {
         this.backgroundJobMethod();

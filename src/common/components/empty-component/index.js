@@ -1,14 +1,11 @@
-import React from "react";
-import { View, Text } from "react-native";
-import Styles from "./styles";
-import { Helper } from "../../../util/helper";
+import React from 'react';
+import {View, Text} from 'react-native';
+import styles from './styles';
 
-export const EmptyComponent = ({ message }) => {
+export const EmptyComponent = ({message}) => {
   return (
     <View style={Styles.noOfferView}>
-      <Text style={Styles.noOfferText}>
-        {Helper.translation(`Words.${message}`, message)}
-      </Text>
+      <Text style={Styles.noOfferText}>{message}</Text>
     </View>
   );
 };

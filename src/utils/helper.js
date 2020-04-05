@@ -12,6 +12,8 @@ import {
 } from '../config/api-endpoint';
 import Events from './events';
 import NavigationHelper from './navigation-helper';
+import {Matrics} from '../common/styles';
+import {isIphoneX} from 'react-native-iphone-x-helper';
 
 const Helper = {
   getLocalStorageItem(key) {
@@ -148,6 +150,23 @@ const Helper = {
           }
         },
       );
+    }
+  },
+  localDateTime(date) {
+    if (!date) return null;
+    var stillUtc = moment.utc(date).toDate();
+    return (local = moment(stillUtc)
+      .local()
+      .format('YYYY-MM-DD HH:mm:ss'));
+  },
+  keyboardBehavior() {
+    return Platform.OS === 'ios' ? 'padding' : null;
+  },
+  verticalOffset() {
+    if (isIphoneX()) {
+      return Matrics.ScaleValue(55) + 30;
+    } else {
+      return Matrics.ScaleValue(55) + 10;
     }
   },
 };

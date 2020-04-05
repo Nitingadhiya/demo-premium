@@ -1,85 +1,82 @@
-import { Color, Matrics, Fonts } from "../../styles";
-import { Helper } from "../../../util";
-import { Platform } from "react-native";
+import {Color, Matrics, Fonts} from '../../styles';
+import {Platform} from 'react-native';
 
 export default Styles = {
   dateText: {
-    fontFamily: Fonts.type.Rubik,
-    fontSize: Matrics.ScaleValue(10)
+    fontSize: Matrics.ScaleValue(10),
   },
   innerMessageBody: {
     padding: Matrics.ScaleValue(5),
     margin: Matrics.ScaleValue(5),
     marginLeft: 0,
     borderRadius: Matrics.ScaleValue(5),
-    maxWidth: "80%"
+    maxWidth: '80%',
   },
   senderName: {
-    fontFamily: Fonts.type.RubikMedium,
+    fontWeight: 'bold',
     fontSize: Matrics.ScaleValue(12),
     marginRight: Matrics.ScaleValue(30),
-    color: Color.messageCode
+    color: Color.messageCode,
   },
   messageText: {
-    fontFamily: Fonts.type.Rubik,
     fontSize: Matrics.ScaleValue(14),
-    marginRight: Matrics.ScaleValue(50)
+    marginRight: Matrics.ScaleValue(50),
   },
   dateView: {
-    alignSelf: "flex-end",
-    position: "absolute",
+    alignSelf: 'flex-end',
+    position: 'absolute',
     bottom: 3,
-    right: 5
+    right: 5,
   },
   renderHeaderView: {
     padding: Matrics.ScaleValue(5),
-    backgroundColor: Color.messageCode,
-    alignSelf: "center",
+    backgroundColor: Color.primary,
+    alignSelf: 'center',
     borderRadius: Matrics.ScaleValue(5),
-    marginTop: Matrics.ScaleValue(5)
+    marginTop: Matrics.ScaleValue(5),
   },
   textTitle: {
-    fontFamily: Fonts.type.RubikMedium,
+    fontWeight: 'bold',
     fontSize: Matrics.ScaleValue(12),
-    textAlign: "center",
-    color: Color.white
+    textAlign: 'center',
+    color: Color.white,
   },
   messageBody: {
     width: Matrics.screenWidth,
-    paddingHorizontal: Matrics.ScaleValue(10)
+    paddingHorizontal: Matrics.ScaleValue(10),
   },
   headerDate: {
-    fontFamily: Fonts.type.RubikMedium,
+    fontWeight: 'bold',
     fontSize: Matrics.ScaleValue(12),
-    textAlign: "center",
-    color: Color.white
+    textAlign: 'center',
+    color: Color.white,
   },
   renderHeaderViewStyles: {
-    alignItems: "center",
+    alignItems: 'center',
     padding: Matrics.ScaleValue(5),
-    backgroundColor: Color.messageCode,
-    position: "absolute",
-    alignSelf: "center",
+    backgroundColor: Color.primary,
+    position: 'absolute',
+    alignSelf: 'center',
     borderRadius: Matrics.ScaleValue(5),
     zIndex: 1,
-    top: Matrics.ScaleValue(5)
+    top: Matrics.ScaleValue(5),
   },
   bottomView: {
     width: Matrics.screenWidth,
     backgroundColor: Color.paleGreyTwo,
-    flexDirection: "row",
-    alignItems: "flex-end",
-    marginBottom: Matrics.ScaleValue(5)
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    marginBottom: Matrics.ScaleValue(5),
   },
   sendButton: {
     marginHorizontal: Matrics.ScaleValue(5),
     marginVertical: Matrics.ScaleValue(5),
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     width: Matrics.ScaleValue(40),
     height: Matrics.ScaleValue(40),
-    backgroundColor: Color.darkRed,
-    borderRadius: Matrics.ScaleValue(20)
+    backgroundColor: Color.primary,
+    borderRadius: Matrics.ScaleValue(20),
   },
   textInput: {
     backgroundColor: Color.white,
@@ -91,14 +88,13 @@ export default Styles = {
     padding: 0,
     paddingHorizontal: Matrics.ScaleValue(10),
     paddingTop:
-      Platform.OS === "ios" ? Matrics.ScaleValue(10) : Matrics.ScaleValue(5),
-    paddingBottom: Platform.OS === "ios" ? 0 : Matrics.ScaleValue(5),
+      Platform.OS === 'ios' ? Matrics.ScaleValue(10) : Matrics.ScaleValue(5),
+    paddingBottom: Platform.OS === 'ios' ? 0 : Matrics.ScaleValue(5),
     borderRadius: Matrics.ScaleValue(10),
     fontSize: Matrics.ScaleValue(16),
-    fontFamily: Fonts.type.Rubik,
-    justifyContent: "center",
-    textAlignVertical: "center",
-    alignItems: "center"
-  }
+    justifyContent: 'center',
+    textAlignVertical: 'center',
+    alignItems: 'center',
+  },
 };
 module.exports = Styles;
