@@ -4,8 +4,8 @@ import styles from './styles';
 
 export const EmptyComponent = ({message}) => {
   return (
-    <View style={Styles.noOfferView}>
-      <Text style={Styles.noOfferText}>{message}</Text>
+    <View style={styles.noOfferView}>
+      <Text style={styles.noOfferText}>{message}</Text>
     </View>
   );
 };

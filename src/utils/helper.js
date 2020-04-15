@@ -120,10 +120,9 @@ const Helper = {
     if (!token) return;
     const userInfo = await Helper.getLocalStorageItem('userInfo');
     if (userInfo) {
-      APICaller(
-        updateTokenEndPoint(userInfo.UserName, token),
-        'GET',
-      ).then(json => {});
+      APICaller(updateTokenEndPoint(userInfo.UserName, token), 'GET').then(
+        json => {},
+      );
     }
   },
   getComplaintCharge(navigation, userName, result, tmpSys) {
@@ -168,6 +167,14 @@ const Helper = {
     } else {
       return Matrics.ScaleValue(55) + 10;
     }
+  },
+  getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
   },
 };
 

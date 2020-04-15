@@ -31,79 +31,100 @@ userStatus = recipient => {
   }
 };
 
+displayName = data =>
+  _.get(data, 'Name', '')
+    ? _.get(data, 'Name', '')
+    : _.get(data, 'CompanyName', '');
+
+TagLine = data => _.get(data, 'TagLine', '');
+
 export default class ChatListView extends React.PureComponent {
-  listDisplay = (data, onPressItem, navigation) => (
+  listDisplay = (data, onPressItem, navigation, colorCode, contactScreen) => (
     <TouchableOpacity
       style={styles.rowView}
       activeOpacity={1}
       onPress={() =>
         onPressItem(
-          data.id,
-          data.recipient ? data.recipient.full_name : '',
-          data.recipient ? data.recipient.profile_image_url : '',
-          data.recipient ? data.recipient.id : '',
-          data.recipient.user_name ? data.recipient.user_name : '',
+          displayName(data),
+          _.get(data, 'UserImage', ''),
+          _.get(data, 'UserName', ''),
         )
       }>
-      {/* <View style={[styles.imageView, { backgroundColor: colorCode }]}>
-        <Text style={styles.imageText}>{data.sender_name.charAt(0)}</Text>
-      </View> */}
       <TouchableOpacity
         style={[styles.imageView]}
         onPress={() => {
-          navigation.navigate('ContactProfileInfo', {id: data.recipient.id});
+          navigation.navigate('ContactProfileInfo', {id: data.UserName});
         }}>
-        <ImageBackground
-          source={Images.profilePhoto}
-          style={styles.userImage}
-          resizeMode="center">
-          <Image
-            source={{uri: _.get(data, 'recipient.profile_image_url')}}
+        {!_.get(data, 'UserImage', '') ? (
+          <View style={[styles.imageViewChr, {backgroundColor: colorCode}]}>
+            <Text style={styles.imageText}>{displayName(data).charAt(0)}</Text>
+          </View>
+        ) : (
+          <ImageBackground
+            source={Images.profilePhoto}
             style={styles.userImage}
-          />
-          <View
-            style={[
-              styles.onlineView,
-              {backgroundColor: userStatus(data.recipient)},
-            ]}
-          />
-        </ImageBackground>
+            resizeMode="center">
+            <Image
+              source={{uri: _.get(data, 'UserImage', '')}}
+              style={styles.userImage}
+            />
+            <View
+              style={[styles.onlineView, {backgroundColor: userStatus(data)}]}
+            />
+          </ImageBackground>
+        )}
       </TouchableOpacity>
       <View style={styles.listMessageView}>
-        {data.recipient.full_name ? (
-          <Text style={styles.userNameText} numberOfLines={1}>
-            {_.get(data, 'recipient.full_name', 'recipient.anonymized_name')}
-          </Text>
-        ) : null}
-
-        <Text style={styles.messageText} numberOfLines={1}>
-          {_.get(data, 'latest_message.body', '')}
+        <Text style={styles.userNameText} numberOfLines={1}>
+          {displayName(data)}
         </Text>
+        {contactScreen ? (
+          <Text style={styles.userNameText} numberOfLines={1}>
+            {TagLine(data)}
+          </Text>
+        ) : (
+          <View />
+        )}
+        {contactScreen ? (
+          <View />
+        ) : (
+          <Text style={styles.messageText} numberOfLines={1}>
+            {_.get(data, 'LastMessage', '')}
+          </Text>
+        )}
       </View>
-      <View style={styles.dateView}>
-        {data ? (
-          <Moment
-            calendar={calendarStrings}
-            element={Text}
-            style={styles.dateText}>
-            {data.updated_at}
-          </Moment>
-        ) : null}
-        {data.unread_messages_count ? (
-          <View style={styles.unreadCountView}>
-            <Text style={styles.unreadCountText}>
-              {_.get(data, 'unread_messages_count', '')}
-            </Text>
-          </View>
-        ) : null}
-      </View>
+      {!contactScreen ? (
+        <View style={styles.dateView}>
+          {data ? (
+            <Moment
+              calendar={calendarStrings}
+              element={Text}
+              style={styles.dateText}>
+              {data.LastMessageDate}
+            </Moment>
+          ) : null}
+          {data.UnreadCount ? (
+            <View style={styles.unreadCountView}>
+              <Text style={styles.unreadCountText}>
+                {_.get(data, 'UnreadCount', '')}
+              </Text>
+            </View>
+          ) : null}
+        </View>
+      ) : null}
     </TouchableOpacity>
   );
 
   render() {
-    //const colorCode = Helper.getRandomColor();
-    const {data, onPressItem, navigation} = this.props;
-    console.log(data, 'data');
-    return this.listDisplay(data, onPressItem, navigation);
+    const colorCode = Helper.getRandomColor();
+    const {data, onPressItem, navigation, contactScreen} = this.props;
+    if (!data) return <View />;
+    return this.listDisplay(
+      data,
+      onPressItem,
+      navigation,
+      colorCode,
+      contactScreen,
+    );
   }
 }

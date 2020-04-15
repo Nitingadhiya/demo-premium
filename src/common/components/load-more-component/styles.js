@@ -1,9 +1,10 @@
-import { Matrics } from "../../styles";
+import {Matrics} from '../../styles';
 
-export default (Styles = {
+export default (styles = {
   mainView: {
     height: Matrics.ScaleValue(30),
-    justifyContent: "center"
-  }
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
-module.exports = Styles;
+module.exports = styles;

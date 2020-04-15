@@ -1,6 +1,6 @@
 import {Color, Matrics, Fonts} from '../../common/styles';
 
-export default styles = {
+export default (styles = {
   rowView: {
     flexDirection: 'row',
     borderBottomWidth: 1,
@@ -19,14 +19,14 @@ export default styles = {
     right: Matrics.ScaleValue(-2),
     zIndex: 1,
   },
-  // imageView: {
-  //   marginRight: Matrics.ScaleValue(10),
-  //   width: Matrics.ScaleValue(50),
-  //   height: Matrics.ScaleValue(50),
-  //   borderRadius: Matrics.ScaleValue(25),
-  //   justifyContent: "center",
-  //   alignItems: "center"
-  // },
+  imageViewChr: {
+    marginRight: Matrics.ScaleValue(10),
+    width: Matrics.ScaleValue(50),
+    height: Matrics.ScaleValue(50),
+    borderRadius: Matrics.ScaleValue(25),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   imageView: {paddingRight: Matrics.ScaleValue(10), zIndex: 1},
   userImage: {
     width: Matrics.ScaleValue(50),
@@ -65,19 +65,19 @@ export default styles = {
     color: Color.white,
   },
   unreadCountView: {
-    backgroundColor: Color.darkRed,
-    height: Matrics.ScaleValue(15),
-    width: Matrics.ScaleValue(15),
-    borderRadius: Matrics.ScaleValue(7),
+    backgroundColor: Color.primary,
+    height: 20,
+    width: 20,
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
-    marginTop: Matrics.ScaleValue(5),
+    marginTop: 5,
   },
   unreadCountText: {
     fontFamily: Fonts.type.Rubik,
-    fontSize: Matrics.ScaleValue(10),
+    fontSize: 8,
     color: Color.white,
   },
-};
+});
 module.exports = styles;

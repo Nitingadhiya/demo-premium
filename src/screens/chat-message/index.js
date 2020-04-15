@@ -13,6 +13,7 @@ import moment from 'moment';
 import {ApplicationStyles, Matrics, Images, Color} from '../../common/styles';
 import {Appbar} from 'react-native-paper';
 import styles from './styles';
+import {getChatHistoryEndpoint} from '../../config/api-endpoint';
 import Events from '../../utils/events';
 import APICaller from '../../utils/api-caller';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -22,6 +23,7 @@ import {MIcon} from '../../common/assets/vector-icon';
 import Helper from '../../utils/helper';
 
 let self;
+const size = 10;
 class ChatMessage extends Component {
   state = {
     loading: false,
@@ -37,19 +39,27 @@ class ChatMessage extends Component {
     phoneNumber: null,
     userInfo: null,
     rUserName: null,
+    from: 1,
+    displayName: null,
+    recieverName: null,
+    isRefreshing: false,
   };
 
   componentDidMount() {
     self = this;
     this.tempArrMessage = [];
-    const {id, rId, image, user_name} = this.props.route.params;
+    const {recieverName, image, displayName} = this.props.route.params;
+    console.log(this.props.route.params, 'receiver');
 
     this.setState({
       profile_image_url: image,
-      rUserName: user_name,
+      recieverName: recieverName,
+      displayName: displayName,
     });
+
     this.getUserInfo();
-    global.socket.on('chat', (responsedata) => {
+
+    global.socket.on('chat', responsedata => {
       console.log(responsedata, 'data');
       const user = {
         id: this.state.rUserName,
@@ -95,25 +105,54 @@ class ChatMessage extends Component {
     // });
     //this.fetchAccountInfo(this.rId);
   }
+
   async getUserInfo() {
     const userInfo = await Helper.getLocalStorageItem('userInfo');
-    this.setState({
+    await this.setState({
       userInfo,
     });
+    if (userInfo) {
+      this.fetchChatHistory();
+    }
   }
-  fetchAccountInfo(id) {
+
+  fetchChatHistory() {
+    const {userInfo, from, recieverName, isRefreshing} = this.state;
+    console.log(
+      getChatHistoryEndpoint(userInfo.UserName, recieverName, from, size),
+    );
     APICaller(
-      `${Http.getContactDetailsEndpoint(id)}`,
+      getChatHistoryEndpoint('admin', recieverName, from, size),
       'GET',
-      global.apiToken,
-    ).then((json) => {
-      const data = json.data;
-      this.setState({
-        phoneNumber: data.phone,
-      });
-    });
-    socket.on('chat', (responsedata) => {
-      console.log(responsedata);
+    ).then(json => {
+      console.log(json);
+
+      if (json.data.Success === '1') {
+        this.setState({
+          loading: false,
+          // messages: _.concat(
+          //   this.state.message,
+          //   _.get(json, 'data.Response', []),
+          // ),
+          from: this.state.from + 10,
+          totalCount: _.get(json, 'data.TotalCount', ''),
+        });
+        if (!isRefreshing) {
+          this.tempArrMessage = _.get(json, 'data.Response', []);
+          this.groupMessage(this.tempArrMessage);
+        } else {
+          data.map(res => this.tempArrMessage.push(res));
+          this.groupMessage(this.tempArrMessage);
+        }
+      } else {
+        this.setState({
+          messages: [],
+          errorMessage: json.data.Message,
+          loading: false,
+          isRefreshing: false,
+          loadMore: false,
+        });
+      }
     });
   }
 
@@ -142,57 +181,57 @@ class ChatMessage extends Component {
     Helper.openEmail('Tel', this.state.phoneNumber);
   }
 
-  getMessage(id) {
-    const {isRefreshing} = this.state;
-    if (!isRefreshing) {
-      this.loadingView(true);
-    } else {
-      this.isRefresh = true;
-    }
-    APICaller(
-      `${Http.getMessageEndpoint(id, this.pageNo)}`,
-      'GET',
-      global.apiToken,
-    ).then((json) => {
-      if (json.status && json.status !== GlobalVar.responseSuccess) {
-        const errors = json.data.errors;
-        Events.trigger('toast', errors);
-        this.loadingView(false);
-        return;
-      }
-      const response = json.data;
+  // getMessage(id) {
+  //   const {isRefreshing} = this.state;
+  //   if (!isRefreshing) {
+  //     this.loadingView(true);
+  //   } else {
+  //     this.isRefresh = true;
+  //   }
+  //   APICaller(
+  //     `${Http.getMessageEndpoint(id, this.pageNo)}`,
+  //     'GET',
+  //     global.apiToken,
+  //   ).then(json => {
+  //     if (json.status && json.status !== GlobalVar.responseSuccess) {
+  //       const errors = json.data.errors;
+  //       Events.trigger('toast', errors);
+  //       this.loadingView(false);
+  //       return;
+  //     }
+  //     const response = json.data;
 
-      if (response.data.length === 0) {
-        this.setState({
-          dataFound: true,
-          messages: [],
-          isRefreshing: false,
-        });
-      }
-      const data = response.data;
-      if (!isRefreshing) {
-        this.tempArrMessage = response.data;
-        this.groupMessage(this.tempArrMessage);
-      } else {
-        data.map((res) => this.tempArrMessage.push(res));
-        this.groupMessage(this.tempArrMessage);
-      }
+  //     if (response.data.length === 0) {
+  //       this.setState({
+  //         dataFound: true,
+  //         messages: [],
+  //         isRefreshing: false,
+  //       });
+  //     }
+  //     const data = response.data;
+  //     if (!isRefreshing) {
+  //       this.tempArrMessage = response.data;
+  //       this.groupMessage(this.tempArrMessage);
+  //     } else {
+  //       data.map(res => this.tempArrMessage.push(res));
+  //       this.groupMessage(this.tempArrMessage);
+  //     }
 
-      this.pageNo = response.meta.current_page + 1;
-      this.lastPage = response.meta.last_page;
-      this.loadingView(false);
-      if (!this.isRefresh) {
-        // this.scrollToBottom();
-        this.isRefresh = false;
-      }
-    });
-  }
+  //     this.pageNo = response.meta.current_page + 1;
+  //     this.lastPage = response.meta.last_page;
+  //     this.loadingView(false);
+  //     if (!this.isRefresh) {
+  //       // this.scrollToBottom();
+  //       this.isRefresh = false;
+  //     }
+  //   });
+  // }
 
   groupMessage(data) {
     console.log(data, 'DDD');
     let arr = [];
     console.log(data);
-    const groupMessage = _.groupBy(data, (message) =>
+    const groupMessage = _.groupBy(data, message =>
       moment(message.sent_at).format('YYYY-MM-DD'),
     );
     console.log(groupMessage);
@@ -203,7 +242,7 @@ class ChatMessage extends Component {
         data: msg,
       }),
     );
-
+    console.log(data, 'dta');
     this.setState({
       messages: arr,
       dataFound: true,
@@ -211,7 +250,7 @@ class ChatMessage extends Component {
     });
   }
 
-  textInputChange = (value) => {
+  textInputChange = value => {
     this.setState({
       validationMessage: _.trim(value),
       messageText: value,
@@ -224,33 +263,31 @@ class ChatMessage extends Component {
     if (!messageText) return;
     this.textMessage = messageText;
     //this.loadingView(true);
-    const user = {
-      id: this.state.userId,
-      profile_image_url: this.state.profile_image_url,
-      full_name: 'Arkesh Korat',
-    };
+
     const msg = {
-      id: null,
-      body: messageText,
-      sent_at: moment
+      ID: null,
+      ChatMessage: messageText,
+      EntryDate: moment
         .utc(new Date(), 'YYYY-MM-DD HH:mm:ss')
         .format('YYYY-MM-DD HH:mm:ss'),
-      user,
+      Document: '',
+      Sender: userInfo.UserName,
+      Receiver: this.state.recieverName,
     };
     this.tempArrMessage.unshift(msg);
     console.log(this.tempArrMessage, 'tempArrMessage');
     this.groupMessage(this.tempArrMessage);
     // this.scrollToBottom();
 
-    const body = {
-      body: validationMessage,
-    };
+    // const body = {
+    //   body: validationMessage,
+    // };
     var data = {
       fromUser: userInfo.UserName,
-      toUser: this.state.rUserName,
+      toUser: this.state.recieverName,
       message: messageText,
     };
-    console.log(data, 'data');
+    // console.log(data, 'data');
     global.socket.emit('chat', data);
 
     // APICaller(
@@ -320,10 +357,14 @@ class ChatMessage extends Component {
         <Appbar.Header style={styles.headerBg}>
           <Appbar.BackAction onPress={() => navigation.goBack()} />
           <Appbar.Content title={'Chat Message'} />
-          <Image
-            source={{uri: profile_image_url}}
-            style={{height: 40, width: 40}}
-          />
+          {profile_image_url ? (
+            <Image
+              source={{uri: profile_image_url}}
+              style={styles.profilePhoto}
+            />
+          ) : (
+            <View />
+          )}
         </Appbar.Header>
         <View style={styles.modalViewContainer}>
           <KeyboardAvoidingView
@@ -333,8 +374,8 @@ class ChatMessage extends Component {
             <MessageSectionsView
               data={messages}
               onRefresh={() => this.onRefresh()}
-              userId={userId}
-              Ref={(r) => {
+              userId={userInfo.UserName}
+              Ref={r => {
                 this.scrollView = r;
               }}
             />

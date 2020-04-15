@@ -1,3 +1,4 @@
+// LIBRARIES
 import React, {Component} from 'react';
 import {
   Text,
@@ -15,22 +16,23 @@ import {
 import {Color, Images, Matrics} from '../../common/styles';
 import {Appbar} from 'react-native-paper';
 import {
+  //Header,
   LoadMoreComponent,
   EmptyComponent,
   SpinnerView,
 } from '../../common/components';
 import _ from 'lodash';
 import ChatListView from '../../components/chat-list-view';
-import {chatListEndPoint} from '../../config/api-endpoint';
+import {contactListEndPoint} from '../../config/api-endpoint';
 import Helper from '../../utils/helper';
 
 import APICaller from '../../utils/api-caller';
 import styles from './styles';
-import {McIcon, MIcon} from '../../common/assets/vector-icon';
-
+import {FIcon, McIcon, MIcon} from '../../common/assets/vector-icon';
+// ASSETS
 const size = 10;
-
-class ChatList extends Component {
+//= ===CLASS DECLARATION====//
+class ContactList extends Component {
   state = {
     isRefreshing: false,
     loading: true,
@@ -40,9 +42,7 @@ class ChatList extends Component {
     threadList: null,
     searchMargin: 350,
     searchText: null,
-    totalCount: 0,
   };
-
   componentDidMount() {
     this.searchTextInputValue = '';
     this.onChangeTextDelayed = _.debounce(
@@ -51,7 +51,6 @@ class ChatList extends Component {
     );
     this.getUserInfo();
   }
-
   async getUserInfo() {
     const userInfo = await Helper.getLocalStorageItem('userInfo');
     await this.setState({userInfo: userInfo});
@@ -75,16 +74,16 @@ class ChatList extends Component {
   }
 
   fetchChatThread(search, from, size) {
-    const {userInfo, isRefreshing, loadMore} = this.state;
+    const {userInfo, isRefreshing} = this.state;
     console.log(userInfo, 'userInfo');
-    if (!isRefreshing && !loadMore) {
+    if (!isRefreshing) {
       this.setState({
         loading: true,
       });
     }
-    console.log(chatListEndPoint('admin', search, from, size), '***********');
+
     APICaller(
-      chatListEndPoint(userInfo.UserName, search, from, size),
+      contactListEndPoint(userInfo.UserName, search, from, size),
       'GET',
     ).then(json => {
       console.log(json);
@@ -98,7 +97,6 @@ class ChatList extends Component {
           from: this.state.from + 10,
           isRefreshing: false,
           loadMore: false,
-          totalCount: _.get(json, 'data.TotalCount', ''),
         });
       } else {
         this.setState({
@@ -112,12 +110,13 @@ class ChatList extends Component {
     });
   }
 
-  messagePressItem = (displayName, image, recieverName) => {
-    console.log(recieverName, 'recieverName');
+  messagePressItem = (id, sender_name, image, rId, user_name) => {
     this.props.navigation.navigate('ChatMessage', {
-      displayName,
+      id,
+      sender_name,
       image,
-      recieverName,
+      rId,
+      user_name,
     });
   };
 
@@ -154,13 +153,15 @@ class ChatList extends Component {
       await this.setState({
         loadMore: true,
       });
-      if (this.state.totalCount > _.size(this.statethreadList)) {
-        this.fetchChatThread(this.searchTextInputValue, this.state.from, size); // method for API call
-      } else {
-        this.setState({
-          loadMore: false,
-        });
-      }
+      //if (this.lastPage >= this.pageNo) {
+      this.fetchChatThread(this.searchTextInputValue, this.state.from, size); // method for API call
+      //this.getConversationList(); // method for API call
+      //this.loadingView(false);
+      // } else {
+      //   this.setState({
+      //     loadMore: false,
+      //   });
+      // }
     }
   };
 
@@ -207,8 +208,8 @@ class ChatList extends Component {
     return (
       <View style={styles.viewContainer}>
         <Appbar.Header style={styles.headerBg}>
-          <Appbar.Action icon="menu" onPress={() => navigation.openDrawer()} />
-          <Appbar.Content title={'Chat'} />
+          <Appbar.BackAction onPress={() => navigation.goBack()} />
+          <Appbar.Content title={'Contacts'} />
           <Appbar.Action icon="magnify" onPress={() => this.searchBarOpen()} />
           <Animated.View
             style={[
@@ -267,10 +268,9 @@ class ChatList extends Component {
             onEndReached={this.handleLoadMore.bind(this)}
           />
         </View>
-        {this.newThread(navigation.navigate)}
       </View>
     );
   }
 }
 
-export default ChatList;
+export default ContactList;

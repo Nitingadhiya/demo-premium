@@ -95,6 +95,14 @@ const forwardOrderEndPoint = (orderNo, userName, orderForUser) =>
   `ForwardOrder?OrderNo=${orderNo}&LoginUser=${userName}&OrderFor=${orderForUser}`;
 const orderReadyToDeliverEndPoint = (orderNo, userName, customerUserName) =>
   `OrderReadyToDeliver?OrderNo=${orderNo}&LoginUser=${userName}&CustomerUserName=${customerUserName}`;
+const chatListEndPoint = (userName, search, from, size) =>
+  `ChatList?Username=${userName}&Search=${search}&From=${from}&size=${size}`;
+
+const contactListEndPoint = (userName, search, from, size) =>
+  `ContactList?Username=${userName}&Search=${search}&From=${from}&size=${size}`;
+
+const getChatHistoryEndpoint = (userName, receiver, from, size) =>
+  `ChatHistory?Username=${userName}&Receiver=${receiver}&From=${from}&size=${size}`;
 
 module.exports = {
   checkVersionEndPoint,
@@ -158,4 +166,7 @@ module.exports = {
   getSystemFromSystemTagEndPoint,
   forwardOrderEndPoint,
   orderReadyToDeliverEndPoint,
+  chatListEndPoint,
+  contactListEndPoint,
+  getChatHistoryEndpoint,
 };

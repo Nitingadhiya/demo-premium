@@ -74,30 +74,30 @@ export default class MessageSectionsView extends React.PureComponent {
   listDisplay = (messages, onRefresh, userId, Ref, calendarStrings) => (
     <SectionList
       ref={Ref}
-      onViewableItemsChanged={this._onViewableItemsChanged}
+      //  onViewableItemsChanged={this._onViewableItemsChanged}
       renderItem={({item, index, section}) => (
         <View key={`${index.toString()}`} style={Styles.messageBody}>
           <View
             style={[
               {
-                alignSelf: item.user.id !== userId ? 'flex-start' : 'flex-end',
+                alignSelf: item.Sender !== userId ? 'flex-start' : 'flex-end',
                 flexDirection: 'row',
               },
             ]}>
             <View
               style={[
                 Styles.innerMessageBody,
-                this.setcolor(item.user.id, userId, 'background'),
+                this.setcolor(item.Sender, userId, 'background'),
               ]}>
-              {item.user.id !== userId ? (
-                <Text style={Styles.senderName}>{item.user.full_name}</Text>
+              {item.Sender !== userId ? (
+                <Text style={Styles.senderName}>XYZ</Text>
               ) : null}
               <Text
                 style={[
                   Styles.messageText,
-                  this.setcolor(item.user.id, userId),
+                  this.setcolor(item.Sender, userId),
                 ]}>
-                {item.body}
+                {item.ChatMessage}
               </Text>
               <View style={Styles.dateView}>
                 <Moment
@@ -105,9 +105,9 @@ export default class MessageSectionsView extends React.PureComponent {
                   element={Text}
                   style={[
                     Styles.dateText,
-                    this.setcolor(item.user.id, userId, 'time'),
+                    this.setcolor(item.Sender, userId, 'time'),
                   ]}>
-                  {item.sent_at}
+                  {item.EntryDate}
                 </Moment>
               </View>
             </View>
@@ -160,7 +160,10 @@ export default class MessageSectionsView extends React.PureComponent {
             </Moment>
           </View>
         ) : null}
-        {this.listDisplay(data, onRefresh, userId, Ref, calendarStrings)}
+        {console.log(data)}
+        {userId
+          ? this.listDisplay(data, onRefresh, userId, Ref, calendarStrings)
+          : null}
       </View>
     );
   }
