@@ -69,7 +69,6 @@ class ComponentRestockRequest extends Component {
       getRestockHandoverPartFromSerialNoEndPoint(userInfo.UserName, serialNum),
       'GET',
     ).then(json => {
-      console.log(json, 'json');
       this.setState({
         loadingData: false,
       });

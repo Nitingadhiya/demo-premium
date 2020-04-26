@@ -67,7 +67,6 @@ class ComplaintPriceModal extends Component {
           loadingData: false,
         });
         if (json.data.Success === '1') {
-          console.log(json, 'res');
           this.setState({
             complainChargeJson: json.data.Response,
           });
@@ -84,7 +83,6 @@ class ComplaintPriceModal extends Component {
       systemTag,
     } = this.props.stateAll;
     const {complainChargeJson, paymentMethod} = this.state;
-    console.log(complainChargeJson, 'complainChargeJson');
     if (userInfo.UserName) {
       this.setState({
         loadingData: true,

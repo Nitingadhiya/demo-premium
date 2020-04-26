@@ -61,7 +61,6 @@ class OrderComponentRequest extends Component {
     }
 
     Events.on('SYS-serial-scan-order', 'Event', val => {
-      console.log(val);
       this.checkSYSTagValidation(val);
     });
 
@@ -84,7 +83,6 @@ class OrderComponentRequest extends Component {
     this.setState({loadingData: true, errorMessage: false});
 
     APICaller(getSystemFromSystemTagEndPoint(sysTag), 'GET').then(json => {
-      console.log(json, 'json');
       this.setState({
         loadingData: false,
       });

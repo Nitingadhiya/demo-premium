@@ -28,6 +28,8 @@ import NavigationHelper from '../utils/navigation-helper';
 
 import SocketIOClient from 'socket.io-client';
 import BasicURL from '../config';
+import Events from '../utils/events';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 
 BackgroundServiceHelper.BackgroundServiceJob();
 
@@ -45,8 +47,13 @@ export default class UserNavigation extends React.Component {
       transports: ['websocket', 'polling'],
       forceWebsockets: true,
     });
-    global.socket.on('connect', () => {
+    global.socket.on('connect', async () => {
       console.log('connect');
+      const data = await Helper.getLocalStorageItem('userInfo');
+      if (data) {
+        console.log(data.UserName, 'data.UserName');
+        global.socket.emit('username', data.UserName);
+      }
     });
 
     global.socket.on('disconnect', () => {
@@ -55,20 +62,27 @@ export default class UserNavigation extends React.Component {
 
     // setTimeout(() => {
     //   var data = {
-    //     fromUser: 'anitin',
-    //     toUser: 'arkesh',
+    //     fromUser: 'Divkor497',
+    //     toUser: 'anitin',
     //     message: 'Kem 60?',
     //   };
-    //   global.socket.emit('chat', data);
+    //   global.socket.emit('message', data);
     // }, 2000);
+    global.socket.on('message', data => {
+      // console.log(data);
+      //alert('data', data);
+      Events.trigger('chat-message', data);
+    });
     // socket.on('chat', responsedata => {
-    //   console.log(responsedata);
+    //   alert(responsedata);
+    //   //Events.trigger('chat-message', responsedata);
     // });
 
     this.cancelAllJob();
     const data = await Helper.getLocalStorageItem('userInfo');
     if (data) {
-      global.socket.emit('username', data.UserName);
+      console.log(data.UserName, 'user name');
+      //global.socket.emit('username', data.UserName);
       this.setState({userInfo: data});
       if (data.LoginType === '2' || data.LoginType === '3') {
         this.backgroundJobMethod();
@@ -196,6 +210,9 @@ export default class UserNavigation extends React.Component {
       return (
         <View>
           <Text>Please wait...</Text>
+          {/* <TouchableOpacity onPress={() => global.socket.emit('CH01', '1 nitin')}>
+          <Text>dfs</Text>
+        </TouchableOpacity> */}
         </View>
       );
     }

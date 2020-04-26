@@ -42,7 +42,6 @@ class Order extends Component {
     this.getUserInfo();
     Events.on('order-refresh', 'refresh', () => this.getUserInfo());
     Events.on('loader-show', 'loader', val => {
-      console.log(val);
       this.setState({
         loadingData: val,
       });

@@ -83,11 +83,6 @@ export default class ChatListView extends React.PureComponent {
             {TagLine(data)}
           </Text>
         ) : (
-          <View />
-        )}
-        {contactScreen ? (
-          <View />
-        ) : (
           <Text style={styles.messageText} numberOfLines={1}>
             {_.get(data, 'LastMessage', '')}
           </Text>

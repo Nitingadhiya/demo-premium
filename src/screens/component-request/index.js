@@ -94,7 +94,6 @@ class ComponentRequest extends Component {
 
     APICaller(getPartFromSerialNoForHandOverEndPoint(serialNum), 'GET').then(
       json => {
-        console.log(json);
         this.setState({
           loadingData: false,
         });
@@ -189,7 +188,6 @@ class ComponentRequest extends Component {
       'POST',
       JSON.stringify(body),
     ).then(json => {
-      console.log(json);
       this.setState({
         loadingData: false,
       });

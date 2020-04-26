@@ -71,16 +71,26 @@ export default class MessageSectionsView extends React.PureComponent {
     //Reactotron.log(info.viewableItems);
   };
 
-  listDisplay = (messages, onRefresh, userId, Ref, calendarStrings) => (
+  listDisplay = (
+    messages,
+    onRefresh,
+    userId,
+    Ref,
+    calendarStrings,
+    displayName,
+  ) => (
     <SectionList
       ref={Ref}
-      //  onViewableItemsChanged={this._onViewableItemsChanged}
+      onViewableItemsChanged={this._onViewableItemsChanged}
       renderItem={({item, index, section}) => (
         <View key={`${index.toString()}`} style={Styles.messageBody}>
           <View
             style={[
               {
-                alignSelf: item.Sender !== userId ? 'flex-start' : 'flex-end',
+                alignSelf:
+                  _.toLower(item.Sender) !== _.toLower(userId)
+                    ? 'flex-start'
+                    : 'flex-end',
                 flexDirection: 'row',
               },
             ]}>
@@ -90,7 +100,7 @@ export default class MessageSectionsView extends React.PureComponent {
                 this.setcolor(item.Sender, userId, 'background'),
               ]}>
               {item.Sender !== userId ? (
-                <Text style={Styles.senderName}>XYZ</Text>
+                <Text style={Styles.senderName}>{displayName}</Text>
               ) : null}
               <Text
                 style={[
@@ -138,7 +148,7 @@ export default class MessageSectionsView extends React.PureComponent {
   );
 
   render() {
-    const {data, onRefresh, userId, Ref} = this.props;
+    const {data, onRefresh, userId, Ref, displayName} = this.props;
     const {headerDate} = this.state;
     const calendarStrings = {
       lastDay: '[Yesterday at] LT',
@@ -160,9 +170,15 @@ export default class MessageSectionsView extends React.PureComponent {
             </Moment>
           </View>
         ) : null}
-        {console.log(data)}
         {userId
-          ? this.listDisplay(data, onRefresh, userId, Ref, calendarStrings)
+          ? this.listDisplay(
+              data,
+              onRefresh,
+              userId,
+              Ref,
+              calendarStrings,
+              displayName,
+            )
           : null}
       </View>
     );

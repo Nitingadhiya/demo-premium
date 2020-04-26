@@ -30,7 +30,7 @@ import APICaller from '../../utils/api-caller';
 import styles from './styles';
 import {FIcon, McIcon, MIcon} from '../../common/assets/vector-icon';
 // ASSETS
-const size = 10;
+const size = 30;
 //= ===CLASS DECLARATION====//
 class ContactList extends Component {
   state = {
@@ -42,12 +42,13 @@ class ContactList extends Component {
     threadList: null,
     searchMargin: 350,
     searchText: null,
+    totalCount: 0,
   };
   componentDidMount() {
     this.searchTextInputValue = '';
     this.onChangeTextDelayed = _.debounce(
       text => this.onChangeSearchText(text),
-      300,
+      200,
     );
     this.getUserInfo();
   }
@@ -74,8 +75,7 @@ class ContactList extends Component {
   }
 
   fetchChatThread(search, from, size) {
-    const {userInfo, isRefreshing} = this.state;
-    console.log(userInfo, 'userInfo');
+    const {userInfo, isRefreshing, loadMore} = this.state;
     if (!isRefreshing) {
       this.setState({
         loading: true,
@@ -86,7 +86,6 @@ class ContactList extends Component {
       contactListEndPoint(userInfo.UserName, search, from, size),
       'GET',
     ).then(json => {
-      console.log(json);
       if (json.data.Success === '1') {
         this.setState({
           loading: false,
@@ -94,9 +93,10 @@ class ContactList extends Component {
             this.state.threadList,
             _.get(json, 'data.Response', []),
           ),
-          from: this.state.from + 10,
+          from: this.state.from + size,
           isRefreshing: false,
           loadMore: false,
+          totalCount: _.get(json, 'data.TotalCount', ''),
         });
       } else {
         this.setState({
@@ -110,13 +110,11 @@ class ContactList extends Component {
     });
   }
 
-  messagePressItem = (id, sender_name, image, rId, user_name) => {
+  messagePressItem = (displayName, image, recieverName) => {
     this.props.navigation.navigate('ChatMessage', {
-      id,
-      sender_name,
+      displayName,
       image,
-      rId,
-      user_name,
+      recieverName,
     });
   };
 
@@ -153,15 +151,13 @@ class ContactList extends Component {
       await this.setState({
         loadMore: true,
       });
-      //if (this.lastPage >= this.pageNo) {
-      this.fetchChatThread(this.searchTextInputValue, this.state.from, size); // method for API call
-      //this.getConversationList(); // method for API call
-      //this.loadingView(false);
-      // } else {
-      //   this.setState({
-      //     loadMore: false,
-      //   });
-      // }
+      if (this.state.totalCount > _.size(this.statethreadList)) {
+        this.fetchChatThread(this.searchTextInputValue, this.state.from, size); // method for API call
+      } else {
+        this.setState({
+          loadMore: false,
+        });
+      }
     }
   };
 
@@ -182,18 +178,18 @@ class ContactList extends Component {
   searchBarOpen() {
     LayoutAnimation.spring();
     if (this.state.searchMargin > 0) {
-      this.secondTextInput.focus();
+      this.contactTextInput.focus();
       this.setState({searchMargin: 0, he: this.state.he + 15});
     } else {
-      this.secondTextInput.blur();
+      this.contactTextInput.blur();
       this.setState({searchMargin: 350, he: this.state.he + 15});
     }
   }
 
   clearSearchText() {
     this.resetSearch();
-    this.secondTextInput.clear();
-    this.fetchChatThread('', 1, 10);
+    this.contactTextInput.clear();
+    this.fetchChatThread('', 1, size);
   }
 
   render() {
@@ -232,7 +228,7 @@ class ContactList extends Component {
               placeholderTextColor="grey"
               allowFontScaling={false}
               ref={input => {
-                this.secondTextInput = input;
+                this.contactTextInput = input;
               }}
               value={searchText}
               onChangeText={this.onChangeTextDelayed}

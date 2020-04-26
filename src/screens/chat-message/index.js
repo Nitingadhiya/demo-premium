@@ -23,7 +23,7 @@ import {MIcon} from '../../common/assets/vector-icon';
 import Helper from '../../utils/helper';
 
 let self;
-const size = 10;
+const size = 15;
 class ChatMessage extends Component {
   state = {
     loading: false,
@@ -49,8 +49,6 @@ class ChatMessage extends Component {
     self = this;
     this.tempArrMessage = [];
     const {recieverName, image, displayName} = this.props.route.params;
-    console.log(this.props.route.params, 'receiver');
-
     this.setState({
       profile_image_url: image,
       recieverName: recieverName,
@@ -59,22 +57,20 @@ class ChatMessage extends Component {
 
     this.getUserInfo();
 
-    global.socket.on('chat', responsedata => {
-      console.log(responsedata, 'data');
-      const user = {
-        id: this.state.rUserName,
-        profile_image_url: this.state.profile_image_url,
-        full_name: 'Arkesh Korat',
-      };
+    Events.on('chat-message', 'message', responsedata => {
+      console.log('responsedata', responsedata);
+      const {recieverName} = this.state;
+      if (responsedata.fromUser !== recieverName) return;
       const data = {
-        id: null,
-        body: responsedata.message,
-        sent_at: moment
-          .utc(new Date(), 'YYYY-MM-DD HH:mm:ss')
-          .format('YYYY-MM-DD HH:mm:ss'),
-        user,
+        ID: null,
+        ChatMessage: responsedata.message,
+        EntryDate: moment(new Date(), 'YYYY-MM-DD HH:mm:ss').format(
+          'YYYY-MM-DD HH:mm:ss',
+        ),
+        Document: '',
+        Sender: responsedata.fromUser,
+        Receiver: responsedata.toUser,
       };
-      console.log(data, 'ddd');
       this.tempArrMessage.unshift(data);
       this.groupMessage(this.tempArrMessage);
     });
@@ -112,33 +108,27 @@ class ChatMessage extends Component {
       userInfo,
     });
     if (userInfo) {
+      //.emit('username', userInfo.UserName);
       this.fetchChatHistory();
     }
   }
 
   fetchChatHistory() {
     const {userInfo, from, recieverName, isRefreshing} = this.state;
-    console.log(
-      getChatHistoryEndpoint(userInfo.UserName, recieverName, from, size),
-    );
     APICaller(
-      getChatHistoryEndpoint('admin', recieverName, from, size),
+      getChatHistoryEndpoint(userInfo.UserName, recieverName, from, size),
       'GET',
     ).then(json => {
-      console.log(json);
-
       if (json.data.Success === '1') {
         this.setState({
           loading: false,
-          // messages: _.concat(
-          //   this.state.message,
-          //   _.get(json, 'data.Response', []),
-          // ),
-          from: this.state.from + 10,
+          from: this.state.from + size,
           totalCount: _.get(json, 'data.TotalCount', ''),
+          isRefreshing: false,
         });
+        const data = _.get(json, 'data.Response', []);
         if (!isRefreshing) {
-          this.tempArrMessage = _.get(json, 'data.Response', []);
+          this.tempArrMessage = data;
           this.groupMessage(this.tempArrMessage);
         } else {
           data.map(res => this.tempArrMessage.push(res));
@@ -228,13 +218,11 @@ class ChatMessage extends Component {
   // }
 
   groupMessage(data) {
-    console.log(data, 'DDD');
     let arr = [];
-    console.log(data);
     const groupMessage = _.groupBy(data, message =>
-      moment(message.sent_at).format('YYYY-MM-DD'),
+      moment(message.EntryDate).format('YYYY-MM-DD'),
     );
-    console.log(groupMessage);
+    console.log(groupMessage, 'group');
 
     _.map(groupMessage, (msg, date) =>
       arr.push({
@@ -242,7 +230,7 @@ class ChatMessage extends Component {
         data: msg,
       }),
     );
-    console.log(data, 'dta');
+    // console.log(data, 'dta');
     this.setState({
       messages: arr,
       dataFound: true,
@@ -263,13 +251,20 @@ class ChatMessage extends Component {
     if (!messageText) return;
     this.textMessage = messageText;
     //this.loadingView(true);
+    var data = {
+      fromUser: userInfo.UserName,
+      toUser: this.state.recieverName,
+      message: messageText,
+    };
+    console.log(data, 'data');
+    global.socket.emit('message', data);
 
     const msg = {
       ID: null,
       ChatMessage: messageText,
-      EntryDate: moment
-        .utc(new Date(), 'YYYY-MM-DD HH:mm:ss')
-        .format('YYYY-MM-DD HH:mm:ss'),
+      EntryDate: moment(new Date(), 'YYYY-MM-DD HH:mm:ss').format(
+        'YYYY-MM-DD HH:mm:ss',
+      ),
       Document: '',
       Sender: userInfo.UserName,
       Receiver: this.state.recieverName,
@@ -277,18 +272,10 @@ class ChatMessage extends Component {
     this.tempArrMessage.unshift(msg);
     console.log(this.tempArrMessage, 'tempArrMessage');
     this.groupMessage(this.tempArrMessage);
-    // this.scrollToBottom();
-
+    this.scrollToBottom();
     // const body = {
     //   body: validationMessage,
     // };
-    var data = {
-      fromUser: userInfo.UserName,
-      toUser: this.state.recieverName,
-      message: messageText,
-    };
-    // console.log(data, 'data');
-    global.socket.emit('chat', data);
 
     // APICaller(
     //   `${Http.messageEndpoint(global.threadId)}`,
@@ -328,9 +315,8 @@ class ChatMessage extends Component {
         isRefreshing: true,
         isLoadingEarlier: true,
       });
-      if (this.lastPage >= this.pageNo) {
-        //this.getMessage(global.threadId); // method for API call
-        this.loadingView(false);
+      if (this.state.totalCount > _.size(this.tempArrMessage)) {
+        this.fetchChatHistory(); // method for API call
       } else {
         this.setState({
           isRefreshing: false,
@@ -342,6 +328,12 @@ class ChatMessage extends Component {
   //   navigation.goBack();
   // };
 
+  goback() {
+    const {navigation} = this.props;
+    Events.trigger('refresh-chat-list');
+    navigation.goBack();
+  }
+
   render() {
     const {navigation} = this.props;
     const {
@@ -350,12 +342,13 @@ class ChatMessage extends Component {
       userId,
       contactStatusVisible,
       profile_image_url,
+      displayName,
     } = this.state;
     console.log(messages);
     return (
       <View style={styles.textViewStyle}>
         <Appbar.Header style={styles.headerBg}>
-          <Appbar.BackAction onPress={() => navigation.goBack()} />
+          <Appbar.BackAction onPress={() => this.goback()} />
           <Appbar.Content title={'Chat Message'} />
           {profile_image_url ? (
             <Image
@@ -375,6 +368,7 @@ class ChatMessage extends Component {
               data={messages}
               onRefresh={() => this.onRefresh()}
               userId={userInfo.UserName}
+              displayName={displayName}
               Ref={r => {
                 this.scrollView = r;
               }}

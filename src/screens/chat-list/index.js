@@ -23,12 +23,13 @@ import _ from 'lodash';
 import ChatListView from '../../components/chat-list-view';
 import {chatListEndPoint} from '../../config/api-endpoint';
 import Helper from '../../utils/helper';
+import Events from '../../utils/events';
 
 import APICaller from '../../utils/api-caller';
 import styles from './styles';
 import {McIcon, MIcon} from '../../common/assets/vector-icon';
 
-const size = 10;
+const size = 30;
 
 class ChatList extends Component {
   state = {
@@ -50,6 +51,11 @@ class ChatList extends Component {
       300,
     );
     this.getUserInfo();
+
+    Events.on('refresh-chat-list', 'refresh', () => {
+      this.state.isRefreshing = true;
+      this.fetchChatThread('', 1, size);
+    });
   }
 
   async getUserInfo() {
@@ -76,30 +82,23 @@ class ChatList extends Component {
 
   fetchChatThread(search, from, size) {
     const {userInfo, isRefreshing, loadMore} = this.state;
-    console.log(userInfo, 'userInfo');
     if (!isRefreshing && !loadMore) {
       this.setState({
         loading: true,
       });
     }
-    console.log(chatListEndPoint('admin', search, from, size), '***********');
     APICaller(
       chatListEndPoint(userInfo.UserName, search, from, size),
       'GET',
     ).then(json => {
-      console.log(json);
+      console.log(json, 'json');
       if (json.data.Success === '1') {
-        this.setState({
-          loading: false,
-          threadList: _.concat(
-            this.state.threadList,
-            _.get(json, 'data.Response', []),
-          ),
-          from: this.state.from + 10,
-          isRefreshing: false,
-          loadMore: false,
-          totalCount: _.get(json, 'data.TotalCount', ''),
-        });
+        if (isRefreshing) {
+          this.updateData(json, false);
+          // return;
+        } else {
+          this.updateData(json, true);
+        }
       } else {
         this.setState({
           threadList: [],
@@ -112,8 +111,30 @@ class ChatList extends Component {
     });
   }
 
+  updateData(json, bool) {
+    if (bool) {
+      this.setState({
+        threadList: _.concat(
+          this.state.threadList,
+          _.get(json, 'data.Response', []),
+        ),
+        from: this.state.from + size,
+      });
+    } else {
+      this.setState({
+        threadList: _.get(json, 'data.Response', []),
+        from: 1,
+      });
+    }
+    this.setState({
+      loading: false,
+      isRefreshing: false,
+      loadMore: false,
+      totalCount: _.get(json, 'data.TotalCount', ''),
+    });
+  }
+
   messagePressItem = (displayName, image, recieverName) => {
-    console.log(recieverName, 'recieverName');
     this.props.navigation.navigate('ChatMessage', {
       displayName,
       image,
@@ -126,23 +147,23 @@ class ChatList extends Component {
       data={item}
       onPressItem={this.messagePressItem}
       navigation={this.props.navigation}
-      contactScreen={true}
     />
   );
 
   async onRefresh() {
     await this.setState({
       isRefreshing: true,
-      threadList: [],
+      //threadList: [],
     });
-    this.clearSearchText(); // method for API call
+    this.secondTextInput.clear();
+    this.fetchChatThread(this.searchTextInputValue, 1, size);
   }
 
   listEmptyComponent = loadingData => {
     if (loadingData) {
       return <View />;
     }
-    return <EmptyComponent message={'No Contacts found'} />;
+    return <EmptyComponent message={'No Chat Message Found'} />;
   };
 
   listFooterComponent = loadMore => {
@@ -154,7 +175,7 @@ class ChatList extends Component {
       await this.setState({
         loadMore: true,
       });
-      if (this.state.totalCount > _.size(this.statethreadList)) {
+      if (this.state.totalCount > _.size(this.state.threadList)) {
         this.fetchChatThread(this.searchTextInputValue, this.state.from, size); // method for API call
       } else {
         this.setState({
@@ -192,7 +213,7 @@ class ChatList extends Component {
   clearSearchText() {
     this.resetSearch();
     this.secondTextInput.clear();
-    this.fetchChatThread('', 1, 10);
+    this.fetchChatThread('', 1, size);
   }
 
   render() {
