@@ -57,8 +57,8 @@ class ChatMessage extends Component {
 
     this.getUserInfo();
 
-    Events.on('chat-message', 'message', responsedata => {
-      console.log('responsedata', responsedata);
+    global.socket.on('message', responsedata => {
+      // console.log('msg', responsedata);
       const {recieverName} = this.state;
       if (responsedata.fromUser !== recieverName) return;
       const data = {
@@ -74,6 +74,24 @@ class ChatMessage extends Component {
       this.tempArrMessage.unshift(data);
       this.groupMessage(this.tempArrMessage);
     });
+
+    // Events.on('chat-message', 'message', responsedata => {
+    //   console.log('responsedata', responsedata);
+    //   const {recieverName} = this.state;
+    //   if (responsedata.fromUser !== recieverName) return;
+    //   const data = {
+    //     ID: null,
+    //     ChatMessage: responsedata.message,
+    //     EntryDate: moment(new Date(), 'YYYY-MM-DD HH:mm:ss').format(
+    //       'YYYY-MM-DD HH:mm:ss',
+    //     ),
+    //     Document: '',
+    //     Sender: responsedata.fromUser,
+    //     Receiver: responsedata.toUser,
+    //   };
+    //   this.tempArrMessage.unshift(data);
+    //   this.groupMessage(this.tempArrMessage);
+    // });
 
     // this.pageNo = 1;
     // this.rId = rId;
@@ -222,7 +240,7 @@ class ChatMessage extends Component {
     const groupMessage = _.groupBy(data, message =>
       moment(message.EntryDate).format('YYYY-MM-DD'),
     );
-    console.log(groupMessage, 'group');
+    //console.log(groupMessage, 'group');
 
     _.map(groupMessage, (msg, date) =>
       arr.push({
@@ -256,7 +274,7 @@ class ChatMessage extends Component {
       toUser: this.state.recieverName,
       message: messageText,
     };
-    console.log(data, 'data');
+    // console.log(data, 'data');
     global.socket.emit('message', data);
 
     const msg = {
@@ -270,7 +288,7 @@ class ChatMessage extends Component {
       Receiver: this.state.recieverName,
     };
     this.tempArrMessage.unshift(msg);
-    console.log(this.tempArrMessage, 'tempArrMessage');
+    //console.log(this.tempArrMessage, 'tempArrMessage');
     this.groupMessage(this.tempArrMessage);
     this.scrollToBottom();
     // const body = {
@@ -344,7 +362,6 @@ class ChatMessage extends Component {
       profile_image_url,
       displayName,
     } = this.state;
-    console.log(messages);
     return (
       <View style={styles.textViewStyle}>
         <Appbar.Header style={styles.headerBg}>

@@ -68,11 +68,11 @@ export default class UserNavigation extends React.Component {
     //   };
     //   global.socket.emit('message', data);
     // }, 2000);
-    global.socket.on('message', data => {
-      // console.log(data);
-      //alert('data', data);
-      Events.trigger('chat-message', data);
-    });
+    // global.socket.on('message', data => {
+    //   // console.log(data);
+    //   //alert('data', data);
+    //   Events.trigger('chat-message', data);
+    // });
     // socket.on('chat', responsedata => {
     //   alert(responsedata);
     //   //Events.trigger('chat-message', responsedata);

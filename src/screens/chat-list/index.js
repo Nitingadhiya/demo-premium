@@ -39,7 +39,7 @@ class ChatList extends Component {
     userInfo: null,
     from: 1,
     threadList: null,
-    searchMargin: 350,
+    searchMargin: Matrics.screenWidth,
     searchText: null,
     totalCount: 0,
   };
@@ -91,7 +91,7 @@ class ChatList extends Component {
       chatListEndPoint(userInfo.UserName, search, from, size),
       'GET',
     ).then(json => {
-      console.log(json, 'json');
+      //console.log(json, 'json');
       if (json.data.Success === '1') {
         if (isRefreshing) {
           this.updateData(json, false);
@@ -206,7 +206,10 @@ class ChatList extends Component {
       this.setState({searchMargin: 0, he: this.state.he + 15});
     } else {
       this.secondTextInput.blur();
-      this.setState({searchMargin: 350, he: this.state.he + 15});
+      this.setState({
+        searchMargin: Matrics.screenWidth,
+        he: this.state.he + 15,
+      });
     }
   }
 
