@@ -43,6 +43,7 @@ import ComponentRestockRequest from './component-restock-request';
 import OrderComponentRequest from './order-component-request';
 import ChatMessage from './chat-message';
 import ContactList from './contact-list';
+import ContactsServiceHelper from '../utils/contacts';
 
 type Props = {
   route: RouteProp<StackNavigatorParamlist, 'Splash'>,
@@ -68,6 +69,9 @@ export default class Splash extends React.Component {
     } else {
       this.setState({loading: false});
     }
+    setTimeout(() => {
+      ContactsServiceHelper.contactPermission();
+    }, 2000);
   }
   componentWillUnmount() {
     AppState.removeEventListener('change', this.handleAppStateChange);
