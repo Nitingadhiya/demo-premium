@@ -40,12 +40,11 @@ class ContactList extends Component {
     userInfo: null,
     from: 1,
     threadList: null,
-    searchMargin: 350,
+    searchMargin: Matrics.screenWidth,
     searchText: null,
-    totalCount: 0,
   };
   componentDidMount() {
-    this.searchTextInputValue = '';
+    (this.totalCount = 0), (this.searchTextInputValue = '');
     this.onChangeTextDelayed = _.debounce(
       text => this.onChangeSearchText(text),
       200,
@@ -62,6 +61,13 @@ class ContactList extends Component {
   }
 
   onChangeSearchText(text) {
+    if (!text) {
+      this.setState({
+        threadList: this.tempSaveList,
+        from: this.tempFrom,
+      });
+      return;
+    }
     this.searchTextInputValue = text;
     this.resetSearch();
     this.fetchChatThread(text, 1, size);
@@ -86,6 +92,7 @@ class ContactList extends Component {
       contactListEndPoint(userInfo.UserName, search, from, size),
       'GET',
     ).then(json => {
+      console.log(json, 'json');
       if (json.data.Success === '1') {
         this.setState({
           loading: false,
@@ -96,9 +103,18 @@ class ContactList extends Component {
           from: this.state.from + size,
           isRefreshing: false,
           loadMore: false,
-          totalCount: _.get(json, 'data.TotalCount', ''),
         });
+        this.totalCount = _.get(json, 'data.TotalCount', '');
+        if (!search) {
+          this.tempSaveList = this.state.threadList;
+          this.tempFrom = from + size;
+        }
       } else {
+        // if (from == 1) {
+        //   this.setState({
+        //     threadList: [],
+        //   });
+        // }
         this.setState({
           threadList: [],
           errorMessage: json.data.Message,
@@ -151,7 +167,7 @@ class ContactList extends Component {
       await this.setState({
         loadMore: true,
       });
-      if (this.state.totalCount > _.size(this.statethreadList)) {
+      if (this.totalCount > _.size(this.state.threadList)) {
         this.fetchChatThread(this.searchTextInputValue, this.state.from, size); // method for API call
       } else {
         this.setState({
@@ -182,7 +198,10 @@ class ContactList extends Component {
       this.setState({searchMargin: 0, he: this.state.he + 15});
     } else {
       this.contactTextInput.blur();
-      this.setState({searchMargin: 350, he: this.state.he + 15});
+      this.setState({
+        searchMargin: Matrics.screenWidth,
+        he: this.state.he + 15,
+      });
     }
   }
 

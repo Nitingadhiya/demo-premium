@@ -53,9 +53,18 @@ class ChatList extends Component {
     this.getUserInfo();
 
     Events.on('refresh-chat-list', 'refresh', () => {
-      this.state.isRefreshing = true;
-      this.fetchChatThread('', 1, size);
+      this.refreshingEventsMethod();
     });
+
+    /* */
+    global.socket.on('chat_list_refresh', data => {
+      this.refreshingEventsMethod();
+    });
+  }
+
+  refreshingEventsMethod() {
+    this.state.isRefreshing = true;
+    this.fetchChatThread('', 1, size);
   }
 
   async getUserInfo() {

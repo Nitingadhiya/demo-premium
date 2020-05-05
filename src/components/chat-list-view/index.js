@@ -53,7 +53,7 @@ export default class ChatListView extends React.PureComponent {
       <TouchableOpacity
         style={[styles.imageView]}
         onPress={() => {
-          navigation.navigate('ContactProfileInfo', {id: data.UserName});
+          //navigation.navigate('ContactProfileInfo', {id: data.UserName});
         }}>
         {!_.get(data, 'UserImage', '') ? (
           <View style={[styles.imageViewChr, {backgroundColor: colorCode}]}>

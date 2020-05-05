@@ -20,7 +20,7 @@ export default (styles = {
     zIndex: 1,
   },
   imageViewChr: {
-    marginRight: Matrics.ScaleValue(10),
+    //marginRight: Matrics.ScaleValue(10),
     width: Matrics.ScaleValue(50),
     height: Matrics.ScaleValue(50),
     borderRadius: Matrics.ScaleValue(25),
@@ -38,30 +38,30 @@ export default (styles = {
   listMessageView: {justifyContent: 'center', flex: 1},
   userNameText: {
     fontFamily: Fonts.type.RubikMedium,
-    fontSize: Matrics.ScaleValue(16),
+    fontSize: 14,
     color: Color.charcoalGrey,
   },
   companyText: {
     fontFamily: Fonts.type.RubikMedium,
-    fontSize: Matrics.ScaleValue(12),
+    fontSize: 12,
     color: Color.charcoalGrey,
   },
   messageText: {
     fontFamily: Fonts.type.Rubik,
-    fontSize: Matrics.ScaleValue(12),
+    fontSize: 12,
     color: Color.slateGrey,
   },
   dateText: {
     fontFamily: Fonts.type.Rubik,
-    fontSize: Matrics.ScaleValue(10),
+    fontSize: 10,
     color: Color.slateGrey,
   },
   dateView: {
-    marginTop: Matrics.ScaleValue(12),
+    marginTop: 12,
   },
   imageText: {
     fontFamily: Fonts.type.RubikMedium,
-    fontSize: Matrics.ScaleValue(30),
+    fontSize: 30,
     color: Color.white,
   },
   unreadCountView: {

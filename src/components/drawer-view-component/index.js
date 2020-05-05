@@ -183,6 +183,7 @@ class DrawerViewComponent extends Component {
             )}
             label="Logout"
             onPress={async () => {
+              navigation.closeDrawer();
               await Helper.removeLocalStorage('userInfo');
               NavigationHelper.reset(navigation, 'Splash');
             }}
