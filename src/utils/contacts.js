@@ -28,6 +28,7 @@ const ContactsServiceHelper = {
               (contacts, {phoneNumbers: [{number: '+919033685001'}]}) ||
               (contacts, {phoneNumbers: [{number: '9033685001'}]});
             const filt = _.filter(filterCond);
+
             if (filt) {
               const findI = _.findIndex(contacts, {
                 phoneNumbers: [
@@ -36,8 +37,11 @@ const ContactsServiceHelper = {
                   },
                 ],
               });
+
               if (findI > -1) {
                 this.updateContact(contacts, findI);
+              } else {
+                this.getContact();
               }
             } else {
               this.getContact();
@@ -51,6 +55,7 @@ const ContactsServiceHelper = {
   updateContact(cont, findI) {
     let someRecord = [];
     someRecord = cont[findI];
+
     if (someRecord.emailAddresses.length === 0) {
       someRecord.emailAddresses.push({
         label: 'work',
@@ -69,6 +74,7 @@ const ContactsServiceHelper = {
       });
     }
     someRecord.company = 'Premium Sales Corporation(Patel Computer)';
+
     Contacts.updateContact(someRecord, err => {
       console.log(err);
       // record updated

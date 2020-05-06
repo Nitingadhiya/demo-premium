@@ -11,7 +11,7 @@ import {Drawer, Avatar, Title, Caption, Paragraph} from 'react-native-paper';
 import _ from 'lodash';
 import Helper from '../../utils/helper';
 import NavigationHelper from '../../utils/navigation-helper';
-import {Color} from '../../common/styles';
+import {Color, Matrics} from '../../common/styles';
 import {VersionNumber} from '../../package';
 import Events from '../../utils/events';
 import styles from './styles';
@@ -40,6 +40,11 @@ class DrawerViewComponent extends Component {
       <View style={{flex: 1}}>
         {userInfo ? (
           <View style={styles.userInfoSection}>
+            <TouchableOpacity
+              onPress={() => navigation.closeDrawer()}
+              style={styles.closeDrawerTouch}>
+              <MIcon name="close" size={Matrics.ScaleValue(22)} />
+            </TouchableOpacity>
             <TouchableOpacity
               style={{marginLeft: 10}}
               onPress={() => {

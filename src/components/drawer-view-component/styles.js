@@ -1,6 +1,6 @@
 import {Color, Matrics, Fonts, ApplicationStyles} from '../../common/styles';
 
-export default styles = {
+export default (styles = {
   container: {
     borderColor: Color.paleGreyTwo,
     padding: 5,
@@ -66,4 +66,11 @@ export default styles = {
     justifyContent: 'center',
     paddingLeft: 20,
   },
-};
+  closeDrawerTouch: {
+    position: 'absolute',
+    zIndex: 1,
+    right: 0,
+    padding: 10,
+    paddingHorizontal: 20,
+  },
+});

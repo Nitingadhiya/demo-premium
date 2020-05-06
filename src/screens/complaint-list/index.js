@@ -129,7 +129,9 @@ class ComplainList extends Component {
     if (!this.UserName) {
       this.props.navigation.navigate('Login');
     }
-    const endPoint = `GetComplaint?ComplainId=&ComplainType=${status}&ComplaintBy=${this.UserName}`;
+    const endPoint = `GetComplaint?ComplainId=&ComplainType=${status}&ComplaintBy=${
+      this.UserName
+    }`;
     const method = 'GET';
     APICaller(`${endPoint}`, method).then(json => {
       if (json.data.Success === '1') {
@@ -252,7 +254,15 @@ class ComplainList extends Component {
       closeRemarkModal: !this.state.closeRemarkModal,
     });
 
-    const endPoint = `ComplaintComplete?ComplainId=${this.complaintId}&CompleteBy=${this.UserName}&CloseRemark=${this.state.closeRemarkText}&SystemTag=${this.state.complaintCloseQRcode}&IsAntivirus=${this.state.antivirusCheckbox}&Antivirus=${this.state.selectAntivirus}&AntivirusKey=${this.state.antivirusKey}`;
+    const endPoint = `ComplaintComplete?ComplainId=${
+      this.complaintId
+    }&CompleteBy=${this.UserName}&CloseRemark=${
+      this.state.closeRemarkText
+    }&SystemTag=${this.state.complaintCloseQRcode}&IsAntivirus=${
+      this.state.antivirusCheckbox
+    }&Antivirus=${this.state.selectAntivirus}&AntivirusKey=${
+      this.state.antivirusKey
+    }`;
     const method = 'GET';
     APICaller(`${endPoint}`, method).then(json => {
       this.setState({loadingData: false, refreshing: false});
@@ -282,7 +292,9 @@ class ComplainList extends Component {
     this.setState({
       cancelRemarkModal: !this.state.cancelRemarkModal,
     });
-    const endPoint = `ComplaintCancel?ComplainId=${this.complaintId}&CancelledBy=${this.UserName}&CancelReason=${this.state.cancelRemarkText}`;
+    const endPoint = `ComplaintCancel?ComplainId=${
+      this.complaintId
+    }&CancelledBy=${this.UserName}&CancelReason=${this.state.cancelRemarkText}`;
     const method = 'GET';
     APICaller(`${endPoint}`, method).then(json => {
       this.setState({loadingData: false, refreshing: false});
@@ -315,7 +327,9 @@ class ComplainList extends Component {
     if (!value) return;
     this.setState({loadingData: true, refreshing: false});
     this.complaintId = item.ComplaintID;
-    const endPoint = `ComplaintAssign?ComplainId=${this.complaintId}&AssignBy=${this.UserName}&AssignTo=${value}`;
+    const endPoint = `ComplaintAssign?ComplainId=${this.complaintId}&AssignBy=${
+      this.UserName
+    }&AssignTo=${value}`;
     const method = 'GET';
     APICaller(`${endPoint}`, method).then(json => {
       this.setState({loadingData: false, refreshing: false});
@@ -403,62 +417,6 @@ class ComplainList extends Component {
             })}
           </Picker>
         </View>
-        {/* <Modal
-          animationType="slide"
-          transparent={false}
-          visible={this.state.qrCode}
-          onRequestClose={() => {
-            this.setState({qrCode: false});
-          }}>
-          <View
-            style={{
-              backgroundColor: '#000',
-              height: Dimensions.get('window').height,
-            }}>
-            <View style={{flex: 1}}>
-              <QRCodeScanner
-                showMarker
-                onRead={this.onSuccess.bind(this)}
-                cameraStyle={{
-                  height: Dimensions.get('window').height - 50,
-                  width: Dimensions.get('window').width,
-                  marginTop: 50,
-                }}
-                customMarker={
-                  <View style={styles.rectangleContainer}>
-                    <View style={styles.topOverlay}>
-                      <Text style={styles.centerText}>
-                        Scan QR code on your products for book your complaint
-                      </Text>
-                    </View>
-
-                    <View style={{flexDirection: 'row'}}>
-                      <View style={styles.leftAndRightOverlay} />
-
-                      <View style={styles.rectangle}>
-                        <Animatable.View
-                          style={styles.scanBar}
-                          direction="alternate-reverse"
-                          iterationCount="infinite"
-                          duration={1700}
-                          easing="linear"
-                          animation={this.makeSlideOutTranslation(
-                            'translateY',
-                            SCREEN_WIDTH * 0.22,
-                          )}
-                        />
-                      </View>
-
-                      <View style={styles.leftAndRightOverlay} />
-                    </View>
-
-                    <View style={styles.bottomOverlay} />
-                  </View>
-                }
-              />
-            </View>
-          </View>
-        </Modal> */}
 
         <Modal
           animationType="slide"

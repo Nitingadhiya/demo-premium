@@ -1,6 +1,6 @@
 import {Color, Matrics, Fonts, ApplicationStyles} from '../../common/styles';
 
-export default styles = {
+export default (styles = {
   container: {
     backgroundColor: Color.black,
     height: Matrics.screenHeight,
@@ -22,8 +22,8 @@ export default styles = {
   },
 
   rectangle: {
-    height: Matrics.screenWidth * 0.65,
-    width: Matrics.screenWidth * 0.65,
+    height: Matrics.screenWidth * 0.66,
+    width: Matrics.screenWidth * 0.66,
     borderWidth: Matrics.screenWidth * 0.005,
     borderColor: Matrics.screenWidth * 0.005,
     alignItems: 'center',
@@ -49,8 +49,8 @@ export default styles = {
   },
 
   leftAndRightOverlay: {
-    height: Matrics.screenWidth * 0.65,
+    height: Matrics.screenWidth * 0.66,
     width: Matrics.screenWidth,
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
-};
+});

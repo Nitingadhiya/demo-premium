@@ -1,6 +1,6 @@
 import {Color, Matrics, ApplicationStyles} from '../../common/styles';
 
-export default styles = {
+export default (styles = {
   ...ApplicationStyles,
   safeView: {
     flex: 1,
@@ -102,4 +102,7 @@ export default styles = {
     height: '100%',
     width: Matrics.screenWidth,
   },
-};
+  welcome: {
+    lineHeight: Matrics.ScaleValue(25),
+  },
+});

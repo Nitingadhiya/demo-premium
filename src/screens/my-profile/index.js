@@ -46,7 +46,7 @@ class MyProfile extends Component {
   async getUserInfo() {
     const userInfo = await Helper.getLocalStorageItem('userInfo');
     this.setState({
-      userInfo,
+      profileInfo: userInfo,
     });
     this.getUserDetails(userInfo.UserName);
     // Events.on('refreshProfile', 'refreshProfile', () => {
