@@ -71,8 +71,9 @@ export default class Dashboard extends Component {
     this.setState({
       userInfo,
     });
-
-    this.userDashboard(userInfo.UserName);
+    if (userInfo) {
+      this.userDashboard(userInfo.UserName);
+    }
   }
 
   userDashboard(userName) {
@@ -108,7 +109,9 @@ export default class Dashboard extends Component {
 
   _onRefresh = () => {
     this.setState({refreshing: true});
-    this.userDashboard(this.state.userInfo.UserName);
+    if (this.state.userInfo) {
+      this.userDashboard(this.state.userInfo.UserName);
+    }
   };
 
   render() {
@@ -156,7 +159,7 @@ export default class Dashboard extends Component {
           ) : null}
         </ScrollView>
         <View style={styles.bottomButton}>
-          {systemDescription && systemDescription[0].UserName ? (
+          {_.size(systemDescription) > 0 && systemDescription[0].UserName ? (
             <TouchableOpacity
               style={styles.actionTouch}
               onPress={() => this.registerComplain()}>

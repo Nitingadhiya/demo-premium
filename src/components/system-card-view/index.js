@@ -243,7 +243,7 @@ class SystemCardView extends Component {
     const {systemDescription} = this.props;
     return (
       <View style={{flex: 1}}>
-        {systemDescription && systemDescription[0].UserName ? (
+        {_.size(systemDescription) > 0 && systemDescription[0].UserName ? (
           <FlatList
             data={systemDescription}
             renderItem={this.renderItemFlat}
@@ -263,7 +263,12 @@ class SystemCardView extends Component {
                 Clicks on{' '}
                 <Text
                   style={styles.simpleBoldText}
-                  onPress={() => this.addSystem()}>
+                  onPress={() =>
+                    NavigationHelper.navigate(
+                      this.props.navigation,
+                      'AddSystem',
+                    )
+                  }>
                   Add system
                 </Text>{' '}
                 and register your first system
