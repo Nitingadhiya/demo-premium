@@ -56,7 +56,7 @@ export default class ChatListView extends React.PureComponent {
           //navigation.navigate('ContactProfileInfo', {id: data.UserName});
         }}>
         {!_.get(data, 'UserImage', '') ? (
-          <View style={[styles.imageViewChr, {backgroundColor: colorCode}]}>
+          <View style={[styles.imageViewChr, {backgroundColor: Color.primary}]}>
             <Text style={styles.imageText}>{displayName(data).charAt(0)}</Text>
           </View>
         ) : (
@@ -75,7 +75,7 @@ export default class ChatListView extends React.PureComponent {
         )}
       </TouchableOpacity>
       <View style={styles.listMessageView}>
-        <Text style={styles.userNameText} numberOfLines={1}>
+        <Text style={[styles.userNameText, styles.nameText]} numberOfLines={1}>
           {displayName(data)}
         </Text>
         {contactScreen ? (

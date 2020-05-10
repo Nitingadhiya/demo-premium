@@ -83,7 +83,7 @@ class ComponentRequestWithQRCode extends Component {
             this.setState({qrCode: false});
           }}>
           <View style={styles.container}>
-            <View style={{flex: 1}}>
+            <View>
               <QRCodeScanner
                 showMarker
                 onRead={this.onSuccess}

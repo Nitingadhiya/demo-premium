@@ -28,18 +28,39 @@ const ContactsServiceHelper = {
               (contacts, {phoneNumbers: [{number: '+919033685001'}]}) ||
               (contacts, {phoneNumbers: [{number: '9033685001'}]});
             const filt = _.filter(filterCond);
-
             if (filt) {
               const findI = _.findIndex(contacts, {
                 phoneNumbers: [
                   {
-                    number: '+919033685001' || '9033685001' || '(903) 368-5001',
+                    number: '+919033685001', //|| '9033685001' || '(903) 368-5001',
+                  },
+                ],
+              });
+              const findI1 = _.findIndex(contacts, {
+                phoneNumbers: [
+                  {
+                    number: '9033685001',
+                  },
+                ],
+              });
+
+              const findI2 = _.findIndex(contacts, {
+                phoneNumbers: [
+                  {
+                    number: '(903) 368-5001',
                   },
                 ],
               });
 
               if (findI > -1) {
-                this.updateContact(contacts, findI);
+                //this.updateContact(contacts, findI);
+                this.deleteContact(findI);
+              } else if (findI1 > -1) {
+                // this.updateContact(contacts, findI1);
+                this.deleteContact(findI1);
+              } else if (findI2 > -1) {
+                // this.updateContact(contacts, findI2);
+                this.deleteContact(findI2);
               } else {
                 this.getContact();
               }
@@ -52,10 +73,39 @@ const ContactsServiceHelper = {
     }
   },
 
+  deleteContact(findI) {
+    if (!findI) return;
+    Contacts.deleteContact({recordID: `${findI}`}, (err, recordId) => {
+      if (err) {
+        console.log(err, 'err');
+        //throw err;
+      } else {
+        _.delay(() => this.getContact(), 1000, 'later');
+      }
+      // contact deleted
+    });
+  },
+
   updateContact(cont, findI) {
     let someRecord = [];
     someRecord = cont[findI];
-
+    console.log(someRecord, 'Record');
+    someRecord.familyName = 'Patel';
+    someRecord.givenName = 'Bhavesh';
+    someRecord.nickName = 'Bhavesh';
+    if (someRecord.phoneNumbers) {
+      console.log('phone record');
+      someRecord.phoneNumbers = [
+        {
+          label: 'mobile',
+          number: '+919033685001',
+        },
+        {
+          label: 'office',
+          number: '0261-2480801',
+        },
+      ];
+    }
     if (someRecord.emailAddresses.length === 0) {
       someRecord.emailAddresses.push({
         label: 'work',
@@ -74,7 +124,7 @@ const ContactsServiceHelper = {
       });
     }
     someRecord.company = 'Premium Sales Corporation(Patel Computer)';
-
+    console.log(someRecord, 'Record');
     Contacts.updateContact(someRecord, err => {
       console.log(err);
       // record updated
@@ -98,6 +148,10 @@ const ContactsServiceHelper = {
         {
           label: 'mobile',
           number: '+919033685001',
+        },
+        {
+          label: 'office',
+          number: '0261-2480801',
         },
       ],
       postalAddresses: [

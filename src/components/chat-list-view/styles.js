@@ -6,7 +6,7 @@ export default (styles = {
     borderBottomWidth: 1,
     borderBottomColor: Color.paleGreyThree,
     padding: Matrics.ScaleValue(10),
-    paddingVertical: Matrics.ScaleValue(15),
+    paddingVertical: Matrics.ScaleValue(10),
   },
   onlineView: {
     height: Matrics.ScaleValue(10),
@@ -21,16 +21,16 @@ export default (styles = {
   },
   imageViewChr: {
     //marginRight: Matrics.ScaleValue(10),
-    width: Matrics.ScaleValue(50),
-    height: Matrics.ScaleValue(50),
-    borderRadius: Matrics.ScaleValue(25),
+    width: Matrics.ScaleValue(40),
+    height: Matrics.ScaleValue(40),
+    borderRadius: Matrics.ScaleValue(20),
     justifyContent: 'center',
     alignItems: 'center',
   },
   imageView: {paddingRight: Matrics.ScaleValue(10), zIndex: 1},
   userImage: {
-    width: Matrics.ScaleValue(50),
-    height: Matrics.ScaleValue(50),
+    width: Matrics.ScaleValue(40),
+    height: Matrics.ScaleValue(40),
     borderRadius: Matrics.ScaleValue(25),
     borderWidth: 2,
     borderColor: Color.paleGrey,
@@ -40,6 +40,10 @@ export default (styles = {
     fontFamily: Fonts.type.RubikMedium,
     fontSize: 14,
     color: Color.charcoalGrey,
+  },
+  nameText: {
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   companyText: {
     fontFamily: Fonts.type.RubikMedium,
