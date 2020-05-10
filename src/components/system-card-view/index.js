@@ -239,6 +239,10 @@ class SystemCardView extends Component {
     });
   }
 
+  addSystem() {
+    Events.trigger('open-add-system');
+  }
+
   render() {
     const {systemDescription} = this.props;
     return (
@@ -263,12 +267,7 @@ class SystemCardView extends Component {
                 Clicks on{' '}
                 <Text
                   style={styles.simpleBoldText}
-                  onPress={() =>
-                    NavigationHelper.navigate(
-                      this.props.navigation,
-                      'AddSystem',
-                    )
-                  }>
+                  onPress={() => this.addSystem()}>
                   Add system
                 </Text>{' '}
                 and register your first system

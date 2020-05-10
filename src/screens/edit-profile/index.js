@@ -289,7 +289,7 @@ export default class EditProfile extends Component {
       if (json.data.Success === 1 || json.data.Success === '1') {
         const userInfo = json.data.Response;
         await Helper.setLocalStorageItem('userInfo', userInfo);
-
+        global.profileInfo = userInfo;
         if (!this.state.mediaPath) {
           Events.trigger('refreshProfile', 'refreshProfile');
           Events.trigger('refreshDashboard', 'refresh');

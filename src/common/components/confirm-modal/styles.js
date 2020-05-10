@@ -3,68 +3,69 @@ import {
   Images,
   Matrics,
   Fonts,
-  ApplicationStyles
-} from "../../../common/styles";
+  ApplicationStyles,
+} from '../../../common/styles';
 export default (Styles = {
   ...ApplicationStyles,
   spaceView: {
     paddingHorizontal: Matrics.ScaleValue(20),
-    paddingVertical: Matrics.ScaleValue(10)
+    paddingVertical: Matrics.ScaleValue(10),
   },
   titleText: {
-    fontSize: Matrics.ScaleValue(20),
+    fontSize: Matrics.ScaleValue(16),
     fontFamily: Fonts.type.RubikMedium,
     lineHeight: Matrics.ScaleValue(28),
     color: Color.charcoalGrey,
-    textAlign: "center",
-    marginBottom: Matrics.ScaleValue(15)
+    textAlign: 'center',
+    marginBottom: Matrics.ScaleValue(15),
   },
   msgStyle: {
-    fontSize: Matrics.ScaleValue(16),
+    fontSize: Matrics.ScaleValue(13),
     fontFamily: Fonts.type.Rubik,
     lineHeight: Matrics.ScaleValue(24),
     color: Color.charcoalGrey,
-    textAlign: "center"
+    textAlign: 'center',
   },
   modalViewContainer: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "center"
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
   },
   viewContainer: {
     backgroundColor: Color.white,
     borderRadius: Matrics.ScaleValue(15),
     margin: Matrics.ScaleValue(45),
-    paddingTop: Matrics.ScaleValue(10)
+    paddingTop: Matrics.ScaleValue(10),
   },
   btnStyle: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    height: Matrics.ScaleValue(45)
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: Matrics.ScaleValue(45),
   },
   btnFirst: {
     borderRightWidth: 1,
-    borderColor: Color.greyishBrown30
+    borderColor: Color.greyishBrown30,
   },
   btnView: {
-    flexDirection: "row",
+    flexDirection: 'row',
     borderTopWidth: 1,
-    borderColor: Color.greyishBrown30
+    borderColor: Color.greyishBrown30,
   },
   leaveText: {
     fontSize: Matrics.ScaleValue(16),
     fontFamily: Fonts.type.RubikMedium,
     lineHeight: Matrics.ScaleValue(24),
     color: Color.darkRed,
-    textAlign: "center"
+    textAlign: 'center',
   },
   cancelText: {
-    fontSize: Matrics.ScaleValue(16),
+    fontSize: Matrics.ScaleValue(14),
     fontFamily: Fonts.type.RubikMedium,
     lineHeight: Matrics.ScaleValue(24),
-    color: Color.slateGrey,
-    textAlign: "center"
-  }
+    color: Color.primary,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
 });
 module.exports = Styles;

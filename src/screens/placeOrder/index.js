@@ -27,6 +27,7 @@ import Events from '../../utils/events';
 import Helper from '../../utils/helper';
 import NavigationHelper from '../../utils/navigation-helper';
 import {SpinnerView, TextInputView, Header} from '../../common/components';
+import {ConfirmModal} from '../../common/components/confirm-modal';
 
 class PlaceOrder extends Component {
   state = {
@@ -37,6 +38,7 @@ class PlaceOrder extends Component {
     totalAmount: 0,
     subTotalAmount: 0,
     totalDiscount: 0,
+    isVisibleConfirm: false,
   };
 
   async componentDidMount() {
@@ -168,7 +170,9 @@ class PlaceOrder extends Component {
     if (systemPackage === 'Gold') {
       packageType = 'G';
     }
-    const endPoint = `RemoveWishCart?ProductNo=${productNumber}&Username=${userInfo.UserName}&WishCart=${type}&OrderType=${packageType}`;
+    const endPoint = `RemoveWishCart?ProductNo=${productNumber}&Username=${
+      userInfo.UserName
+    }&WishCart=${type}&OrderType=${packageType}`;
 
     const method = 'GET';
     APICaller(`${endPoint}`, method).then(json => {
@@ -204,30 +208,39 @@ class PlaceOrder extends Component {
   }
 
   proceedPlaceOrder() {
-    // NavigationHelper.navigate(this.props.navigation, 'UserNavigation');
-    // return;
-    this.setState({loadingData: true});
+    if (global.profileInfo && global.profileInfo.Home) {
+      this.setState({loadingData: true});
+      const endPoint = `PlaceOrder?Username=${userInfo.UserName}`;
+      const method = 'GET';
+      APICaller(`${endPoint}`, method).then(json => {
+        if (json.data.Success === '1') {
+          //this.props.navigation.dispatch(StackActions.popToTop());
+          NavigationHelper.reset(this.props.navigation, 'UserNavigation');
+          Alert.alert(
+            'Order',
+            `Order Successfully completed #${json.data.Response[0].OrderNo}`,
+          );
+        } else {
+          Alert.alert('Something went to wrong, please try again');
+        }
+        this.setState({loadingData: false});
+      });
+    } else {
+      this.setState({
+        isVisibleConfirm: true,
+      });
+    }
+  }
 
-    const endPoint = `PlaceOrder?Username=${userInfo.UserName}`;
-    const method = 'GET';
-    APICaller(`${endPoint}`, method).then(json => {
-      if (json.data.Success === '1') {
-        //this.props.navigation.dispatch(StackActions.popToTop());
-
-        NavigationHelper.reset(this.props.navigation, 'UserNavigation');
-        Alert.alert(
-          'Order',
-          `Order Successfully completed #${json.data.Response[0].OrderNo}`,
-        );
-      } else {
-        Alert.alert('Something went to wrong, please try again');
-      }
-      this.setState({loadingData: false});
+  leaveModal(navigation) {
+    this.setState({
+      isVisibleConfirm: false,
     });
+    NavigationHelper.navigate(navigation, 'EditProfile');
   }
 
   render() {
-    const {loadingData, partList, userInfo} = this.state;
+    const {loadingData, partList, userInfo, isVisibleConfirm} = this.state;
     const {navigation} = this.props;
     return (
       <SafeAreaView style={{flex: 1}}>
@@ -421,6 +434,19 @@ class PlaceOrder extends Component {
             </TouchableOpacity>
           </View>
         )}
+        <ConfirmModal
+          visible={isVisibleConfirm}
+          message={
+            'Your are not registerd any address yet, Clicks on Edit profile and register'
+          }
+          rightButton="Edit Profile"
+          leaveModalReq={() => this.leaveModal(navigation)}
+          cancelModalReq={() =>
+            this.setState({
+              isVisibleConfirm: false,
+            })
+          }
+        />
       </SafeAreaView>
     );
   }

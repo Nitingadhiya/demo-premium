@@ -10,7 +10,10 @@ import {VersionNumber} from '../../../../package';
 import _ from 'lodash';
 
 import APICaller from '../../../../utils/api-caller';
-import {userDashboardEndPoint} from '../../../../config/api-endpoint';
+import {
+  userDashboardEndPoint,
+  getUserProfileEndPoint,
+} from '../../../../config/api-endpoint';
 import Helper from '../../../../utils/helper';
 import Events from '../../../../utils/events';
 import styles from './styles';
@@ -31,6 +34,7 @@ import BonusDaysModal from '../../../../components/bonus-modal';
 import SystemWarrantyModal from '../../../../components/system-warranty-modal';
 import {Appbar, Badge} from 'react-native-paper';
 import {Color} from '../../../../common/styles';
+import {ConfirmModal} from '../../../../common/components/confirm-modal';
 
 export default class Dashboard extends Component {
   state = {
@@ -39,6 +43,7 @@ export default class Dashboard extends Component {
     systemDescription: null,
     complaintRegisterModal: true,
     cartCount: 0,
+    isVisibleConfirm: false,
   };
 
   async componentDidMount() {
@@ -63,16 +68,22 @@ export default class Dashboard extends Component {
         cartCount: count,
       });
     });
+
+    Events.on('open-add-system', 'add-system', () => {
+      this.addSystem();
+    });
     Helper.checkUpdateAvailable();
   }
 
   async getUserInfo() {
     const userInfo = await Helper.getLocalStorageItem('userInfo');
+    console.log(userInfo, 'info');
     this.setState({
       userInfo,
     });
     if (userInfo) {
       this.userDashboard(userInfo.UserName);
+      this.getUserDetails(userInfo.UserName);
     }
   }
 
@@ -114,6 +125,39 @@ export default class Dashboard extends Component {
     }
   };
 
+  getUserDetails(userName) {
+    if (!userName) {
+      Alert.alert('Invalid username');
+      return;
+    }
+
+    APICaller(getUserProfileEndPoint(userName), 'GET').then(json => {
+      if (json.data.Success === '1') {
+        global.profileInfo = json.data.Response;
+        if (this.profileInfo) {
+          Helper.setLocalStorageItem('userInfo', this.profileInfo);
+        }
+      }
+    });
+  }
+
+  addSystem(navigation) {
+    if (global.profileInfo && global.profileInfo.Home) {
+      NavigationHelper.navigate(navigation, 'AddSystem');
+    } else {
+      this.setState({
+        isVisibleConfirm: true,
+      });
+    }
+  }
+
+  leaveModal(navigation) {
+    this.setState({
+      isVisibleConfirm: false,
+    });
+    NavigationHelper.navigate(navigation, 'EditProfile');
+  }
+
   render() {
     const {navigation} = this.props;
     const {
@@ -122,6 +166,7 @@ export default class Dashboard extends Component {
       systemDescription,
       refreshing,
       cartCount,
+      isVisibleConfirm,
     } = this.state;
     return (
       <View style={styles.mainContainer}>
@@ -168,7 +213,7 @@ export default class Dashboard extends Component {
           ) : null}
           <TouchableOpacity
             style={styles.actionTouch}
-            onPress={() => NavigationHelper.navigate(navigation, 'AddSystem')}>
+            onPress={() => this.addSystem(navigation)}>
             <Text style={{color: '#fff', fontSize: 14}}>Add System</Text>
           </TouchableOpacity>
         </View>
@@ -197,6 +242,20 @@ export default class Dashboard extends Component {
 
         {/* System Warranty modal */}
         <SystemWarrantyModal />
+
+        <ConfirmModal
+          visible={isVisibleConfirm}
+          message={
+            'Your are not registerd any address yet, Clicks on Edit profile and register'
+          }
+          rightButton="Edit Profile"
+          leaveModalReq={() => this.leaveModal(navigation)}
+          cancelModalReq={() =>
+            this.setState({
+              isVisibleConfirm: false,
+            })
+          }
+        />
       </View>
     );
   }
