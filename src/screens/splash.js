@@ -2,15 +2,7 @@ import React from 'react';
 import {View, Text, TouchableOpacity, AppState} from 'react-native';
 import {RouteProp} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {AdminBottomTabs} from './bottom-tabs/admin-bottom-tabs';
-import {ManagerBottomTabs} from './bottom-tabs/manager-bottom-tabs';
-import {EngineerBottomTabs} from './bottom-tabs/engineer-bottom-tabs';
-import {CustomerBottomTabs} from './bottom-tabs/customer-bottom-tabs';
-import {DealerBottomTabs} from './bottom-tabs/dealer-bottom-tabs';
 import {Appbar, Avatar, useTheme} from 'react-native-paper';
-import {DetailedTwitt} from '../components/detailedTwitt';
-
-import {Details} from './details';
 import Login from './login';
 import {StackNavigatorParamlist} from './types';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';

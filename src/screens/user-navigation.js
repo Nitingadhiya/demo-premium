@@ -81,6 +81,7 @@ export default class UserNavigation extends React.Component {
     this.cancelAllJob();
     const data = await Helper.getLocalStorageItem('userInfo');
     if (data) {
+      Events.trigger('gesture-manage', true);
       console.log(data.UserName, 'user name');
       //global.socket.emit('username', data.UserName);
       this.setState({userInfo: data});

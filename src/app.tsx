@@ -31,26 +31,66 @@ import {Provider as PaperProvider} from 'react-native-paper';
 
 import {StackNavigator} from '../src/screens/stack';
 import {DrawerContent} from '../src/screens/drawerContent';
+import Events from './utils/events';
 
 const Drawer = createDrawerNavigator();
 
-const App: () => React$Node = () => {
-  return (
-    <PaperProvider>
-      <NavigationContainer>
-        <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
-          <Drawer.Screen
-            name="Home"
-            component={StackNavigator}
-            options={{
-              gestureEnabled: false,
-            }}
-          />
-        </Drawer.Navigator>
-      </NavigationContainer>
-    </PaperProvider>
-  );
-};
+export default class App extends React.Component {
+  state = {
+    gesture: false,
+  };
+
+  componentDidMount() {
+    Events.on('gesture-manage', 'gesture', bool => {
+      if (bool) {
+        this.setState({
+          gesture: bool,
+        });
+      } else {
+        this.setState({
+          gesture: false,
+        });
+      }
+    });
+  }
+
+  render() {
+    const {gesture} = this.state;
+    return (
+      <PaperProvider>
+        <NavigationContainer>
+          <Drawer.Navigator
+            drawerContent={props => <DrawerContent {...props} />}>
+            <Drawer.Screen
+              name="Home"
+              component={StackNavigator}
+              options={{
+                gestureEnabled: gesture,
+              }}
+            />
+          </Drawer.Navigator>
+        </NavigationContainer>
+      </PaperProvider>
+    );
+  }
+}
+// const App: () => React$Node = () => {
+//   return (
+//     <PaperProvider>
+//       <NavigationContainer>
+//         <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
+//           <Drawer.Screen
+//             name="Home"
+//             component={StackNavigator}
+//             options={{
+//               gestureEnabled: false,
+//             }}
+//           />
+//         </Drawer.Navigator>
+//       </NavigationContainer>
+//     </PaperProvider>
+//   );
+// };
 
 const styles = StyleSheet.create({
   scrollView: {

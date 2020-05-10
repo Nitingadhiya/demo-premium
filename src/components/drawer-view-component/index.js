@@ -189,6 +189,7 @@ class DrawerViewComponent extends Component {
             label="Logout"
             onPress={async () => {
               navigation.closeDrawer();
+              Events.trigger('gesture-manage');
               await Helper.removeLocalStorage('userInfo');
               NavigationHelper.reset(navigation, 'Splash');
             }}
