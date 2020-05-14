@@ -293,6 +293,7 @@ export default class EditProfile extends Component {
         if (!this.state.mediaPath) {
           Events.trigger('refreshProfile', 'refreshProfile');
           Events.trigger('refreshDashboard', 'refresh');
+          Events.trigger('edit-profile-changes', userInfo);
           Alert.alert('Profile', 'Profile Updated Successfully.');
           navigation.goBack();
         }

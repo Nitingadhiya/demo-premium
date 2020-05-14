@@ -58,6 +58,12 @@ class PlaceOrder extends Component {
         userInfo: JSON.parse(update),
       });
     });
+
+    Events.on('edit-profile-changes', 'place-order-Address', res => {
+      this.setState({
+        userInfo: res,
+      });
+    });
   }
 
   getUserDetails(UserName) {

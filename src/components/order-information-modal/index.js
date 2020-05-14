@@ -155,7 +155,6 @@ class OrderInformationModal extends Component {
                       {item.SystemName || 'No Lead info Found'}
                     </Text>{' '}
                   </Text>
-
                   {item &&
                     item.SystemConfig &&
                     item.SystemConfig.split(',').map((res, index) => {
@@ -165,45 +164,55 @@ class OrderInformationModal extends Component {
                         </Text>
                       );
                     })}
-
-                  <View style={styles.pickerView}>
-                    <Picker
-                      prompt="Choose below user"
-                      style={styles.picker}
-                      selectedValue={orderForUser}
-                      onValueChange={(itemValue, itemIndex) => {
-                        this.getChangeValue(itemValue);
-                      }}>
-                      {userList &&
-                        userList.map((data, index) => {
-                          return (
-                            <Picker.Item
-                              label={data.FullName + ' (' + data.UserType + ')'}
-                              value={data.UserName}
-                              key={`${index.toString()}`}
-                            />
-                          );
-                        })}
-                    </Picker>
-                  </View>
-
-                  <View style={styles.buttonView}>
-                    <TouchableOpacity
-                      style={styles.closeButton}
-                      onPress={() => this.addOrderPart(navigation, item)}>
-                      <Text style={styles.buttonText}>Add Part</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.closeButton}
-                      onPress={() => this.forwardOrder()}>
-                      <Text style={styles.buttonText}>Forward</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={[styles.closeButton, styles.brdRight0]}
-                      onPress={() => this.finishOrder()}>
-                      <Text style={styles.buttonText}>Finish</Text>
-                    </TouchableOpacity>
-                  </View>
+                  {userInfo &&
+                  (userInfo.LoginType == '1' ||
+                    userInfo.LoginType == '2' ||
+                    userInfo.LoginType == '3') ? (
+                    <View style={styles.pickerView}>
+                      <Picker
+                        prompt="Choose below user"
+                        style={styles.picker}
+                        selectedValue={orderForUser}
+                        onValueChange={(itemValue, itemIndex) => {
+                          this.getChangeValue(itemValue);
+                        }}>
+                        {userList &&
+                          userList.map((data, index) => {
+                            return (
+                              <Picker.Item
+                                label={
+                                  data.FullName + ' (' + data.UserType + ')'
+                                }
+                                value={data.UserName}
+                                key={`${index.toString()}`}
+                              />
+                            );
+                          })}
+                      </Picker>
+                    </View>
+                  ) : null}
+                  {userInfo &&
+                  (userInfo.LoginType == '1' ||
+                    userInfo.LoginType == '2' ||
+                    userInfo.LoginType == '3') ? (
+                    <View style={styles.buttonView}>
+                      <TouchableOpacity
+                        style={styles.closeButton}
+                        onPress={() => this.addOrderPart(navigation, item)}>
+                        <Text style={styles.buttonText}>Add Part</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.closeButton}
+                        onPress={() => this.forwardOrder()}>
+                        <Text style={styles.buttonText}>Forward</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={[styles.closeButton, styles.brdRight0]}
+                        onPress={() => this.finishOrder()}>
+                        <Text style={styles.buttonText}>Finish</Text>
+                      </TouchableOpacity>
+                    </View>
+                  ) : null}
                 </View>
               </View>
             </View>
