@@ -1,5 +1,12 @@
 import React, {Component} from 'react';
-import {SafeAreaView, View, Text, Alert} from 'react-native';
+import {
+  SafeAreaView,
+  View,
+  Text,
+  Alert,
+  Platform,
+  Keyboard,
+} from 'react-native';
 import RNOtpVerify from 'react-native-otp-verify';
 import CodeInput from 'react-native-confirmation-code-input';
 import APICaller from '../../utils/api-caller';
@@ -16,15 +23,19 @@ class OTPScreen extends Component {
     mobileNo: null,
   };
   componentDidMount() {
-    const {route} = this.props;
-    if (route.params) {
+    const {params} = this.props.route;
+    if (params && params.mobileNo) {
       this.setState({
-        mobileNo: route.params.mobileNo,
+        mobileNo: params.mobileNo,
       });
     }
     Events.on('OTP', 'receive', res => {
       this.onFinishCheckingCode(res);
     });
+    if (Platform.OS === 'android') {
+      this.getHash();
+      this.startListeningForOtp();
+    }
   }
 
   getHash = () =>
@@ -57,12 +68,11 @@ class OTPScreen extends Component {
         if (json.data.Success === 1 || json.data.Success === '1') {
           const userInfo = json.data.Response;
           Helper.setLocalStorageItem('userInfo', userInfo);
-          NavigationHelper.reset(this.props.navigation, 'Dashboard');
+          NavigationHelper.reset(this.props.navigation, 'UserNavigation');
           // Events.trigger('refreshMenu');
           // Events.trigger('appRouteRefresh', userInfo);
           // this.props.navigation.navigate('Home');
         } else {
-          NavigationHelper.reset(this.props.navigation, 'Dashboard');
           Alert.alert('Failed', json.data.Message);
           this.setState({
             loginError: json.data.Message,

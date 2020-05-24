@@ -193,7 +193,9 @@ class Register extends Component {
           loadingData: false,
         });
         if (json.data.Success === '1') {
-          NavigationHelper.navigate(this.props.navigation, 'OTPScreen');
+          NavigationHelper.navigate(this.props.navigation, 'OTPScreen', {
+            mobileNo,
+          });
         }
       },
     );
