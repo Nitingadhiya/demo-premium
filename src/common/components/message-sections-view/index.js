@@ -151,8 +151,8 @@ export default class MessageSectionsView extends React.PureComponent {
     const {data, onRefresh, userId, Ref, displayName} = this.props;
     const {headerDate} = this.state;
     const calendarStrings = {
-      lastDay: '[Yesterday at] LT',
-      sameDay: '[Today at] LT',
+      lastDay: '[Yesterday]',
+      sameDay: '[Today]',
       nextDay: 'DD MMM YYYY',
       lastWeek: 'DD MMM YYYY',
       nextWeek: 'DD MMM YYYY',

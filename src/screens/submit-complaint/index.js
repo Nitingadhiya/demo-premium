@@ -184,7 +184,7 @@ export default class submitComplaint extends Component {
       visible: true,
       sysTag: this.state.systemTag,
     };
-    Events.trigger('complaintPriceModal', 'visible', data);
+    Events.trigger('complaintPriceModal', data);
   }
 
   webviewStartLoad() {
@@ -289,7 +289,13 @@ export default class submitComplaint extends Component {
             onLoadStart={() => this.webviewStartLoad()}
             onLoadEnd={() => this.webviewEndLoad()}
             source={{
-              uri: `http://premiumitware.com/Home/CreatePaymentMobile?mobilenumber=${userInfo.MobileNo}&email=${userInfo.EmailId}&amount=${this.state.complainCharge}&DocumentNo=${this.state.complaintId}&UserName=${userInfo.UserName}`,
+              uri: `http://premiumitware.com/Home/CreatePaymentMobile?mobilenumber=${
+                userInfo.MobileNo
+              }&email=${userInfo.EmailId}&amount=${
+                this.state.complainCharge
+              }&DocumentNo=${this.state.complaintId}&UserName=${
+                userInfo.UserName
+              }`,
             }}
             style={{flex: 1}}
             onLoad={syntheticEvent => {

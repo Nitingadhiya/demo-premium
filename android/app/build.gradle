@@ -136,7 +136,7 @@ android {
         applicationId "com.premium.sales.corporation"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 77
+        versionCode 78
         versionName "1.4.3"
         missingDimensionStrategy 'react-native-camera', 'general'
         multiDexEnabled true
