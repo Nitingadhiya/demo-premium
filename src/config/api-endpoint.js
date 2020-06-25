@@ -104,6 +104,11 @@ const contactListEndPoint = (userName, search, from, size) =>
 const getChatHistoryEndpoint = (userName, receiver, from, size) =>
   `ChatHistory?Username=${userName}&Receiver=${receiver}&From=${from}&size=${size}`;
 
+/* complaint hold remark */
+
+const complaintOnHoldEndPoint = (complainId, OnHoldBy, OnHoldRemarks) =>
+  `ComplaintOnHold?ComplainId=${complainId}&OnHoldBy=${OnHoldBy}&OnHoldRemarks=${OnHoldRemarks}`;
+
 module.exports = {
   checkVersionEndPoint,
   sliderImagesEndPoint,
@@ -169,4 +174,6 @@ module.exports = {
   chatListEndPoint,
   contactListEndPoint,
   getChatHistoryEndpoint,
+
+  complaintOnHoldEndPoint,
 };

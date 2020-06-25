@@ -32,6 +32,7 @@ import APICaller from '../../utils/api-caller';
 import Helper from '../../utils/helper';
 import ComplaintWithQRCode from '../../components/complaint-with-qr-code';
 import ComplaintRemarkModal from '../../components/complaint-remark-modal';
+import ComplaintHoldRemarkModal from '../../components/complaint-hold-remark';
 
 let self;
 
@@ -79,6 +80,7 @@ class ComplainList extends Component {
     antivirusKey: '',
     complaintRemarkValidation: null,
     complaintCloseQRcode: '',
+    onHoldRemarkModal: false,
   };
 
   constructor(props) {
@@ -374,6 +376,31 @@ class ComplainList extends Component {
     const splitTag = tag.split('-');
     return splitTag[0];
   }
+
+  onHoldComplaint(item) {
+    const data = {
+      ComplainId: item.ComplaintID,
+      OnHoldBy: this.UserName,
+    };
+    Events.trigger('complaintOnHoldModal', data);
+  }
+
+  renderPauseButton = item => (
+    <TouchableOpacity
+      onPress={() => this.onHoldComplaint(item)}
+      style={{
+        paddingHorizontal: 5,
+        justifyContent: 'center',
+        height: 30,
+        borderRadius: 3,
+        backgroundColor: 'orange',
+        width: 30,
+        borderRadius: 30,
+        alignItems: 'center',
+      }}>
+      <MIcon name="pause" color={Color.white} size={20} />
+    </TouchableOpacity>
+  );
 
   // ----------->>>Render Method-------------->>>
 
@@ -696,6 +723,8 @@ class ComplainList extends Component {
           </View>
         </Modal>
 
+        <ComplaintHoldRemarkModal />
+
         <Modal
           animationType="fade"
           transparent
@@ -983,6 +1012,7 @@ class ComplainList extends Component {
                               Close
                             </Text>
                           </TouchableOpacity>
+                          {this.renderPauseButton(item)}
                         </View>
                       ))}
                   {item.ComplaintStatus === 'Cancelled' && (
@@ -1095,6 +1125,7 @@ class ComplainList extends Component {
                           Close
                         </Text>
                       </TouchableOpacity>
+                      {this.renderPauseButton(item)}
                     </View>
                   )}
               </TouchableOpacity>
