@@ -15,10 +15,7 @@ import {Color, Matrics} from '../../common/styles';
 import styles from './styles';
 import Helper from '../../utils/helper';
 import APICaller from '../../utils/api-caller';
-import {
-  getComplaintImageEndPoint,
-  complaintOnHoldEndPoint,
-} from '../../config/api-endpoint';
+import {complaintRevisedEndPoint} from '../../config/api-endpoint';
 import _ from 'lodash';
 import NavigationHelper from '../../utils/navigation-helper';
 import Events from '../../utils/events';
@@ -26,27 +23,27 @@ import {useNavigation} from '@react-navigation/native';
 
 let tmpSys = [];
 let self;
-class ComplaintHoldRemarkModal extends Component {
+class ComplaintRevisedModal extends Component {
   state = {
-    complaintHoldModal: false,
+    complaintRevisedModal: false,
     compImages: null,
-    holdRemarkText: null,
+    chargeText: null,
   };
   componentDidMount() {
     self = this;
-    Events.on('complaintOnHoldModal', 'Hold-remark', res => {
+    Events.on('complaintRevisedModal', 'complaint-revised', res => {
       this.complaintData = res;
-      this.setState({complaintHoldModal: true});
+      this.setState({complaintRevisedModal: true});
     });
   }
 
-  submitOnHoldComplaint() {
-    const {holdRemarkText} = this.state;
+  submitRevisedComplaint() {
+    const {chargeText} = this.state;
     let ComplainId = _.get(this.complaintData, 'ComplainId', '');
-    let OnHoldBy = _.get(this.complaintData, 'OnHoldBy', '');
+    let RevisedBy = _.get(this.complaintData, 'RevisedBy', '');
     const index = _.get(this.complaintData, 'index', '');
     APICaller(
-      complaintOnHoldEndPoint(ComplainId, OnHoldBy, holdRemarkText),
+      complaintRevisedEndPoint(ComplainId, RevisedBy, chargeText),
       'GET',
     ).then(json => {
       this.setState({
@@ -54,7 +51,7 @@ class ComplaintHoldRemarkModal extends Component {
       });
       console.log(json);
       if (json.data.Success === '1') {
-        this.setState({complaintHoldModal: false});
+        this.setState({complaintRevisedModal: false});
         Alert.alert('Complaint', _.get(json, 'data.Message', ''));
         this.props.successOnHold(index);
       }
@@ -62,26 +59,26 @@ class ComplaintHoldRemarkModal extends Component {
   }
 
   render() {
-    const {compImages, complaintHoldModal} = this.state;
+    const {compImages, complaintRevisedModal} = this.state;
 
     return (
       <View>
         <Modal
           transparent
-          visible={complaintHoldModal}
+          visible={complaintRevisedModal}
           onRequestClose={() => {
-            this.setState({complaintHoldModal: false});
+            this.setState({complaintRevisedModal: false});
           }}>
           <TouchableOpacity
             activeOpacity={1}
             style={styles.imageOutsideTouchButton}
             onPress={() => {
-              this.setState({complaintHoldModal: false});
+              this.setState({complaintRevisedModal: false});
             }}>
             <View style={{flex: 1, backgroundColor: 'rgba(0,0,0,0.5)'}}>
               <View
                 style={{
-                  marginTop: 100,
+                  marginTop: 200,
                   width: '95%',
                   backgroundColor: '#f5f5f5',
                   borderRadius: 10,
@@ -96,7 +93,7 @@ class ComplaintHoldRemarkModal extends Component {
                     textAlign: 'center',
                     marginTop: 10,
                   }}>
-                  Remark
+                  Complaint Revised
                 </Text>
                 <View
                   style={{
@@ -109,21 +106,19 @@ class ComplaintHoldRemarkModal extends Component {
                   }}>
                   <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
                     <TextInput
-                      placeholder={'Please enter complaint hold remark'}
-                      value={this.state.holdRemarkText}
-                      multiline={true}
-                      onChangeText={text =>
-                        this.setState({holdRemarkText: text})
-                      }
+                      placeholder={'Revised charges'}
+                      value={this.state.chargeText}
+                      onChangeText={text => this.setState({chargeText: text})}
                       style={{
                         flex: 1,
                         justifyContent: 'flex-start',
-                        height: 100,
+                        height: 40,
                         borderWidth: 1,
                         borderRadius: 5,
                         borderColor: '#ccc',
                         margin: 5,
                       }}
+                      keyboardType="number-pad"
                     />
                   </View>
                 </View>
@@ -139,7 +134,8 @@ class ComplaintHoldRemarkModal extends Component {
                     }}
                     onPress={() => {
                       this.setState({
-                        complaintHoldModal: !this.state.complaintHoldModal,
+                        complaintRevisedModal: !this.state
+                          .complaintRevisedModal,
                       });
                     }}>
                     <Text style={{color: '#fff'}}>Cancel</Text>
@@ -153,7 +149,7 @@ class ComplaintHoldRemarkModal extends Component {
                       flex: 1,
                     }}
                     onPress={() => {
-                      this.submitOnHoldComplaint();
+                      this.submitRevisedComplaint();
                     }}>
                     <Text style={{color: '#fff'}}>Save</Text>
                   </TouchableOpacity>
@@ -166,4 +162,4 @@ class ComplaintHoldRemarkModal extends Component {
     );
   }
 }
-export default ComplaintHoldRemarkModal;
+export default ComplaintRevisedModal;

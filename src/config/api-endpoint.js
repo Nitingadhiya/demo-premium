@@ -109,6 +109,12 @@ const getChatHistoryEndpoint = (userName, receiver, from, size) =>
 const complaintOnHoldEndPoint = (complainId, OnHoldBy, OnHoldRemarks) =>
   `ComplaintOnHold?ComplainId=${complainId}&OnHoldBy=${OnHoldBy}&OnHoldRemarks=${OnHoldRemarks}`;
 
+const complaintRevisedEndPoint = (complainId, ReviseBy, RevisedCharges) =>
+  `ReviseComplaint?complainId=${complainId}&ReviseBy=${ReviseBy}&RevisedCharges=${RevisedCharges}`;
+
+const complaintConfirmEndPoint = (complainId, ConfirmBy) =>
+  `ComplaintConfirm?complainId=${complainId}&ConfirmBy=${ConfirmBy}`;
+
 module.exports = {
   checkVersionEndPoint,
   sliderImagesEndPoint,
@@ -174,6 +180,7 @@ module.exports = {
   chatListEndPoint,
   contactListEndPoint,
   getChatHistoryEndpoint,
-
+  complaintRevisedEndPoint,
   complaintOnHoldEndPoint,
+  complaintConfirmEndPoint,
 };

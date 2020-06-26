@@ -29,7 +29,8 @@ class ProductList extends Component {
         this.props.data.OnlineDiscount +
         (this.props.data.shipping || 0);
     }
-    return `₹ ${price} + GST`;
+    return `₹ ${price}`;
+    //+ GST
   }
   productPrice(userInfo, GoldRate, DealerRate, SilverRate, PlatinumRate) {
     if (userInfo) {
@@ -38,7 +39,8 @@ class ProductList extends Component {
           <Text style={{fontSize: 14, fontWeight: 'bold'}}>
             {this.props.placeOrder
               ? this.packageSelectedPrice(GoldRate, SilverRate, PlatinumRate)
-              : `₹ ${SilverRate} + GST`}
+              : `₹ ${SilverRate}`}
+            {/* + GST */}
           </Text>
         );
       } else {

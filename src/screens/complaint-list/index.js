@@ -27,12 +27,14 @@ import {Header, SpinnerView} from '../../common/components';
 //import * as Animatable from 'react-native-animatable';
 // ASSETS
 import {Images, Color, Matrics} from '../../common/styles';
-import {MIcon} from '../../common/assets/vector-icon';
+import {MIcon, McIcon, EIcon} from '../../common/assets/vector-icon';
 import APICaller from '../../utils/api-caller';
 import Helper from '../../utils/helper';
 import ComplaintWithQRCode from '../../components/complaint-with-qr-code';
 import ComplaintRemarkModal from '../../components/complaint-remark-modal';
 import ComplaintHoldRemarkModal from '../../components/complaint-hold-remark';
+import ComplaintRevisedModal from '../../components/complaint-revised-modal';
+import {complaintConfirmEndPoint} from '../../config/api-endpoint';
 
 let self;
 
@@ -377,17 +379,18 @@ class ComplainList extends Component {
     return splitTag[0];
   }
 
-  onHoldComplaint(item) {
+  onHoldComplaint(item, index) {
     const data = {
       ComplainId: item.ComplaintID,
       OnHoldBy: this.UserName,
+      index,
     };
     Events.trigger('complaintOnHoldModal', data);
   }
 
-  renderPauseButton = item => (
+  renderPauseButton = (item, index) => (
     <TouchableOpacity
-      onPress={() => this.onHoldComplaint(item)}
+      onPress={() => this.onHoldComplaint(item, index)}
       style={{
         paddingHorizontal: 5,
         justifyContent: 'center',
@@ -401,6 +404,193 @@ class ComplainList extends Component {
       <MIcon name="pause" color={Color.white} size={20} />
     </TouchableOpacity>
   );
+
+  revisedComplaint(item, index) {
+    const data = {
+      ComplainId: item.ComplaintID,
+      RevisedBy: this.UserName,
+      index,
+    };
+    Events.trigger('complaintRevisedModal', data);
+  }
+
+  renderReviseButton = (item, index) => {
+    const {LoginType} = this.state;
+    if (
+      item.IsMajor &&
+      !item.IsRevised &&
+      (LoginType === '2' || LoginType === '1')
+    ) {
+      return (
+        <TouchableOpacity
+          onPress={() => this.revisedComplaint(item, index)}
+          style={{
+            paddingHorizontal: 5,
+            justifyContent: 'center',
+            height: 30,
+            borderRadius: 3,
+            backgroundColor: Color.primary,
+            width: 30,
+            borderRadius: 30,
+            alignItems: 'center',
+          }}>
+          <MIcon name="refresh" color={Color.white} size={20} />
+        </TouchableOpacity>
+      );
+    }
+  };
+
+  confirmAlertComplaint(item, index) {
+    Alert.alert(
+      'Alert',
+      'Are you sure you want to confirm?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {text: 'OK', onPress: () => this.confirmComplaint(item, index)},
+      ],
+      {cancelable: false},
+    );
+  }
+
+  confirmComplaint(item, index) {
+    APICaller(
+      complaintConfirmEndPoint(item.ComplaintID, this.UserName),
+      'GET',
+    ).then(json => {
+      if (json.data.Success === '1') {
+        Alert.alert('Complaint', _.get(json, 'data.Message', ''));
+        this.state.complainListArr[index].IsConfirm = true;
+        this.setState({
+          complainListArr: this.state.complainListArr,
+        });
+      }
+    });
+  }
+
+  renderConfirmButton = (item, index) => {
+    console.log(item, 'item');
+    const {LoginType} = this.state;
+    if (
+      item.IsMajor &&
+      item.IsRevised &&
+      !item.IsConfirm &&
+      LoginType === '1'
+    ) {
+      return (
+        <TouchableOpacity
+          onPress={() => this.confirmAlertComplaint(item, index)}
+          style={{
+            paddingHorizontal: 5,
+            justifyContent: 'center',
+            height: 30,
+            borderRadius: 3,
+            backgroundColor: 'green',
+            width: 30,
+            borderRadius: 30,
+            alignItems: 'center',
+          }}>
+          <MIcon name="check" color={Color.white} size={20} />
+        </TouchableOpacity>
+      );
+    }
+  };
+
+  refreshComplaintList(index) {
+    this.state.complainListArr.splice(index, 1);
+    this.setState({
+      complainListArr: this.state.complainListArr,
+    });
+  }
+
+  refreshComplaintListRevised(index) {
+    this.state.complainListArr[index].IsRevised = true;
+    this.setState({
+      complainListArr: this.state.complainListArr,
+    });
+  }
+
+  renderCloseCompliantIcon = item => {
+    return (
+      <TouchableOpacity
+        onPress={() => this.closeComplaint(item)}
+        style={{
+          backgroundColor: Color.primary,
+          paddingHorizontal: 5,
+          justifyContent: 'center',
+          height: 30,
+          borderRadius: 3,
+        }}>
+        {/* <Text style={{color: 'white', fontSize: 14}}>Close</Text> */}
+        <McIcon name="close" size={20} color={Color.white} />
+      </TouchableOpacity>
+    );
+  };
+
+  renderCancelComplaintIcon = item => {
+    return (
+      <TouchableOpacity
+        onPress={() => this.cancelComplaint(item)}
+        style={{
+          backgroundColor: 'red',
+          paddingHorizontal: 5,
+          justifyContent: 'center',
+          height: 30,
+          borderRadius: 3,
+        }}>
+        <McIcon name="cancel" size={20} color={Color.white} />
+      </TouchableOpacity>
+    );
+  };
+
+  renderComplaintAssign = item => {
+    return (
+      <TouchableOpacity
+        style={{
+          backgroundColor: Color.primary,
+          paddingHorizontal: 5,
+          justifyContent: 'center',
+          height: 30,
+          borderRadius: 3,
+          marginRight: 5,
+        }}>
+        <Picker
+          prompt="Assign to User"
+          style={{
+            height: 50,
+            position: 'absolute',
+            zIndex: 1,
+            width: 80,
+            opacity: 0,
+          }}
+          onValueChange={(itemValue, itemIndex) => {
+            if (itemValue === 'a' || itemValue === '') {
+              return;
+            }
+            this.assignedToFn(itemValue, item);
+          }}>
+          <Picker.Item
+            label={'Please choose below user'}
+            value={''}
+            disabled={true}
+          />
+          {this.state.userList.map((data, index) => {
+            return (
+              <Picker.Item
+                label={data.FirstName + ' ' + data.LastName}
+                value={data.UserName}
+                key={`${index.toString()}`}
+              />
+            );
+          })}
+        </Picker>
+        <EIcon name="forward" size={20} color={Color.white} />
+      </TouchableOpacity>
+    );
+  };
 
   // ----------->>>Render Method-------------->>>
 
@@ -723,7 +913,13 @@ class ComplainList extends Component {
           </View>
         </Modal>
 
-        <ComplaintHoldRemarkModal />
+        <ComplaintHoldRemarkModal
+          successOnHold={index => this.refreshComplaintList(index)}
+        />
+
+        <ComplaintRevisedModal
+          successOnHold={index => this.refreshComplaintListRevised(index)}
+        />
 
         <Modal
           animationType="fade"
@@ -920,101 +1116,10 @@ class ComplainList extends Component {
                   {item.ComplaintStatus === 'Assigned' &&
                     this.state.LoginType === '3' && (
                       <View style={{alignItems: 'flex-end', flex: 0.5}}>
-                        <TouchableOpacity
-                          onPress={() => this.closeComplaint(item)}
-                          style={{
-                            backgroundColor: Color.primary,
-                            paddingHorizontal: 5,
-                            justifyContent: 'center',
-                            height: 30,
-                            borderRadius: 3,
-                          }}>
-                          <Text
-                            style={{
-                              color: 'white',
-                              fontSize: 14,
-                            }}>
-                            Close
-                          </Text>
-                        </TouchableOpacity>
+                        {this.renderCloseCompliantIcon(item)}
                       </View>
                     )}
-                  {item.ComplaintStatus === 'Active' ||
-                    (item.ComplaintStatus === 'Assigned' &&
-                      this.state.LoginType === '2' && (
-                        <View
-                          style={{
-                            alignItems: 'flex-end',
-                            flex: 0.5,
-                            flexDirection: 'row',
-                          }}>
-                          <TouchableOpacity
-                            style={{
-                              backgroundColor: Color.primary,
-                              paddingHorizontal: 5,
-                              justifyContent: 'center',
-                              height: 30,
-                              borderRadius: 3,
-                              marginRight: 5,
-                            }}>
-                            <Picker
-                              prompt="Assign to User"
-                              style={{
-                                height: 50,
-                                position: 'absolute',
-                                zIndex: 1,
-                                width: 80,
-                                opacity: 0,
-                              }}
-                              onValueChange={(itemValue, itemIndex) => {
-                                if (itemValue === 'a' || itemValue === '') {
-                                  return;
-                                }
-                                this.assignedToFn(itemValue, item);
-                              }}>
-                              <Picker.Item
-                                label={'Please choose below user'}
-                                value={''}
-                                disabled={true}
-                              />
-                              {this.state.userList.map((data, index) => {
-                                return (
-                                  <Picker.Item
-                                    label={data.FirstName + ' ' + data.LastName}
-                                    value={data.UserName}
-                                    key={`${index.toString()}`}
-                                  />
-                                );
-                              })}
-                            </Picker>
-                            <Text
-                              style={{
-                                color: 'white',
-                                fontSize: 14,
-                              }}>
-                              AssignTo
-                            </Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                            onPress={() => this.closeComplaint(item)}
-                            style={{
-                              backgroundColor: Color.primary,
-                              paddingHorizontal: 5,
-                              justifyContent: 'center',
-                              height: 30,
-                              borderRadius: 3,
-                            }}>
-                            <Text
-                              style={{
-                                color: 'white',
-                                fontSize: 14,
-                              }}>
-                              Close
-                            </Text>
-                          </TouchableOpacity>
-                          {this.renderPauseButton(item)}
-                        </View>
-                      ))}
+
                   {item.ComplaintStatus === 'Cancelled' && (
                     <Text style={{flex: 0.2, color: 'red', textAlign: 'right'}}>
                       {item.ComplaintStatus}
@@ -1037,6 +1142,23 @@ class ComplainList extends Component {
                 <Text style={{color: 'black'}}>
                   Date: {this.dateSplit(item.ComplaintDate)}
                 </Text>
+
+                {item.ComplaintStatus === 'Active' ||
+                  (item.ComplaintStatus === 'Assigned' &&
+                    this.state.LoginType === '2' && (
+                      <View
+                        style={{
+                          alignItems: 'flex-end',
+                          flex: 1,
+                          flexDirection: 'row',
+                          justifyContent: 'space-around',
+                        }}>
+                        {this.renderComplaintAssign(item)}
+                        {this.renderCloseCompliantIcon(item)}
+                        {this.renderPauseButton(item, index)}
+                        {this.renderReviseButton(item, index)}
+                      </View>
+                    ))}
                 {(item.ComplaintStatus === 'Active' ||
                   item.ComplaintStatus === 'Assigned') &&
                   this.state.LoginType === '1' && (
@@ -1047,85 +1169,12 @@ class ComplainList extends Component {
                         flexDirection: 'row',
                         justifyContent: 'space-around',
                       }}>
-                      <TouchableOpacity
-                        onPress={() => this.cancelComplaint(item)}
-                        style={{
-                          backgroundColor: Color.primary,
-                          paddingHorizontal: 5,
-                          justifyContent: 'center',
-                          height: 30,
-                          borderRadius: 3,
-                        }}>
-                        <Text
-                          style={{
-                            color: 'white',
-                            fontSize: 14,
-                          }}>
-                          Cancel
-                        </Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={{
-                          backgroundColor: Color.primary,
-                          paddingHorizontal: 5,
-                          justifyContent: 'center',
-                          height: 30,
-                          borderRadius: 3,
-                        }}>
-                        <Picker
-                          prompt="Assign to User"
-                          style={{
-                            height: 50,
-                            position: 'absolute',
-                            zIndex: 1,
-                            width: 80,
-                            opacity: 0,
-                          }}
-                          selectedValue={'Please Assign to user'}
-                          onValueChange={(itemValue, itemIndex) => {
-                            if (itemValue === 'a' || itemValue === '') return;
-                            this.assignedToFn(itemValue, item);
-                          }}>
-                          <Picker.Item
-                            label={'Please choose assign complaint to '}
-                            value={''}
-                          />
-                          {this.state.userList.map((data, index) => {
-                            return (
-                              <Picker.Item
-                                label={data.FirstName + ' ' + data.LastName}
-                                value={data.UserName}
-                                key={`${index.toString()}`}
-                              />
-                            );
-                          })}
-                        </Picker>
-                        <Text
-                          style={{
-                            color: 'white',
-                            fontSize: 14,
-                          }}>
-                          AssignTo
-                        </Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={() => this.closeComplaint(item)}
-                        style={{
-                          backgroundColor: Color.primary,
-                          paddingHorizontal: 5,
-                          justifyContent: 'center',
-                          height: 30,
-                          borderRadius: 3,
-                        }}>
-                        <Text
-                          style={{
-                            color: 'white',
-                            fontSize: 14,
-                          }}>
-                          Close
-                        </Text>
-                      </TouchableOpacity>
-                      {this.renderPauseButton(item)}
+                      {this.renderCancelComplaintIcon(item)}
+                      {this.renderComplaintAssign(item)}
+                      {this.renderCloseCompliantIcon(item)}
+                      {this.renderPauseButton(item, index)}
+                      {this.renderReviseButton(item, index)}
+                      {this.renderConfirmButton(item, index)}
                     </View>
                   )}
               </TouchableOpacity>
