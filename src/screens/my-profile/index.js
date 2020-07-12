@@ -61,7 +61,7 @@ class MyProfile extends Component {
     }
     this.setState({loadingData: true});
     APICaller(getUserProfileEndPoint(userName), 'GET').then(json => {
-      console.log(json);
+      // console.log(json);
       if (json.data.Success === '1') {
         const userInfo = json.data.Response;
         this.setState({

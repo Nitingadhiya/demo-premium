@@ -89,12 +89,12 @@ const ContactsServiceHelper = {
   updateContact(cont, findI) {
     let someRecord = [];
     someRecord = cont[findI];
-    console.log(someRecord, 'Record');
+    // console.log(someRecord, 'Record');
     someRecord.familyName = 'Patel';
     someRecord.givenName = 'Bhavesh';
     someRecord.nickName = 'Bhavesh';
     if (someRecord.phoneNumbers) {
-      console.log('phone record');
+      // console.log('phone record');
       someRecord.phoneNumbers = [
         {
           label: 'mobile',
@@ -124,7 +124,7 @@ const ContactsServiceHelper = {
       });
     }
     someRecord.company = 'Premium Sales Corporation(Patel Computer)';
-    console.log(someRecord, 'Record');
+    // console.log(someRecord, 'Record');
     Contacts.updateContact(someRecord, err => {
       console.log(err);
       // record updated

@@ -63,7 +63,7 @@ class ComplaintPriceModal extends Component {
       const endPoint = `GetComplaintCharges?SystemTag=${result}&BaseUserName=${UserName}`;
       const method = 'GET';
       APICaller(`${endPoint}`, method).then(json => {
-        console.log('json', json);
+        // console.log('json', json);
         this.setState({
           loadingData: false,
         });

@@ -52,7 +52,7 @@ class ComplaintHoldRemarkModal extends Component {
       this.setState({
         loadingData: false,
       });
-      console.log(json);
+      // console.log(json);
       if (json.data.Success === '1') {
         this.setState({complaintHoldModal: false});
         Alert.alert('Complaint', _.get(json, 'data.Message', ''));

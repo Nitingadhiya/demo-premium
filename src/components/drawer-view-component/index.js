@@ -46,9 +46,8 @@ class DrawerViewComponent extends Component {
               <MIcon name="close" size={Matrics.ScaleValue(22)} />
             </TouchableOpacity>
             <TouchableOpacity
-              style={{marginLeft: 10}}
               onPress={() => {
-                navigation.toggleDrawer();
+                NavigationHelper.navigate(navigation, 'MyProfile');
               }}>
               <Avatar.Image
                 source={{
@@ -56,12 +55,13 @@ class DrawerViewComponent extends Component {
                 }}
                 size={50}
               />
+
+              <Title style={styles.title}>
+                {userInfo.FirstName} {userInfo.LastName}
+              </Title>
+              <Caption style={styles.caption}>{userInfo.EmailId}</Caption>
+              <Caption style={styles.caption}>{userInfo.MobileNo}</Caption>
             </TouchableOpacity>
-            <Title style={styles.title}>
-              {userInfo.FirstName} {userInfo.LastName}
-            </Title>
-            <Caption style={styles.caption}>{userInfo.EmailId}</Caption>
-            <Caption style={styles.caption}>{userInfo.MobileNo}</Caption>
           </View>
         ) : null}
         <Drawer.Section style={styles.drawerSection}>

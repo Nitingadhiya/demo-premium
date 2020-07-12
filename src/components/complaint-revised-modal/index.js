@@ -49,7 +49,7 @@ class ComplaintRevisedModal extends Component {
       this.setState({
         loadingData: false,
       });
-      console.log(json);
+      // console.log(json);
       if (json.data.Success === '1') {
         this.setState({complaintRevisedModal: false});
         Alert.alert('Complaint', _.get(json, 'data.Message', ''));

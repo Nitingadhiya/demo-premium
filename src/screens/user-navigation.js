@@ -51,7 +51,7 @@ export default class UserNavigation extends React.Component {
       console.log('connect');
       const data = await Helper.getLocalStorageItem('userInfo');
       if (data) {
-        console.log(data.UserName, 'data.UserName');
+        // console.log(data.UserName, 'data.UserName');
         global.socket.emit('username', data.UserName);
       }
     });

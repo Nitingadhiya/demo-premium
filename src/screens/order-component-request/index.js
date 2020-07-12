@@ -118,7 +118,7 @@ class OrderComponentRequest extends Component {
     this.setState({loadingData: true, errorMessage: false});
     APICaller(getPartFromSerialNoForOrderEndPoint(serialNum), 'GET').then(
       json => {
-        console.log(json, 'json');
+        // console.log(json, 'json');
         this.setState({
           loadingData: false,
         });

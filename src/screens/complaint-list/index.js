@@ -396,7 +396,7 @@ class ComplainList extends Component {
         justifyContent: 'center',
         height: 30,
         borderRadius: 3,
-        backgroundColor: 'orange',
+        backgroundColor: '#87ceeb',
         width: 30,
         borderRadius: 30,
         alignItems: 'center',
@@ -428,8 +428,7 @@ class ComplainList extends Component {
             paddingHorizontal: 5,
             justifyContent: 'center',
             height: 30,
-            borderRadius: 3,
-            backgroundColor: Color.primary,
+            backgroundColor: Color.charcoalGrey,
             width: 30,
             borderRadius: 30,
             alignItems: 'center',
@@ -472,7 +471,6 @@ class ComplainList extends Component {
   }
 
   renderConfirmButton = (item, index) => {
-    console.log(item, 'item');
     const {LoginType} = this.state;
     if (
       item.IsMajor &&
@@ -522,7 +520,7 @@ class ComplainList extends Component {
           paddingHorizontal: 5,
           justifyContent: 'center',
           height: 30,
-          borderRadius: 3,
+          borderRadius: 30,
         }}>
         {/* <Text style={{color: 'white', fontSize: 14}}>Close</Text> */}
         <McIcon name="close" size={20} color={Color.white} />
@@ -539,7 +537,7 @@ class ComplainList extends Component {
           paddingHorizontal: 5,
           justifyContent: 'center',
           height: 30,
-          borderRadius: 3,
+          borderRadius: 30,
         }}>
         <McIcon name="cancel" size={20} color={Color.white} />
       </TouchableOpacity>
@@ -550,11 +548,11 @@ class ComplainList extends Component {
     return (
       <TouchableOpacity
         style={{
-          backgroundColor: Color.primary,
+          backgroundColor: Color.black30,
           paddingHorizontal: 5,
           justifyContent: 'center',
           height: 30,
-          borderRadius: 3,
+          borderRadius: 30,
           marginRight: 5,
         }}>
         <Picker

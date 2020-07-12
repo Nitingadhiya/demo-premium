@@ -92,7 +92,7 @@ class ContactList extends Component {
       contactListEndPoint(userInfo.UserName, search, from, size),
       'GET',
     ).then(json => {
-      console.log(json, 'json');
+      // console.log(json, 'json');
       if (json.data.Success === '1') {
         this.setState({
           loading: false,
