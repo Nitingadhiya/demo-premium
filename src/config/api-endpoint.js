@@ -115,6 +115,9 @@ const complaintRevisedEndPoint = (complainId, ReviseBy, RevisedCharges) =>
 const complaintConfirmEndPoint = (complainId, ConfirmBy) =>
   `ComplaintConfirm?complainId=${complainId}&ConfirmBy=${ConfirmBy}`;
 
+const messageEndpoint = (FromUser, ToUser, ChatMessage) =>
+  `/InsertChat?FromUser=${FromUser}&ToUser=${ToUser}&ChatMessage=${ChatMessage}`;
+
 module.exports = {
   checkVersionEndPoint,
   sliderImagesEndPoint,
@@ -183,4 +186,5 @@ module.exports = {
   complaintRevisedEndPoint,
   complaintOnHoldEndPoint,
   complaintConfirmEndPoint,
+  messageEndpoint,
 };

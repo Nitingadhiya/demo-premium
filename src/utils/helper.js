@@ -121,7 +121,9 @@ const Helper = {
     const userInfo = await Helper.getLocalStorageItem('userInfo');
     if (userInfo) {
       APICaller(updateTokenEndPoint(userInfo.UserName, token), 'GET').then(
-        json => {},
+        json => {
+          //console.log(json, 'json');
+        },
       );
     }
   },

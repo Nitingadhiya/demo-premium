@@ -1,6 +1,6 @@
 import {Color, Matrics, Fonts, ApplicationStyles} from '../../common/styles';
 
-export default styles = {
+export default (styles = {
   systemNotProtectedView: {
     flex: 1,
     justifyContent: 'center',
@@ -56,7 +56,7 @@ export default styles = {
     textDecorationLine: 'underline',
   },
   systemProtectedView: {
-    flex: 1,
+    //flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     width: Matrics.screenWidth - 40,
@@ -68,7 +68,7 @@ export default styles = {
     margin: 10,
     backgroundColor: '#fff',
     padding: 5,
-    minHeight: 290,
+    minHeight: 320,
   },
   protectionText: {
     fontSize: Matrics.ScaleValue(16),
@@ -164,4 +164,4 @@ export default styles = {
     color: '#333',
     marginRight: 5,
   },
-};
+});

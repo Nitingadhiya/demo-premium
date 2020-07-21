@@ -130,6 +130,17 @@ export default class UserNavigation extends React.Component {
       };
       NavigationHelper.navigate(this.props.navigation, 'ProductDetails', data);
     }
+    if (notif.type && notif.type === 'Chat') {
+      const data = {
+        image: notif.UserImage,
+        displayName: notif.DisplayName,
+        recieverName: notif.UserId,
+      };
+
+      setTimeout(() => {
+        NavigationHelper.navigate(this.props.navigation, 'ChatMessage', data);
+      }, 1000);
+    }
   }
 
   async createNotificationListeners() {

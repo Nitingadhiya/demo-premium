@@ -13,7 +13,10 @@ import moment from 'moment';
 import {ApplicationStyles, Matrics, Images, Color} from '../../common/styles';
 import {Appbar} from 'react-native-paper';
 import styles from './styles';
-import {getChatHistoryEndpoint} from '../../config/api-endpoint';
+import {
+  getChatHistoryEndpoint,
+  messageEndpoint,
+} from '../../config/api-endpoint';
 import Events from '../../utils/events';
 import APICaller from '../../utils/api-caller';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -275,7 +278,7 @@ class ChatMessage extends Component {
       message: messageText,
     };
     // console.log(data, 'data');
-    global.socket.emit('message', data);
+    // global.socket.emit('message', data);
 
     const msg = {
       ID: null,
@@ -295,23 +298,19 @@ class ChatMessage extends Component {
     //   body: validationMessage,
     // };
 
-    // APICaller(
-    //   `${Http.messageEndpoint(global.threadId)}`,
-    //   'POST',
-    //   global.apiToken,
-    //   body,
-    // ).then(json => {
-    //   this.textMessage = '';
-    //   if (
-    //     (json.status && json.status === GlobalVar.responseInternalServerCode) ||
-    //     json.status === GlobalVar.responseInvalidCode
-    //   ) {
-    //     const errors = json.data.errors;
-    //     Events.trigger('toast', errors);
-    //     this.loadingView(false);
-    //     return;
-    //   }
-    // });
+    APICaller(
+      messageEndpoint(data.fromUser, data.toUser, data.message),
+      'GET',
+    ).then(json => {
+      console.log(json, 'jsonnnn');
+      this.textMessage = '';
+      // if ((json.status && json.status === 500) || json.status === 422) {
+      //   const errors = json.data.errors;
+      //   // Events.trigger('toast', errors);
+      //   // this.loadingView(false);
+      //   return;
+      // }
+    });
   }
 
   scrollToBottom() {
