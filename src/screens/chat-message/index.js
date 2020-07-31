@@ -52,6 +52,7 @@ class ChatMessage extends Component {
     self = this;
     this.tempArrMessage = [];
     const {recieverName, image, displayName} = this.props.route.params;
+    console.log(this.props.route, 'RRRRRRR');
     this.setState({
       profile_image_url: image,
       recieverName: recieverName,

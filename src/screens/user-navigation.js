@@ -88,12 +88,12 @@ export default class UserNavigation extends React.Component {
       if (data.LoginType === '2' || data.LoginType === '3') {
         this.backgroundJobMethod();
       }
-      // const channel = new firebase.notifications.Android.Channel(
-      //   'insider',
-      //   'insider channel',
-      //   firebase.notifications.Android.Importance.Max,
-      // );
-      // firebase.notifications().android.createChannel(channel);
+      const channel = new firebase.notifications.Android.Channel(
+        'insider',
+        'insider channel',
+        firebase.notifications.Android.Importance.Max,
+      );
+      firebase.notifications().android.createChannel(channel);
       this.checkPermission();
       this.createNotificationListeners();
     }
@@ -130,6 +130,7 @@ export default class UserNavigation extends React.Component {
       };
       NavigationHelper.navigate(this.props.navigation, 'ProductDetails', data);
     }
+    console.log(notif, 'notif');
     if (notif.type && notif.type === 'Chat') {
       const data = {
         image: notif.UserImage,
@@ -148,6 +149,7 @@ export default class UserNavigation extends React.Component {
       .notifications()
       .getInitialNotification();
     if (notificationOpen) {
+      console.log(notificationOpen, 'notif');
       const notification = notificationOpen.notification;
       const notifcationData = notification.data || null;
       this.navigationProductDetail(notifcationData);
@@ -155,6 +157,7 @@ export default class UserNavigation extends React.Component {
 
     firebase.notifications().onNotification(notification => {
       notification.android.setChannelId('insider').setSound('default');
+      console.log(notification, 'notification*****');
       firebase.notifications().displayNotification(notification);
     });
     // Set up your listener
