@@ -37,7 +37,7 @@ export const UserInfoDashboardView = ({userInfo}) => {
         <View style={styles.viewStyle1}>
           <View style={styles.mainRightDash}>
             <View style={styles.rightDash}>
-              <Text style={{marginLeft: 5}}>Rs. {userInfo.Coins || 0}</Text>
+              <Text style={{marginLeft: 5}}>₹. {userInfo.Coins || 0}</Text>
             </View>
           </View>
         </View>

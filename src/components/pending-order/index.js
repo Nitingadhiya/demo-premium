@@ -77,7 +77,7 @@ export default class POrder extends React.PureComponent {
           </Text>
 
           <Text style={{fontSize: 16}}>
-            <Text style={{fontWeight: 'bold'}}>Amount Rs : </Text>
+            <Text style={{fontWeight: 'bold'}}>Amount ₹ : </Text>
             {data.Amount}
           </Text>
 

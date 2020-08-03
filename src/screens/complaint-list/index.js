@@ -21,13 +21,14 @@ import {
   Linking,
   CheckBox,
 } from 'react-native';
-import _ from 'lodash';
+import moment from 'moment';
+import _, {stubString} from 'lodash';
 import Events from '../../utils/events';
 import {Header, SpinnerView} from '../../common/components';
 //import * as Animatable from 'react-native-animatable';
 // ASSETS
 import {Images, Color, Matrics} from '../../common/styles';
-import {MIcon, McIcon, EIcon} from '../../common/assets/vector-icon';
+import {MIcon, McIcon, EIcon, F5Icon} from '../../common/assets/vector-icon';
 import APICaller from '../../utils/api-caller';
 import Helper from '../../utils/helper';
 import ComplaintWithQRCode from '../../components/complaint-with-qr-code';
@@ -138,6 +139,7 @@ class ComplainList extends Component {
     }`;
     const method = 'GET';
     APICaller(`${endPoint}`, method).then(json => {
+      console.log(json, 'jsooo');
       if (json.data.Success === '1') {
         if (json.data.Response && json.data.Response.length === 0) {
           this.setState({
@@ -369,8 +371,9 @@ class ComplainList extends Component {
   };
 
   dateSplit(date) {
-    const spl = date.split('T');
-    return spl[0] || null;
+    if (!date) return null;
+    const registerdate = moment(date).format('DD-MM-YYYY @ hh:mm A');
+    return registerdate; // || null;
   }
 
   sysTagMethod(tag) {
@@ -392,16 +395,16 @@ class ComplainList extends Component {
     <TouchableOpacity
       onPress={() => this.onHoldComplaint(item, index)}
       style={{
-        paddingHorizontal: 5,
         justifyContent: 'center',
         height: 30,
-        borderRadius: 3,
-        backgroundColor: '#87ceeb',
+        borderColor: '#87ceeb',
+        borderWidth: 1,
         width: 30,
         borderRadius: 30,
         alignItems: 'center',
+        marginRight: 8,
       }}>
-      <MIcon name="pause" color={Color.white} size={20} />
+      <MIcon name="pause" color={'#87ceeb'} size={20} />
     </TouchableOpacity>
   );
 
@@ -425,15 +428,16 @@ class ComplainList extends Component {
         <TouchableOpacity
           onPress={() => this.revisedComplaint(item, index)}
           style={{
-            paddingHorizontal: 5,
-            justifyContent: 'center',
             height: 30,
-            backgroundColor: Color.charcoalGrey,
             width: 30,
             borderRadius: 30,
+            borderColor: '#00bcd4',
+            borderWidth: 1,
             alignItems: 'center',
+            justifyContent: 'center',
+            marginRight: 8,
           }}>
-          <MIcon name="refresh" color={Color.white} size={20} />
+          <MIcon name="refresh" color={'#00bcd4'} size={20} />
         </TouchableOpacity>
       );
     }
@@ -482,16 +486,16 @@ class ComplainList extends Component {
         <TouchableOpacity
           onPress={() => this.confirmAlertComplaint(item, index)}
           style={{
-            paddingHorizontal: 5,
-            justifyContent: 'center',
             height: 30,
-            borderRadius: 3,
-            backgroundColor: 'green',
             width: 30,
+            borderColor: '#00bcd4',
+            borderWidth: 1,
             borderRadius: 30,
             alignItems: 'center',
+            justifyContent: 'center',
+            marginRight: 5,
           }}>
-          <MIcon name="check" color={Color.white} size={20} />
+          <MIcon name="check" color={'#00bcd4'} size={20} />
         </TouchableOpacity>
       );
     }
@@ -516,14 +520,17 @@ class ComplainList extends Component {
       <TouchableOpacity
         onPress={() => this.closeComplaint(item)}
         style={{
-          backgroundColor: Color.primary,
-          paddingHorizontal: 5,
+          marginRight: 8,
+          alignItems: 'center',
           justifyContent: 'center',
           height: 30,
+          width: 30,
           borderRadius: 30,
+          borderWidth: 1,
+          borderColor: '#f44336',
         }}>
         {/* <Text style={{color: 'white', fontSize: 14}}>Close</Text> */}
-        <McIcon name="close" size={20} color={Color.white} />
+        <McIcon name="close" size={20} color={'#f44336'} />
       </TouchableOpacity>
     );
   };
@@ -533,13 +540,37 @@ class ComplainList extends Component {
       <TouchableOpacity
         onPress={() => this.cancelComplaint(item)}
         style={{
-          backgroundColor: 'red',
+          borderColor: 'red',
+          borderWidth: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: 30,
+          width: 30,
+          borderRadius: 30,
+          marginRight: 8,
+        }}>
+        <McIcon name="cancel" size={20} color={'red'} />
+      </TouchableOpacity>
+    );
+  };
+
+  renderCallIcon = item => {
+    // console.log(item.)
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          Linking.openURL(`tel:${item.MobileNo}`);
+        }}
+        style={{
           paddingHorizontal: 5,
           justifyContent: 'center',
           height: 30,
           borderRadius: 30,
+          marginRight: 8,
+          borderWidth: 1,
+          borderColor: 'green',
         }}>
-        <McIcon name="cancel" size={20} color={Color.white} />
+        <MIcon name="call" size={20} color={'green'} />
       </TouchableOpacity>
     );
   };
@@ -548,12 +579,14 @@ class ComplainList extends Component {
     return (
       <TouchableOpacity
         style={{
-          backgroundColor: Color.black30,
+          //backgroundColor: Color.black30,
           paddingHorizontal: 5,
           justifyContent: 'center',
           height: 30,
           borderRadius: 30,
-          marginRight: 5,
+          marginRight: 8,
+          borderWidth: 1,
+          borderColor: '#ff9800',
         }}>
         <Picker
           prompt="Assign to User"
@@ -585,7 +618,364 @@ class ComplainList extends Component {
             );
           })}
         </Picker>
-        <EIcon name="forward" size={20} color={Color.white} />
+        <EIcon name="forward" size={20} color={'#ff9800'} />
+      </TouchableOpacity>
+    );
+  };
+
+  renderListEmptyComponent = () => {
+    if (this.state.displayResult) {
+      return (
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Text
+            style={{
+              fontSize: Matrics.ScaleValue(16),
+              fontWeight: 'bold',
+              color: 'black',
+            }}>
+            {this.state.noResult}
+          </Text>
+        </View>
+      );
+    }
+    return null;
+  };
+
+  renderSystemTag = systemTag => {
+    if (!systemTag) return null;
+    let tag = systemTag.split('-');
+    let tag1 = tag[1];
+    let tagLast = tag1.substring(tag1.length - 3);
+    return tag[0] + '-***' + tagLast;
+  };
+
+  renderCollapsibleContent = (item, index) => {
+    const {collapsible} = this.state;
+    if (
+      !collapsible ||
+      (collapsible && (collapsible.open && index != collapsible.index))
+    ) {
+      return null;
+    }
+
+    return (
+      <View style={{marginTop: -5}}>
+        <View>
+          <Text style={{fontSize: 12, color: '#545454'}}>{item.Address}</Text>
+        </View>
+        <View style={{flexDirection: 'row'}}>
+          {item.ComplaintStatus === 'Active' ||
+            (item.ComplaintStatus === 'Assigned' &&
+              this.state.LoginType === '2' && (
+                <View
+                  style={{
+                    alignItems: 'flex-end',
+                    flex: 1,
+                    flexDirection: 'row',
+                    marginVertical: 5,
+                    //justifyContent: 'space-around',
+                  }}>
+                  {this.renderCallIcon(item)}
+                  {this.renderComplaintAssign(item)}
+                  {this.renderCloseCompliantIcon(item)}
+                  {this.renderPauseButton(item, index)}
+                  {this.renderReviseButton(item, index)}
+                </View>
+              ))}
+
+          {item.ComplaintStatus === 'Assigned' && this.state.LoginType === '3' && (
+            <View
+              style={{
+                alignItems: 'flex-end',
+                flex: 1,
+                flexDirection: 'row',
+                marginVertical: 5,
+              }}>
+              {this.renderCloseCompliantIcon(item)}
+            </View>
+          )}
+
+          {(item.ComplaintStatus === 'Active' ||
+            item.ComplaintStatus === 'Assigned') &&
+            this.state.LoginType === '1' && (
+              <View
+                style={{
+                  alignItems: 'flex-end',
+                  flex: 1,
+                  flexDirection: 'row',
+                  marginVertical: 5,
+                  //justifyContent: 'space-around',
+                }}>
+                {this.renderCallIcon(item)}
+                {this.renderCancelComplaintIcon(item)}
+                {this.renderComplaintAssign(item)}
+                {this.renderCloseCompliantIcon(item)}
+                {this.renderPauseButton(item, index)}
+                {this.renderReviseButton(item, index)}
+                {this.renderConfirmButton(item, index)}
+              </View>
+            )}
+        </View>
+      </View>
+    );
+  };
+
+  renderComplaintSubject = item => {
+    if (!item.ComplaintSubject) return null;
+    return (
+      <Text
+        style={{fontSize: 15, fontWeight: 'bold', color: Color.primary}}
+        numberOfLines={1}>
+        {item.ComplaintSubject}
+      </Text>
+    );
+  };
+
+  renderComplaintBookPersonName = item => {
+    if (!item.Name || !item.CompanyName) return;
+    return (
+      <View style={{flexDirection: 'row'}}>
+        <Text
+          numberOfLines={1}
+          style={{
+            color: 'black',
+            padding: 5,
+            paddingLeft: 0,
+            fontSize: 12,
+            fontWeight: 'bold',
+          }}>
+          {item.Name}, {item.CompanyName}
+        </Text>
+      </View>
+    );
+  };
+
+  collapsibleContentPress(item, index) {
+    let bool = _.get(this.state.collapsible, 'open', 'false');
+    let indexCollapse = _.get(this.state.collapsible, 'index', 'false');
+    let collapsible = {open: bool, index};
+    if (indexCollapse == index) {
+      collapsible = null;
+    }
+
+    this.setState({
+      collapsible,
+    });
+  }
+
+  checkPaymentIsDone = item => {
+    let paymentDone = false;
+    if (_.get(item, 'PaymentDone', false)) {
+      paymentDone = true;
+    }
+    return (
+      <Text style={{color: paymentDone ? 'green' : 'red'}}>
+        {'₹' + item.Charges}
+      </Text>
+    );
+  };
+
+  renderFlatListItem = (item, index) => {
+    return (
+      <TouchableOpacity
+        onPress={() => this.complaintDetail(item, true, index)}
+        style={{
+          justifyContent: 'center',
+          paddingVertical: 10,
+          paddingHorizontal: 10,
+          margin: 10,
+          backgroundColor: item.Color, //,
+          shadowColor: 'black',
+          shadowOffset: {
+            width: 0,
+            height: 10,
+          },
+          shadowOpacity: 0.5,
+          shadowRadius: Matrics.ScaleValue(30),
+          elevation: 2,
+        }}
+        activeOpacity={1}>
+        <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+          {/* <View
+            style={{
+              height: 10,
+              width: 10,
+              position: 'absolute',
+              zIndex: 1,
+              left: -5,
+              top: -7,
+              backgroundColor: item.IsFromWeb ? 'green' : 'red',
+              borderRadius: 7.5,
+            }}
+          /> */}
+          <View style={{flex: 1}}>
+            <Text>
+              <Text style={styles.complaintId}>{item.ComplaintID}</Text> |{' '}
+              {this.renderSystemTag(item.SystemTag)}
+            </Text>
+            {/* <View
+              style={{
+                height: 10,
+                width: 10,
+                position: 'absolute',
+                zIndex: 1,
+                left: -4,
+                top: -7,
+                backgroundColor:
+                  item.PaymentType === 'Cash on service'
+                    ? 'purple'
+                    : 'transParent',
+                borderRadius: 7.5,
+              }}
+            /> */}
+          </View>
+          <View style={{alignItems: 'flex-end'}}>
+            <Text style={styles.areaType}>
+              {item.IsFromWeb ? 'Office' : item.Area}
+            </Text>
+          </View>
+
+          {/* <Text style={{fontSize: 16, fontWeight: 'bold', flex: 0.8}}>
+            {item.Name} {item.CompanyName ? `, ${item.CompanyName}` : null}
+          </Text> */}
+
+          {/* {item.ComplaintStatus === 'Assigned' &&
+            this.state.LoginType === '3' && (
+              <View style={{alignItems: 'flex-end', flex: 0.5}}>
+                {this.renderCloseCompliantIcon(item)}
+              </View>
+            )} */}
+        </View>
+        {this.renderComplaintSubject(item)}
+        {this.renderComplaintBookPersonName(item)}
+        {this.renderCollapsibleContent(item, index)}
+
+        {item.PaymentType ? (
+          <Text style={{color: '#545454'}}>{item.PaymentType}</Text>
+        ) : null}
+        <View style={{flexDirection: 'row'}}>
+          <View style={{flex: 1}}>
+            <Text style={{color: '#545454', fontSize: 12}}>
+              {this.dateSplit(item.ComplaintDate)}
+            </Text>
+          </View>
+          <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+            <Text
+              style={{color: Color.primary, fontSize: 14, fontWeight: 'bold'}}>
+              {item.Charges > 0
+                ? this.checkPaymentIsDone(item)
+                : _.upperCase('Free')}
+            </Text>
+            <View
+              style={{
+                paddingHorizontal: 3,
+                // padding: 2,
+                paddingRight: 0,
+                marginLeft: 5,
+                marginRight: 10,
+                borderRadius: 5,
+                flexDirection: 'row',
+                backgroundColor: Color.primary,
+              }}>
+              <View
+                style={{
+                  backgroundColor: Color.primary,
+                  paddingHorizontal: 5,
+                  padding: 2,
+                  marginLeft: 5,
+                  borderRadius: 5,
+                  justifyContent: 'center',
+                  paddingRight: 18,
+                  maxWidth: 100,
+                }}>
+                <Text style={{fontSize: 12, color: 'white'}} numberOfLines={1}>
+                  {item.AssignedToName}
+                </Text>
+              </View>
+            </View>
+            <TouchableOpacity
+              onPress={() => this.collapsibleContentPress(item, index)}
+              activeOpacity={1}
+              style={{
+                borderWidth: 1,
+                borderColor: Color.primary,
+                borderRadius: 27,
+                height: 27,
+                width: 27,
+                position: 'absolute',
+                right: -5,
+                top: -3,
+                zIndex: 999999,
+                backgroundColor: 'red',
+              }}>
+              <View
+                style={{
+                  height: 25,
+                  width: 25,
+                  backgroundColor: Color.primary,
+                  borderRadius: 25,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderWidth: 2,
+                  borderColor: '#fff',
+                  marginRight: -5,
+                }}>
+                <EIcon name="arrow-down" size={18} color={Color.white} />
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* {item.ComplaintStatus === 'Completed' && (
+          <Text style={{flex: 0.2, color: 'green', textAlign: 'right'}}>
+            {item.ComplaintStatus}
+          </Text>
+        )} */}
+
+        {/* {item.ComplaintStatus === 'Cancelled' && (
+          <Text style={{flex: 0.2, color: 'red', textAlign: 'right'}}>
+            {item.ComplaintStatus}
+          </Text>
+        )} */}
+        {/* {item.ComplaintStatus === 'Active' ||
+          (item.ComplaintStatus === 'Assigned' &&
+            this.state.LoginType === '2' && (
+              <View
+                style={{
+                  alignItems: 'flex-end',
+                  flex: 1,
+                  flexDirection: 'row',
+                  justifyContent: 'space-around',
+                }}>
+                {this.renderComplaintAssign(item)}
+                {this.renderCloseCompliantIcon(item)}
+                {this.renderPauseButton(item, index)}
+                {this.renderReviseButton(item, index)}
+              </View>
+            ))}
+        {(item.ComplaintStatus === 'Active' ||
+          item.ComplaintStatus === 'Assigned') &&
+          this.state.LoginType === '1' && (
+            <View
+              style={{
+                alignItems: 'flex-end',
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'space-around',
+              }}>
+              {this.renderCancelComplaintIcon(item)}
+              {this.renderComplaintAssign(item)}
+              {this.renderCloseCompliantIcon(item)}
+              {this.renderPauseButton(item, index)}
+              {this.renderReviseButton(item, index)}
+              {this.renderConfirmButton(item, index)}
+            </View>
+          )} */}
       </TouchableOpacity>
     );
   };
@@ -1021,7 +1411,7 @@ class ComplainList extends Component {
         </Modal>
 
         <KeyboardAvoidingView
-          style={{flex: 1}}
+          style={{flex: 1, backgroundColor: '#fff'}}
           behavior="padding"
           enabled
           keyboardVerticalOffset={64}>
@@ -1038,145 +1428,10 @@ class ComplainList extends Component {
             keyExtractor={(item, index) => `${index}`}
             style={{flex: 1}}
             extraData={this.state}
-            ListEmptyComponent={() =>
-              this.state.displayResult ? (
-                <View
-                  style={{
-                    flex: 1,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: Matrics.ScaleValue(16),
-                      fontWeight: 'bold',
-                      color: 'black',
-                    }}>
-                    {this.state.noResult}
-                  </Text>
-                </View>
-              ) : null
-            }
+            ListEmptyComponent={() => this.renderListEmptyComponent()}
             onRefresh={() => this.onRefresh()}
             refreshing={this.state.refreshing}
-            renderItem={({item, index}) => (
-              <TouchableOpacity
-                onPress={() => this.complaintDetail(item, true, index)}
-                style={{
-                  width: '100%',
-                  justifyContent: 'center',
-                  borderBottomWidth: 1,
-                  borderColor: '#d3d3d3',
-                  paddingVertical: 10,
-                  paddingHorizontal: 10,
-                }}
-                activeOpacity={1}>
-                <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                  <View
-                    style={{
-                      height: 10,
-                      width: 10,
-                      position: 'absolute',
-                      zIndex: 1,
-                      left: -5,
-                      top: -7,
-                      backgroundColor: item.IsFromWeb ? 'green' : 'red',
-                      borderRadius: 7.5,
-                    }}
-                  />
-                  <View
-                    style={{
-                      height: 10,
-                      width: 10,
-                      position: 'absolute',
-                      zIndex: 1,
-                      left: 7,
-                      top: -7,
-                      backgroundColor:
-                        item.PaymentType === 'Cash on service'
-                          ? 'purple'
-                          : 'transParent',
-                      borderRadius: 7.5,
-                    }}
-                  />
-                  <Text style={{fontSize: 16, fontWeight: 'bold', flex: 0.8}}>
-                    {item.Name}{' '}
-                    {item.CompanyName ? `, ${item.CompanyName}` : null}
-                    {/* #{item.SystemTag} */}
-                  </Text>
-                  {item.ComplaintStatus === 'Completed' && (
-                    <Text
-                      style={{flex: 0.2, color: 'green', textAlign: 'right'}}>
-                      {item.ComplaintStatus}
-                    </Text>
-                  )}
-
-                  {item.ComplaintStatus === 'Assigned' &&
-                    this.state.LoginType === '3' && (
-                      <View style={{alignItems: 'flex-end', flex: 0.5}}>
-                        {this.renderCloseCompliantIcon(item)}
-                      </View>
-                    )}
-
-                  {item.ComplaintStatus === 'Cancelled' && (
-                    <Text style={{flex: 0.2, color: 'red', textAlign: 'right'}}>
-                      {item.ComplaintStatus}
-                    </Text>
-                  )}
-                </View>
-                <Text>{item.ComplaintSubject}</Text>
-                <View style={{flexDirection: 'row'}}>
-                  <Text style={{color: 'black', padding: 5, paddingLeft: 0}}>
-                    {item.AssignedBy}
-                  </Text>
-                  <Text style={{padding: 5}}>=></Text>
-                  <Text style={{color: 'black', padding: 5}}>
-                    {item.AssignedTo}
-                  </Text>
-                </View>
-                {item.PaymentType ? (
-                  <Text style={{color: 'black'}}>{item.PaymentType}</Text>
-                ) : null}
-                <Text style={{color: 'black'}}>
-                  Date: {this.dateSplit(item.ComplaintDate)}
-                </Text>
-
-                {item.ComplaintStatus === 'Active' ||
-                  (item.ComplaintStatus === 'Assigned' &&
-                    this.state.LoginType === '2' && (
-                      <View
-                        style={{
-                          alignItems: 'flex-end',
-                          flex: 1,
-                          flexDirection: 'row',
-                          justifyContent: 'space-around',
-                        }}>
-                        {this.renderComplaintAssign(item)}
-                        {this.renderCloseCompliantIcon(item)}
-                        {this.renderPauseButton(item, index)}
-                        {this.renderReviseButton(item, index)}
-                      </View>
-                    ))}
-                {(item.ComplaintStatus === 'Active' ||
-                  item.ComplaintStatus === 'Assigned') &&
-                  this.state.LoginType === '1' && (
-                    <View
-                      style={{
-                        alignItems: 'flex-end',
-                        flex: 1,
-                        flexDirection: 'row',
-                        justifyContent: 'space-around',
-                      }}>
-                      {this.renderCancelComplaintIcon(item)}
-                      {this.renderComplaintAssign(item)}
-                      {this.renderCloseCompliantIcon(item)}
-                      {this.renderPauseButton(item, index)}
-                      {this.renderReviseButton(item, index)}
-                      {this.renderConfirmButton(item, index)}
-                    </View>
-                  )}
-              </TouchableOpacity>
-            )}
+            renderItem={({item, index}) => this.renderFlatListItem(item, index)}
           />
           {this.state.searchFlag ? (
             <View style={styles.spinnerViewPOS}>
@@ -1337,6 +1592,14 @@ const styles = StyleSheet.create({
     width: scanBarWidth,
     height: scanBarHeight,
     backgroundColor: scanBarColor,
+  },
+  complaintId: {
+    fontWeight: 'bold',
+  },
+  areaType: {
+    fontWeight: 'bold',
+    textAlign: 'right',
+    fontSize: 14,
   },
 });
 

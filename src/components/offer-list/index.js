@@ -64,7 +64,7 @@ export default class OfferList extends React.PureComponent {
         <View style={{flexDirection: 'row', flex: 1, flexWrap: 'wrap'}}>
           <Text>Order Date: |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Text>
           <Text>Order No: |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Text>
-          <Text>Amount Rs: | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Text>
+          <Text>Amount ₹: | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Text>
           <Text>
             Approx Delivery Date: |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           </Text>

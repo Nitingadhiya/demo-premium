@@ -157,7 +157,7 @@ export default class Dashboard extends Component {
           <View style={styles.viewStyle1}>
             <View style={styles.mainRightDash}>
               <View style={styles.rightDash}>
-                <Text style={{marginLeft: 5}}>Rs. {this.state.Coins || 0}</Text>
+                <Text style={{marginLeft: 5}}>₹ {this.state.Coins || 0}</Text>
               </View>
             </View>
           </View>

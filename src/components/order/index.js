@@ -44,7 +44,7 @@ class POrder extends Component {
           </Text>
 
           <Text style={{fontSize: 16}}>
-            <Text style={{fontWeight: 'bold'}}>Amount Rs : </Text>
+            <Text style={{fontWeight: 'bold'}}>Amount ₹ : </Text>
             {data.Amount}
           </Text>
 
