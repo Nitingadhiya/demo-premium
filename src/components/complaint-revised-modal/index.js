@@ -33,7 +33,7 @@ class ComplaintRevisedModal extends Component {
     self = this;
     Events.on('complaintRevisedModal', 'complaint-revised', res => {
       this.complaintData = res;
-      this.setState({complaintRevisedModal: true});
+      this.setState({complaintRevisedModal: true, chargeText: ''});
     });
   }
 

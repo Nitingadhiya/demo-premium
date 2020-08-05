@@ -28,7 +28,13 @@ import {Header, SpinnerView} from '../../common/components';
 //import * as Animatable from 'react-native-animatable';
 // ASSETS
 import {Images, Color, Matrics} from '../../common/styles';
-import {MIcon, McIcon, EIcon, F5Icon} from '../../common/assets/vector-icon';
+import {
+  MIcon,
+  McIcon,
+  EIcon,
+  F5Icon,
+  Ionicons,
+} from '../../common/assets/vector-icon';
 import APICaller from '../../utils/api-caller';
 import Helper from '../../utils/helper';
 import ComplaintWithQRCode from '../../components/complaint-with-qr-code';
@@ -139,7 +145,7 @@ class ComplainList extends Component {
     }`;
     const method = 'GET';
     APICaller(`${endPoint}`, method).then(json => {
-      console.log(json, 'jsooo');
+      console.log(json, 'jsooooo');
       if (json.data.Success === '1') {
         if (json.data.Response && json.data.Response.length === 0) {
           this.setState({
@@ -555,16 +561,16 @@ class ComplainList extends Component {
   };
 
   renderCallIcon = item => {
-    // console.log(item.)
     return (
       <TouchableOpacity
         onPress={() => {
           Linking.openURL(`tel:${item.MobileNo}`);
         }}
         style={{
-          paddingHorizontal: 5,
           justifyContent: 'center',
+          alignItems: 'center',
           height: 30,
+          width: 30,
           borderRadius: 30,
           marginRight: 8,
           borderWidth: 1,
@@ -685,6 +691,7 @@ class ComplainList extends Component {
                   {this.renderCloseCompliantIcon(item)}
                   {this.renderPauseButton(item, index)}
                   {this.renderReviseButton(item, index)}
+                  {this.renderLocationNavigate(item, index)}
                 </View>
               ))}
 
@@ -697,6 +704,7 @@ class ComplainList extends Component {
                 marginVertical: 5,
               }}>
               {this.renderCloseCompliantIcon(item)}
+              {this.renderLocationNavigate(item, index)}
             </View>
           )}
 
@@ -718,10 +726,46 @@ class ComplainList extends Component {
                 {this.renderPauseButton(item, index)}
                 {this.renderReviseButton(item, index)}
                 {this.renderConfirmButton(item, index)}
+                {this.renderLocationNavigate(item, index)}
               </View>
             )}
         </View>
       </View>
+    );
+  };
+
+  renderLocationNavigate = (item, index) => {
+    let address = item.Address;
+    let address0 = address.split(',');
+    let joinAddress = '';
+    address0.map((res, index) => {
+      if (index == 0 || index == 1 || index == 3) {
+        return;
+      }
+      if (_.size(address0) == index + 1) {
+        joinAddress += res;
+      } else {
+        joinAddress += res + ',';
+      }
+    });
+
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          Linking.openURL(`geo:?q=${joinAddress}`);
+        }}
+        style={{
+          justifyContent: 'center',
+          height: 30,
+          width: 30,
+          borderRadius: 30,
+          marginRight: 8,
+          borderWidth: 1,
+          borderColor: '#3484F0',
+          alignItems: 'center',
+        }}>
+        <Ionicons name="location-outline" size={20} color={'#3484F0'} />
+      </TouchableOpacity>
     );
   };
 
@@ -788,16 +832,19 @@ class ComplainList extends Component {
           justifyContent: 'center',
           paddingVertical: 10,
           paddingHorizontal: 10,
-          margin: 10,
+          marginHorizontal: 8,
+          marginVertical: 5,
           backgroundColor: item.Color, //,
-          shadowColor: 'black',
+
+          shadowColor: '#000',
           shadowOffset: {
             width: 0,
-            height: 10,
+            height: 3,
           },
-          shadowOpacity: 0.5,
-          shadowRadius: Matrics.ScaleValue(30),
-          elevation: 2,
+          shadowOpacity: 0.29,
+          shadowRadius: 4.65,
+
+          elevation: 7,
         }}
         activeOpacity={1}>
         <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
@@ -871,7 +918,8 @@ class ComplainList extends Component {
                 ? this.checkPaymentIsDone(item)
                 : _.upperCase('Free')}
             </Text>
-            <View
+            <TouchableOpacity
+              onPress={() => this.collapsibleContentPress(item, index)}
               style={{
                 paddingHorizontal: 3,
                 // padding: 2,
@@ -897,7 +945,7 @@ class ComplainList extends Component {
                   {item.AssignedToName}
                 </Text>
               </View>
-            </View>
+            </TouchableOpacity>
             <TouchableOpacity
               onPress={() => this.collapsibleContentPress(item, index)}
               activeOpacity={1}
