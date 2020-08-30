@@ -53,13 +53,13 @@ const ContactsServiceHelper = {
               });
 
               if (findI > -1) {
-                //this.updateContact(contacts, findI);
-                this.deleteContact(findI);
+                this.updateContact(contacts, findI);
+                //this.deleteContact(findI);
               } else if (findI1 > -1) {
-                // this.updateContact(contacts, findI1);
+                this.updateContact(contacts, findI1);
                 this.deleteContact(findI1);
               } else if (findI2 > -1) {
-                // this.updateContact(contacts, findI2);
+                this.updateContact(contacts, findI2);
                 this.deleteContact(findI2);
               } else {
                 this.getContact();
@@ -90,9 +90,9 @@ const ContactsServiceHelper = {
     let someRecord = [];
     someRecord = cont[findI];
     // console.log(someRecord, 'Record');
-    someRecord.familyName = 'Patel';
-    someRecord.givenName = 'Bhavesh';
-    someRecord.nickName = 'Bhavesh';
+    someRecord.familyName = '(Bhavesh Patel)';
+    someRecord.givenName = 'Premium Sales Corporation';
+    someRecord.nickName = '';
     if (someRecord.phoneNumbers) {
       // console.log('phone record');
       someRecord.phoneNumbers = [
@@ -140,9 +140,9 @@ const ContactsServiceHelper = {
           email: 'psc@premiumitware.com',
         },
       ],
-      familyName: 'Patel',
-      givenName: 'Bhavesh',
-      nickName: 'Bhavesh',
+      familyName: '(Bhavesh Patel)',
+      givenName: 'Premium Sales Corporation',
+      nickName: '',
       middleName: '',
       phoneNumbers: [
         {

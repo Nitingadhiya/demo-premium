@@ -95,16 +95,16 @@ export default class submitComplaint extends Component {
     });
   }
 
-  getcompDescList() {
+  async getcompDescList() {
     if (!this.state.refreshing) {
       this.setState({loadingData: true});
     }
 
-    this.setState({
-      loadingData: true,
-    });
+    const userInfo = await Helper.getLocalStorageItem('userInfo');
 
-    const endPoint = `GetComplainDescriptionList`;
+    const loginType = _.get(userInfo, 'LoginType', '');
+
+    const endPoint = `GetComplainDescriptionList?LoginType=${loginType}`;
     const method = 'GET';
     APICaller(`${endPoint}`, method).then(json => {
       this.setState({

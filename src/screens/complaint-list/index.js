@@ -1076,7 +1076,9 @@ class ComplainList extends Component {
           transparent
           visible={this.state.modalVisible}
           onRequestClose={() => {
-            Alert.alert('Modal has been closed.');
+            this.setState({
+              modalVisible: false,
+            });
           }}>
           <View style={{flex: 1, backgroundColor: 'rgba(0,0,0,0.5)'}}>
             {this.state.compDetails && (
