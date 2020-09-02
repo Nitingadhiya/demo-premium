@@ -36,6 +36,7 @@ import OrderComponentRequest from './order-component-request';
 import ChatMessage from './chat-message';
 import ContactList from './contact-list';
 import ContactsServiceHelper from '../utils/contacts';
+import ComplaintBooking from './complaint-booking';
 
 type Props = {
   route: RouteProp<StackNavigatorParamlist, 'Splash'>,
@@ -279,6 +280,7 @@ export default class Splash extends React.Component {
 
         <Stack.Screen name="ContactList" component={ContactList} />
 
+        <Stack.Screen name="ComplaintBooking" component={ComplaintBooking} />
         {/* <Stack.Screen
           name="Details"
           component={Details}

@@ -91,7 +91,8 @@ export default class Dashboard extends Component {
   }
 
   registerComplain() {
-    Events.trigger('complaintRegisterModal', true);
+    NavigationHelper.navigate(this.props.navigation, 'ComplaintBooking');
+    //Events.trigger('complaintRegisterModal', true);
   }
 
   onRefresh = () => {
