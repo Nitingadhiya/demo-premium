@@ -3,27 +3,25 @@ import {View, Text, TouchableOpacity} from 'react-native';
 import styles from './styles';
 import PickAddressModal from '../../pick-address-modal';
 
-const contantText = 'Landmark';
+const contantText = 'Road';
 
-export const LandMarkTextPickerTextBox = ({landmark}) => {
-  console.log(landmark, 'landmark');
+export const RoadPickerTextBox = ({road}) => {
   const [addressModalVisible, useaddressModalVisible] = useState(false);
-  const [landmarkText, userLandMarkText] = useState();
+  const [roadText, userRoadText] = useState();
   useEffect(() => {
-    console.log(landmark, 'land');
-    if (landmark) {
-      userLandMarkText(landmark);
+    if (road) {
+      userRoadText(road);
     }
-  }, [landmark]); // Only re-run the effect if images changes
+  }, [road]); // Only re-run the effect if images changes
 
   const renderPickerModal = () => {
     if (addressModalVisible) {
       return (
         <PickAddressModal
-          searchPlaceholderText={'Landmark'}
-          modalType={'Landmark'}
+          searchPlaceholderText={'Road'}
+          modalType={'Road'}
           closeModalPress={(type, item) => {
-            userLandMarkText(item);
+            userRoadText(item);
             useaddressModalVisible(false);
           }}
         />
@@ -41,10 +39,10 @@ export const LandMarkTextPickerTextBox = ({landmark}) => {
           <Text style={styles.birthdayLabelText}>{contantText}</Text>
         </View>
         <View style={styles.flex1}>
-          {landmarkText ? (
-            <Text style={styles.font16_333}>{landmarkText}</Text>
+          {roadText ? (
+            <Text style={styles.font16_333}>{roadText}</Text>
           ) : (
-            <Text style={styles.font16_999}>{contantText}</Text>
+            <Text style={styles.font16_999}>{roadText}</Text>
           )}
         </View>
       </TouchableOpacity>

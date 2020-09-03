@@ -19,8 +19,17 @@ import {SpinnerView, Header, TextInputView} from '../../common/components';
 import Helper from '../../utils/helper';
 import Events from '../../utils/events';
 import ComplaintPriceModal from '../../components/complaint-price-modal';
-import {LandMarkTextPickerTextBox} from '../../components/profile-component/landmark';
+import {
+  LandMarkTextPickerTextBox,
+  RoadPickerTextBox,
+  AreaPickerTextBox,
+} from '../../components/profile-component';
 import {ScrollView} from 'react-native-gesture-handler';
+import {
+  ItemTypeSelectBox,
+  SystemTypeSelectBox,
+  BusinessTypeSelectBox,
+} from '../../components/system-component';
 
 let filterComplainDesc = [];
 //= ===CLASS DECLARATION====//
@@ -356,12 +365,140 @@ export default class ComplaintBooking extends Component {
   };
 
   renderLandMark = () => {
-    const {companyName} = this.state;
     return (
       <View style={styles.textinputViewStyle}>
-        <LandMarkTextPickerTextBox />
+        <LandMarkTextPickerTextBox landmark={'asdsa'} />
       </View>
     );
+  };
+
+  renderRoad = () => {
+    return (
+      <View style={styles.textinputViewStyle}>
+        <RoadPickerTextBox road={'asdsa***'} />
+      </View>
+    );
+  };
+
+  renderPincodeTextBox = () => {
+    const {pincode} = this.state;
+    return (
+      <View style={styles.textinputViewStyle}>
+        <TextInputView
+          placeholder={'Pincode'}
+          placeholderTextColor={Color.silver}
+          style={styles.textInput}
+          value={pincode}
+          returnKeyType={'done'}
+          keyboardType={'numeric'}
+          maxLength={6}
+          onChangeText={val => this.changeText(val)}
+          onFocus={() => this.onFocus()}
+        />
+      </View>
+    );
+  };
+
+  renderArea = () => {
+    return (
+      <View style={styles.textinputViewStyle}>
+        <AreaPickerTextBox area={'area***'} />
+      </View>
+    );
+  };
+
+  renderCityTextBox = () => {
+    const {city} = this.state;
+    return (
+      <View style={styles.textinputViewStyle}>
+        <TextInputView
+          placeholder={'City'}
+          placeholderTextColor={Color.silver}
+          style={styles.textInput}
+          value={city}
+          returnKeyType={'done'}
+          keyboardType={'default'}
+          maxLength={6}
+          onChangeText={val => this.changeText(val)}
+          onFocus={() => this.onFocus()}
+        />
+      </View>
+    );
+  };
+
+  renderStateTextBox = () => {
+    const {division} = this.state;
+    return (
+      <View style={styles.textinputViewStyle}>
+        <TextInputView
+          placeholder={'Division'}
+          placeholderTextColor={Color.silver}
+          style={styles.textInput}
+          value={division}
+          returnKeyType={'done'}
+          keyboardType={'default'}
+          maxLength={6}
+          onChangeText={val => this.changeText(val)}
+          onFocus={() => this.onFocus()}
+        />
+      </View>
+    );
+  };
+
+  renderReferenceBy = () => {
+    const {referenceBy} = this.state;
+    return (
+      <View style={styles.textinputViewStyle}>
+        <TextInputView
+          placeholder={'Reference By'}
+          placeholderTextColor={Color.silver}
+          style={styles.textInput}
+          value={referenceBy}
+          returnKeyType={'done'}
+          keyboardType={'default'}
+          maxLength={6}
+          onChangeText={val => this.changeText(val)}
+          onFocus={() => this.onFocus()}
+        />
+      </View>
+    );
+  };
+
+  renderRemark = () => {
+    const {remark} = this.state;
+    return (
+      <View style={styles.textinputViewStyle}>
+        <TextInputView
+          placeholder={'Remark'}
+          placeholderTextColor={Color.silver}
+          style={styles.textInput}
+          value={remark}
+          returnKeyType={'done'}
+          keyboardType={'default'}
+          maxLength={6}
+          onChangeText={val => this.changeText(val)}
+          onFocus={() => this.onFocus()}
+        />
+      </View>
+    );
+  };
+
+  renderItemType = () => {
+    const {filterComplainDesc} = this.state;
+    if (!_.size(filterComplainDesc)) return null;
+    return <ItemTypeSelectBox item={filterComplainDesc} />;
+  };
+
+  renderSystemType = () => {
+    const {filterComplainDesc} = this.state;
+    if (!_.size(filterComplainDesc)) return null;
+    return <SystemTypeSelectBox item={filterComplainDesc} />;
+  };
+
+  renderBusinessType = () => {
+    const {filterComplainDesc} = this.state;
+    if (!_.size(filterComplainDesc)) return null;
+    return <BusinessTypeSelectBox item={filterComplainDesc} />;
   };
 
   render() {
@@ -400,6 +537,17 @@ export default class ComplaintBooking extends Component {
             {this.renderCompanyName()}
             {this.renderHomeSociety()}
             {this.renderLandMark()}
+            {this.renderRoad()}
+            {this.renderPincodeTextBox()}
+            {this.renderArea()}
+            {this.renderCityTextBox()}
+            {this.renderStateTextBox()}
+            {this.renderReferenceBy()}
+            {this.renderRemark()}
+
+            {this.renderItemType()}
+            {this.renderSystemType()}
+            {this.renderBusinessType()}
 
             <View style={styles.borderW1}>
               <Picker
