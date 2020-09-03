@@ -126,4 +126,13 @@ export default (styles = {
     top: '45%',
     alignSelf: 'center',
   },
+  ismajorTouch: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+    paddingVertical: 5,
+  },
+  isMajorText: {
+    marginLeft: 5,
+  },
 });

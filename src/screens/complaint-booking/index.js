@@ -501,6 +501,45 @@ export default class ComplaintBooking extends Component {
     return <BusinessTypeSelectBox item={filterComplainDesc} />;
   };
 
+  renderIsMajor = () => {
+    return (
+      <TouchableOpacity style={styles.ismajorTouch}>
+        <MIcon
+          name="check-box-outline-blank"
+          color={Color.primary}
+          size={Matrics.ScaleValue(20)}
+        />
+        <Text style={styles.isMajorText}>Is Major</Text>
+      </TouchableOpacity>
+    );
+  };
+
+  renderAntivirus = () => {
+    return (
+      <TouchableOpacity style={styles.ismajorTouch}>
+        <MIcon
+          name="check-box-outline-blank"
+          color={Color.primary}
+          size={Matrics.ScaleValue(20)}
+        />
+        <Text style={styles.isMajorText}>Antivirus</Text>
+      </TouchableOpacity>
+    );
+  };
+
+  renderThirdPartyInvolvement = () => {
+    return (
+      <TouchableOpacity style={styles.ismajorTouch}>
+        <MIcon
+          name="check-box-outline-blank"
+          color={Color.primary}
+          size={Matrics.ScaleValue(20)}
+        />
+        <Text style={styles.isMajorText}>Third Party Involvement</Text>
+      </TouchableOpacity>
+    );
+  };
+
   render() {
     const {systemTag, complainCharge} = this.state;
     return (
@@ -548,6 +587,10 @@ export default class ComplaintBooking extends Component {
             {this.renderItemType()}
             {this.renderSystemType()}
             {this.renderBusinessType()}
+
+            {this.renderIsMajor()}
+            {this.renderAntivirus()}
+            {this.renderThirdPartyInvolvement()}
 
             <View style={styles.borderW1}>
               <Picker
