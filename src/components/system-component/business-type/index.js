@@ -8,7 +8,7 @@ export const BusinessTypeSelectBox = ({item}) => {
   return (
     <View style={styles.container}>
       <View style={styles.viewSystemName}>
-        <Text>Enter Business Subject</Text>
+        <Text style={styles.textFieldTitle}>Business</Text>
       </View>
       <View style={styles.borderW1}>
         <Picker

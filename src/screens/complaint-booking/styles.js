@@ -1,4 +1,5 @@
 import {Color, Matrics} from '../../common/styles';
+import {ClipPath} from 'react-native-svg';
 
 export default (styles = {
   container: {
@@ -30,6 +31,20 @@ export default (styles = {
     borderColor: '#d3d3d3',
     borderWidth: 1,
     marginBottom: Matrics.ScaleValue(5),
+  },
+  searchWithProblem: {
+    backgroundColor: Color.white,
+    borderColor: '#d3d3d3',
+    borderWidth: 1,
+    marginBottom: Matrics.ScaleValue(5),
+    flexDirection: 'row',
+    height: 50,
+    alignItems: 'center',
+  },
+  problemText: {
+    marginLeft: 10,
+    fontSize: 16,
+    color: Color.black,
   },
   textInput: {
     backgroundColor: 'transparent',
@@ -134,5 +149,21 @@ export default (styles = {
   },
   isMajorText: {
     marginLeft: 5,
+    fontSize: 16,
+    color: Color.black30,
   },
+  text16Font: {
+    fontSize: 16,
+    color: Color.black30,
+  },
+
+  radioButtonAntivirus: {
+    marginLeft: 10,
+  },
+
+  radioTouchSelection: {
+    flexDirection: 'row',
+    padding: 5,
+  },
+  mrg5: {marginLeft: 5},
 });

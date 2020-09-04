@@ -1,4 +1,4 @@
-import {Matrics} from '../../../common/styles';
+import {Matrics, Color} from '../../../common/styles';
 
 export default (styles = {
   labelClass: {
@@ -20,6 +20,10 @@ export default (styles = {
     borderColor: '#d3d3d3',
     borderWidth: 1,
     marginVertical: Matrics.ScaleValue(5),
+  },
+  textFieldTitle: {
+    fontSize: 16,
+    color: Color.black70,
   },
 });
 

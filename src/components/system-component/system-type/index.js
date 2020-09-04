@@ -8,7 +8,7 @@ export const SystemTypeSelectBox = ({item}) => {
   return (
     <View style={styles.container}>
       <View style={styles.viewSystemName}>
-        <Text>Enter System Subject</Text>
+        <Text style={styles.textFieldTitle}>System</Text>
       </View>
       <View style={styles.borderW1}>
         <Picker

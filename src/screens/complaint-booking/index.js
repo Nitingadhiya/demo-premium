@@ -59,6 +59,11 @@ export default class ComplaintBooking extends Component {
     selectedServices: 'Advance',
     userInfo: null,
     systemTag: null,
+    itemTypes: [],
+    businessTypes: [],
+    antiVirus: [],
+    thirdParty: [],
+    systemTypes: [],
   };
 
   // ------------>>>LifeCycle Methods------------->>>
@@ -98,6 +103,8 @@ export default class ComplaintBooking extends Component {
         complainCharge: res.complainCharge,
       });
     });
+
+    this.getComplaintBookAllData();
   }
 
   async getUserInfo() {
@@ -105,6 +112,29 @@ export default class ComplaintBooking extends Component {
     this.setState({
       userInfo,
     });
+  }
+
+  getComplaintBookAllData() {
+    const endPoint = `getComplaintBookAllData`;
+    const method = 'GET';
+    APICaller(`${endPoint}`, method).then(json => {
+      console.log(json, 'json');
+      this.manageResponseBookAllData(json);
+    });
+  }
+
+  manageResponseBookAllData(json) {
+    const data = _.get(json, 'data.Response', '');
+    if (data) {
+      this.setState({
+        itemTypes: _.get(data, 'ItemTypes', []),
+        businessTypes: _.get(data, 'BusinessTypes', []),
+        antiVirus: _.get(data, 'AntiVirus', []),
+        thirdParty: _.get(data, 'ThirdParty', []),
+        systemTypes: _.get(data, 'SystemTypes', []),
+      });
+    }
+    console.log(data, 'FDD');
   }
 
   async getcompDescList() {
@@ -484,21 +514,21 @@ export default class ComplaintBooking extends Component {
   };
 
   renderItemType = () => {
-    const {filterComplainDesc} = this.state;
-    if (!_.size(filterComplainDesc)) return null;
-    return <ItemTypeSelectBox item={filterComplainDesc} />;
+    const {itemTypes} = this.state;
+    if (!_.size(itemTypes)) return null;
+    return <ItemTypeSelectBox item={itemTypes} />;
   };
 
   renderSystemType = () => {
-    const {filterComplainDesc} = this.state;
-    if (!_.size(filterComplainDesc)) return null;
-    return <SystemTypeSelectBox item={filterComplainDesc} />;
+    const {systemTypes} = this.state;
+    if (!_.size(systemTypes)) return null;
+    return <SystemTypeSelectBox item={systemTypes} />;
   };
 
   renderBusinessType = () => {
-    const {filterComplainDesc} = this.state;
-    if (!_.size(filterComplainDesc)) return null;
-    return <BusinessTypeSelectBox item={filterComplainDesc} />;
+    const {businessTypes} = this.state;
+    if (!_.size(businessTypes)) return null;
+    return <BusinessTypeSelectBox item={businessTypes} />;
   };
 
   renderIsMajor = () => {
@@ -514,29 +544,91 @@ export default class ComplaintBooking extends Component {
     );
   };
 
-  renderAntivirus = () => {
+  renderRadioIcon = checked => {
+    if (!checked) {
+      return (
+        <MIcon name="radio-button-unchecked" color={Color.primary} size={22} />
+      );
+    }
+
     return (
-      <TouchableOpacity style={styles.ismajorTouch}>
-        <MIcon
-          name="check-box-outline-blank"
-          color={Color.primary}
-          size={Matrics.ScaleValue(20)}
-        />
-        <Text style={styles.isMajorText}>Antivirus</Text>
-      </TouchableOpacity>
+      <MIcon name="radio-button-checked" color={Color.primary} size={22} />
+    );
+  };
+
+  renderAntivirus = () => {
+    const {antiVirus} = this.state;
+    return (
+      <>
+        <TouchableOpacity style={styles.ismajorTouch}>
+          <MIcon
+            name="check-box-outline-blank"
+            color={Color.primary}
+            size={Matrics.ScaleValue(20)}
+          />
+          <Text style={styles.isMajorText}>Antivirus</Text>
+        </TouchableOpacity>
+        <View style={styles.radioButtonAntivirus}>
+          {antiVirus.map(res => {
+            return (
+              <TouchableOpacity style={styles.radioTouchSelection}>
+                {this.renderRadioIcon()}
+                <Text style={[styles.text16Font, styles.mrg5]}>
+                  {_.get(res, 'CodeDesc', '')}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </>
     );
   };
 
   renderThirdPartyInvolvement = () => {
+    const {thirdParty} = this.state;
     return (
-      <TouchableOpacity style={styles.ismajorTouch}>
-        <MIcon
-          name="check-box-outline-blank"
-          color={Color.primary}
-          size={Matrics.ScaleValue(20)}
-        />
-        <Text style={styles.isMajorText}>Third Party Involvement</Text>
-      </TouchableOpacity>
+      <>
+        <TouchableOpacity style={styles.ismajorTouch}>
+          <MIcon
+            name="check-box-outline-blank"
+            color={Color.primary}
+            size={Matrics.ScaleValue(20)}
+          />
+          <Text style={styles.isMajorText}>Third Party Involvement</Text>
+        </TouchableOpacity>
+        <View style={styles.radioButtonAntivirus}>
+          {thirdParty.map(res => {
+            return (
+              <TouchableOpacity style={styles.radioTouchSelection}>
+                {this.renderRadioIcon()}
+                <Text style={[styles.text16Font, styles.mrg5]}>
+                  {_.get(res, 'CodeDesc', '')}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </>
+    );
+  };
+
+  renderProblemList = () => {
+    const {problem} = this.state;
+    return (
+      <View style={styles.searchWithProblem}>
+        <MIcon name="search" size={24} color={Color.slateGrey} />
+        <Text style={styles.problemText}>Problem</Text>
+      </View>
+    );
+  };
+
+  renderSystemPartList = () => {
+    const {systemPart} = this.state;
+    return (
+      <View style={styles.searchWithProblem}>
+        <MIcon name="search" size={24} color={Color.slateGrey} />
+        <Text style={styles.problemText}>System Parts</Text>
+      </View>
     );
   };
 
@@ -592,71 +684,9 @@ export default class ComplaintBooking extends Component {
             {this.renderAntivirus()}
             {this.renderThirdPartyInvolvement()}
 
-            <View style={styles.borderW1}>
-              <Picker
-                prompt="Enter Complaint Subject"
-                selectedValue={this.state.selectedCompSubject || 0}
-                onValueChange={(itemValue, itemIndex) => {
-                  this.subjectChange(itemValue);
-                  this.setState({selectedCompSubject: itemValue});
-                }}>
-                {this.state.subject.map((data, index) => {
-                  return (
-                    <Picker.Item
-                      label={data.ParentCodeType}
-                      value={data.ParentCodeType}
-                      key={`${index}`}
-                    />
-                  );
-                })}
-              </Picker>
-            </View>
-            <View style={styles.viewSystemName}>
-              <Text>Enter Complaint Subject</Text>
-            </View>
-            <View style={styles.borderW1}>
-              <Picker
-                prompt="What is the problem"
-                selectedValue={this.state.selectedCompDesc || 0}
-                onValueChange={(itemValue, itemIndex) => {
-                  this.setState({selectedCompDesc: itemValue});
-                }}>
-                {this.state.filterComplainDesc.map((data, index) => {
-                  return (
-                    <Picker.Item
-                      label={data.CodeDesc}
-                      value={data.CodeDesc}
-                      key={`${index}`}
-                    />
-                  );
-                })}
-              </Picker>
-            </View>
-            {this.state.tmpSYS && this.state.tmpSYS.length > 0 && (
-              <View>
-                <View style={styles.viewSystemName}>
-                  <Text>Enter System Name</Text>
-                </View>
-                <View style={styles.borderW1}>
-                  <Picker
-                    prompt="Enter System Name"
-                    selectedValue={this.state.systemTag || 0}
-                    onValueChange={(itemValue, itemIndex) => {
-                      this.setState({systemTag: itemValue});
-                    }}>
-                    {this.state.tmpSYS.map((data, index) => {
-                      return (
-                        <Picker.Item
-                          label={data.sysName}
-                          value={data.sysTag}
-                          key={`${index}`}
-                        />
-                      );
-                    })}
-                  </Picker>
-                </View>
-              </View>
-            )}
+            {this.renderProblemList()}
+            {this.renderSystemPartList()}
+
             <View style={styles.nextandSubmitClass}>
               <TouchableOpacity
                 onPress={() => {

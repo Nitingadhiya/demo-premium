@@ -11,11 +11,11 @@ export const ItemTypeSelectBox = ({item}) => {
   return (
     <View style={styles.container}>
       <View style={styles.viewSystemName}>
-        <Text>Enter Complaint Subject</Text>
+        <Text style={styles.textFieldTitle}>Item Type</Text>
       </View>
       <View style={styles.borderW1}>
         <Picker
-          prompt="Enter Complaint Subject"
+          prompt="Enter Item Type"
           selectedValue={selectedItem || 0}
           onValueChange={(itemValue, itemIndex) => {
             setItemPickerValue(itemValue);
@@ -26,7 +26,7 @@ export const ItemTypeSelectBox = ({item}) => {
             return (
               <Picker.Item
                 label={data.CodeDesc}
-                value={data.CodeDesc}
+                value={data.CodeId}
                 key={`${index}`}
               />
             );
