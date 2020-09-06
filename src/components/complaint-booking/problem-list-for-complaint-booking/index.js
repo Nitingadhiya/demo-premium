@@ -6,12 +6,9 @@ import {
   Modal,
   FlatList,
   TextInput,
-  Keyboard,
 } from 'react-native';
 import _ from 'lodash';
-import {CommonActions} from '@react-navigation/native';
-import {TextInputView, SpinnerView} from '../../../common/components';
-import {MIcon, McIcon} from '../../../common/assets/vector-icon';
+import {MIcon} from '../../../common/assets/vector-icon';
 import {Color, Matrics} from '../../../common/styles';
 import styles from './styles';
 

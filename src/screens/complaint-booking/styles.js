@@ -112,9 +112,10 @@ export default (styles = {
     right: 0,
   },
   nextandSubmitClass: {
-    height: 45,
+    height: Matrics.ScaleValue(85),
     alignItems: 'center',
     marginTop: 10,
+    backgroundColor: '#f3f3f3',
   },
   touchNextButton: {
     width: '60%',
@@ -203,5 +204,37 @@ export default (styles = {
     marginBottom: Matrics.ScaleValue(20),
     borderRadius: Matrics.ScaleValue(5),
     elevation: 2,
+  },
+
+  /////
+
+  totalPriceView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: Matrics.ScaleValue(5),
+    width: '100%',
+  },
+  totalLabel: {
+    fontSize: Matrics.ScaleValue(18),
+    color: Color.black30,
+  },
+  priceTotalValue: {
+    fontSize: Matrics.ScaleValue(18),
+    color: Color.black30,
+    fontWeight: 'bold',
+  },
+  systemQRcode: {
+    flexDirection: 'row',
+    width: '100%',
+  },
+  systemQRTextInput: {
+    flex: 1,
+  },
+  iconArrow: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: Matrics.ScaleValue(55),
+    paddingHorizontal: Matrics.ScaleValue(5),
   },
 });

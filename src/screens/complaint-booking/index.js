@@ -13,7 +13,7 @@ import _ from 'lodash';
 import {WebView} from 'react-native-webview';
 import styles from './styles';
 import {Matrics, Color} from '../../common/styles';
-import {MIcon, McIcon} from '../../common/assets/vector-icon';
+import {MIcon, McIcon, Ionicons} from '../../common/assets/vector-icon';
 import APICaller from '../../utils/api-caller';
 import {SpinnerView, Header, TextInputView} from '../../common/components';
 import Helper from '../../utils/helper';
@@ -81,6 +81,7 @@ export default class ComplaintBooking extends Component {
     modalSystemList: false,
     systemPartsComplaintList: [],
     selectedSystemPartsList: [],
+    totalCharge: 0,
   };
 
   // ------------>>>LifeCycle Methods------------->>>
@@ -328,7 +329,7 @@ export default class ComplaintBooking extends Component {
   renderMobileNoTextBox = () => {
     const {systemTag} = this.state;
     return (
-      <View style={styles.textinputViewStyle}>
+      <View style={[styles.textinputViewStyle, styles.systemQRTextInput]}>
         <TextInputView
           placeholder={'Enter Mobile No.'}
           placeholderTextColor={Color.silver}
@@ -691,7 +692,6 @@ export default class ComplaintBooking extends Component {
   };
 
   renderProblemList = () => {
-    const {problem} = this.state;
     return (
       <TouchableOpacity
         style={styles.searchWithProblem}
@@ -735,9 +735,10 @@ export default class ComplaintBooking extends Component {
         visible={modalProblemList}
         modalVisible={bool => this.problemModalVisible(bool)}
         selectedProblemsOptions={selectedProblemList}
-        selectedProblems={problems => {
+        selectedProblems={async problems => {
           this.problemModalVisible(false);
-          this.setState({selectedProblemList: problems});
+          await this.setState({selectedProblemList: problems});
+          this.calculateTotal();
         }}
         searchValue={''}
       />
@@ -766,14 +767,38 @@ export default class ComplaintBooking extends Component {
     );
   };
 
-  dSelectProblem(index) {
-    console.log(index, 'indexx');
+  async dSelectProblem(index) {
     let {selectedProblemList} = this.state;
     selectedProblemList.splice(index, 1);
-    this.setState({
+    await this.setState({
       selectedProblemList,
     });
-    console.log(selectedProblemList, 'indexx');
+    this.calculateTotal();
+  }
+
+  calculateTotal() {
+    const {selectedProblemList, selectedSystemPartsList} = this.state;
+
+    let totalProblemCharge = 0;
+    let totalPartsCharge = 0;
+    selectedProblemList.map(res => {
+      console.log(res);
+      totalProblemCharge =
+        Number(totalProblemCharge) + Number(_.get(res, 'ParentCodeType', 0));
+    });
+
+    selectedSystemPartsList.map(res => {
+      console.log(res, 'YYYYY');
+      totalPartsCharge =
+        Number(totalPartsCharge) + Number(_.get(res, 'Price', 0));
+    });
+
+    this.setState({
+      totalCharge: totalPartsCharge + totalProblemCharge,
+    });
+
+    console.log(totalPartsCharge, 'totalPartsCharge');
+    console.log(totalProblemCharge, 'chaege');
   }
 
   /* System parts modal start */
@@ -791,9 +816,10 @@ export default class ComplaintBooking extends Component {
         visible={modalSystemList}
         modalVisible={bool => this.systemModalVisible(bool)}
         selectedProblemsOptions={selectedSystemPartsList}
-        selectedProblems={problems => {
+        selectedProblems={async problems => {
           this.systemModalVisible(false);
-          this.setState({selectedSystemPartsList: problems});
+          await this.setState({selectedSystemPartsList: problems});
+          this.calculateTotal();
         }}
         searchValue={''}
       />
@@ -828,17 +854,91 @@ export default class ComplaintBooking extends Component {
     );
   };
 
-  dSelectSystemParts(index) {
+  async dSelectSystemParts(index) {
     console.log(index, 'indexx');
     let {selectedSystemPartsList} = this.state;
     selectedSystemPartsList.splice(index, 1);
-    this.setState({
+    await this.setState({
       selectedSystemPartsList,
     });
-    console.log(selectedSystemPartsList, 'indexx');
+    this.calculateTotal();
   }
 
   /* System parts Table view end */
+
+  renderFixedButton = complainCharge => {
+    const {totalCharge} = this.state;
+    return (
+      <View style={styles.nextandSubmitClass}>
+        <View style={styles.totalPriceView}>
+          <Text style={styles.totalLabel}>Total</Text>
+          <Text style={styles.priceTotalValue}>₹ {totalCharge}</Text>
+        </View>
+        <TouchableOpacity
+          onPress={() => {
+            complainCharge > 0
+              ? this.nextAndSubmit()
+              : this.submitComplaintMethod();
+          }}
+          style={styles.touchNextButton}>
+          <Text style={styles.font16White}>
+            {complainCharge > 0 ? 'Next' : 'Submit'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  toggleMoreInfo = () => {
+    this.setState({
+      openMoreInfo: !this.state.openMoreInfo,
+    });
+  };
+
+  renderQRcodeInfo = () => {
+    const {openMoreInfo} = this.state;
+    return (
+      <TouchableOpacity
+        style={styles.iconArrow}
+        onPress={() => this.toggleMoreInfo()}>
+        <Ionicons
+          name={openMoreInfo ? 'arrow-up-circle' : 'arrow-down-circle'}
+          color={this.checkSystemCodeAvailable()}
+          size={Matrics.ScaleValue(30)}
+        />
+      </TouchableOpacity>
+    );
+  };
+
+  checkSystemCodeAvailable = () => {
+    const {checkSystemAvailable} = this.state;
+    if (checkSystemAvailable) {
+      return 'green';
+    }
+    if (!checkSystemAvailable) {
+      return 'red';
+    }
+  };
+
+  renderInformationFoundFromSystemTag = () => {
+    const {openMoreInfo} = this.state;
+    if (!openMoreInfo) return null;
+    return (
+      <>
+        {this.renderPartyName()}
+        {this.renderCompanyName()}
+        {this.renderHomeSociety()}
+        {this.renderLandMark()}
+        {this.renderRoad()}
+        {this.renderPincodeTextBox()}
+        {this.renderArea()}
+        {this.renderCityTextBox()}
+        {this.renderStateTextBox()}
+        {this.renderReferenceBy()}
+        {this.renderRemark()}
+      </>
+    );
+  };
 
   render() {
     const {systemTag, complainCharge} = this.state;
@@ -856,6 +956,7 @@ export default class ComplaintBooking extends Component {
             <View style={styles.viewSystemName}>
               <Text>System Tag</Text>
             </View>
+
             <View style={styles.textinputViewStyle}>
               <TextInputView
                 placeholder={'System Tag'}
@@ -871,18 +972,12 @@ export default class ComplaintBooking extends Component {
                 onFocus={() => this.onFocus()}
               />
             </View>
-            {this.renderMobileNoTextBox()}
-            {this.renderPartyName()}
-            {this.renderCompanyName()}
-            {this.renderHomeSociety()}
-            {this.renderLandMark()}
-            {this.renderRoad()}
-            {this.renderPincodeTextBox()}
-            {this.renderArea()}
-            {this.renderCityTextBox()}
-            {this.renderStateTextBox()}
-            {this.renderReferenceBy()}
-            {this.renderRemark()}
+
+            <View style={styles.systemQRcode}>
+              {this.renderMobileNoTextBox()}
+              {this.renderQRcodeInfo()}
+            </View>
+            {this.renderInformationFoundFromSystemTag()}
 
             {this.renderItemType()}
             {this.renderSystemType()}
@@ -896,24 +991,11 @@ export default class ComplaintBooking extends Component {
             {this.renderProblemTableList()}
             {this.renderSystemPartList()}
             {this.renderSystemTableList()}
-
-            <View style={styles.nextandSubmitClass}>
-              <TouchableOpacity
-                onPress={() => {
-                  complainCharge > 0
-                    ? this.nextAndSubmit()
-                    : this.submitComplaintMethod();
-                }}
-                style={styles.touchNextButton}>
-                <Text style={styles.font16White}>
-                  {complainCharge > 0 ? 'Next' : 'Submit'}
-                </Text>
-              </TouchableOpacity>
-            </View>
           </View>
           {this.renderProblemListModal()}
           {this.renderSystemPartsListModal()}
         </ScrollView>
+        {this.renderFixedButton(complainCharge)}
       </SafeAreaView>
     );
   }

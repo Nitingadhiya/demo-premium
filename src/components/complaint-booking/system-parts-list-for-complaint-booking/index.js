@@ -6,12 +6,9 @@ import {
   Modal,
   FlatList,
   TextInput,
-  Keyboard,
 } from 'react-native';
 import _ from 'lodash';
-import {CommonActions} from '@react-navigation/native';
-import {TextInputView, SpinnerView} from '../../../common/components';
-import {MIcon, McIcon} from '../../../common/assets/vector-icon';
+import {MIcon} from '../../../common/assets/vector-icon';
 import {Color, Matrics} from '../../../common/styles';
 import styles from './styles';
 
@@ -30,14 +27,14 @@ export const SystemPartsListForComplaintBooking = React.memo(
     const [idset, setIDValue] = useState();
 
     const changeTextForsearch = text => {
-      const epi = item.filter(res =>
-        replaceCustomExpression(res.CodeDesc).includes(
+      const epi = item.filter(res => {
+        if (!res) return null;
+        return replaceCustomExpression(res.PartDescription).includes(
           replaceCustomExpression(text),
-        ),
-      );
+        );
+      });
       getProblemComplaint(epi);
       textInputForsearch(text);
-      // this.setState({landmarkSearch: text, filterLandmarkList: epi});
     };
 
     const replaceCustomExpression = title => {
@@ -70,7 +67,7 @@ export const SystemPartsListForComplaintBooking = React.memo(
             <Text style={styles.backText}>Back</Text>
           </TouchableOpacity>
           <TextInput
-            placeholder={'Search Problems here...'}
+            placeholder={'Search Parts here...'}
             value={searchTextValue}
             autoFocus
             onChangeText={text => changeTextForsearch(text)}
