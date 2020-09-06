@@ -36,14 +36,15 @@ export default (styles = {
     backgroundColor: Color.white,
     borderColor: '#d3d3d3',
     borderWidth: 1,
-    marginBottom: Matrics.ScaleValue(5),
     flexDirection: 'row',
-    height: 50,
+    height: Matrics.ScaleValue(45),
     alignItems: 'center',
+    borderRadius: Matrics.ScaleValue(5),
+    marginTop: Matrics.ScaleValue(10),
   },
   problemText: {
-    marginLeft: 10,
-    fontSize: 16,
+    marginLeft: Matrics.ScaleValue(10),
+    fontSize: Matrics.ScaleValue(14),
     color: Color.black,
   },
   textInput: {
@@ -166,4 +167,41 @@ export default (styles = {
     padding: 5,
   },
   mrg5: {marginLeft: 5},
+
+  problemTableRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderColor: Color.paleGrey,
+    alignItems: 'center',
+    paddingLeft: Matrics.ScaleValue(5),
+  },
+  closeButtonProblem: {
+    padding: Matrics.ScaleValue(5),
+  },
+  problemPriceDesc: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+  },
+  descCode: {
+    fontSize: Matrics.ScaleValue(14),
+    color: Color.black30,
+    flex: 1,
+  },
+  priceCode: {
+    fontSize: Matrics.ScaleValue(14),
+    color: Color.black30,
+    fontWeight: 'bold',
+    flex: 0.2,
+  },
+
+  tableBg: {
+    backgroundColor: '#fafafa',
+    marginTop: Matrics.ScaleValue(5),
+    marginBottom: Matrics.ScaleValue(20),
+    borderRadius: Matrics.ScaleValue(5),
+    elevation: 2,
+  },
 });

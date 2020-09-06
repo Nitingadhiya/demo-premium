@@ -13,7 +13,7 @@ import _ from 'lodash';
 import {WebView} from 'react-native-webview';
 import styles from './styles';
 import {Matrics, Color} from '../../common/styles';
-import {MIcon} from '../../common/assets/vector-icon';
+import {MIcon, McIcon} from '../../common/assets/vector-icon';
 import APICaller from '../../utils/api-caller';
 import {SpinnerView, Header, TextInputView} from '../../common/components';
 import Helper from '../../utils/helper';
@@ -30,8 +30,13 @@ import {
   SystemTypeSelectBox,
   BusinessTypeSelectBox,
 } from '../../components/system-component';
+import {
+  ProblemListForComplaintBooking,
+  SystemPartsListForComplaintBooking,
+} from '../../components/complaint-booking';
 
 let filterComplainDesc = [];
+let problemArray = [];
 //= ===CLASS DECLARATION====//
 export default class ComplaintBooking extends Component {
   state = {
@@ -64,6 +69,18 @@ export default class ComplaintBooking extends Component {
     antiVirus: [],
     thirdParty: [],
     systemTypes: [],
+    problemComplaintList: [],
+    selectedProblemList: [],
+    modalProblemList: false,
+    isMajor: false,
+    selectedAntivirus: null,
+    isThirdParty: false,
+    thirdParty: [],
+    selectedThirdParty: null,
+    /*system modal */
+    modalSystemList: false,
+    systemPartsComplaintList: [],
+    selectedSystemPartsList: [],
   };
 
   // ------------>>>LifeCycle Methods------------->>>
@@ -73,6 +90,7 @@ export default class ComplaintBooking extends Component {
     const params = route.params;
     this.systemTag = '';
     this.getcompDescList();
+    this.getSystemPartsDescList();
     if (params) {
       this.setState({
         systemTag: params.systemTag,
@@ -95,14 +113,6 @@ export default class ComplaintBooking extends Component {
       this.getUserInfo();
     }
     self = this;
-
-    Events.on('complaint-advance-payment', 'complaint', res => {
-      this.setState({
-        webviewShow: res.visible,
-        complaintId: res.complaintId,
-        complainCharge: res.complainCharge,
-      });
-    });
 
     this.getComplaintBookAllData();
   }
@@ -132,16 +142,15 @@ export default class ComplaintBooking extends Component {
         antiVirus: _.get(data, 'AntiVirus', []),
         thirdParty: _.get(data, 'ThirdParty', []),
         systemTypes: _.get(data, 'SystemTypes', []),
+        selectedAntivirus: _.get(data, 'AntiVirus[0]', []),
+        selectedThirdParty: _.get(data, 'ThirdParty[0]', []),
       });
     }
     console.log(data, 'FDD');
   }
 
   async getcompDescList() {
-    if (!this.state.refreshing) {
-      this.setState({loadingData: true});
-    }
-
+    this.setState({loadingData: true});
     const userInfo = await Helper.getLocalStorageItem('userInfo');
 
     const loginType = _.get(userInfo, 'LoginType', '');
@@ -152,47 +161,49 @@ export default class ComplaintBooking extends Component {
       this.setState({
         loadingData: false,
       });
-      if (json.data.Success === '1') {
-        if (json.data.Response) {
-          const dataList = json.data.Response;
-          const subject = [];
-          const complainDesc = [];
-          dataList.map((data, index) => {
-            const exsitSubject = _.findIndex(subject, {
-              ParentCodeTypeID: data.ParentCodeTypeID,
-            });
-            if (exsitSubject < 0) {
-              subject.push({
-                ParentCodeTypeID: data.ParentCodeTypeID,
-                ParentCodeType: data.ParentCodeType,
-              });
-            }
-            complainDesc.push({
-              id: `${index}_id`,
-              ParentCodeTypeID: data.ParentCodeTypeID,
-              CodeDesc: data.CodeDesc,
-            });
-          });
-          this.setState({
-            subject,
-            complainDesc,
-            selectedCompSubject: subject[0].ParentCodeType,
-            selectedCompDesc: complainDesc[0].CodeDesc,
-          });
-          // ////
 
-          complainDesc.map(res => {
-            if (res.ParentCodeTypeID === subject[0].ParentCodeTypeID) {
-              filterComplainDesc.push(res);
-            }
-          });
-          this.setState({
-            filterComplainDesc,
-          });
-        }
-      }
+      this.manageComplaintDescription(json);
     });
   }
+
+  manageComplaintDescription(json) {
+    const data = _.get(json, 'data.Response', '');
+    if (data) {
+      this.setState({
+        problemComplaintList: data,
+      });
+    }
+  }
+
+  /* system Parts api response */
+
+  async getSystemPartsDescList() {
+    this.setState({loadingData: true});
+    const userInfo = await Helper.getLocalStorageItem('userInfo');
+
+    const loginType = _.get(userInfo, 'LoginType', '');
+
+    const endPoint = `GetComplainPartList?LoginType=${loginType}`;
+    const method = 'GET';
+    APICaller(`${endPoint}`, method).then(json => {
+      this.setState({
+        loadingData: false,
+      });
+
+      this.manageSystemPartsComplaintDescription(json);
+    });
+  }
+
+  manageSystemPartsComplaintDescription(json) {
+    const data = _.get(json, 'data.Response', '');
+    if (data) {
+      this.setState({
+        systemPartsComplaintList: data,
+      });
+    }
+  }
+
+  /* system Parts api response */
 
   subjectChange(value) {
     let dataTypeId = null;
@@ -532,10 +543,13 @@ export default class ComplaintBooking extends Component {
   };
 
   renderIsMajor = () => {
+    const {isMajor} = this.state;
     return (
-      <TouchableOpacity style={styles.ismajorTouch}>
+      <TouchableOpacity
+        style={styles.ismajorTouch}
+        onPress={() => this.isMajorPress()}>
         <MIcon
-          name="check-box-outline-blank"
+          name={this.renderCheckBoxShow(isMajor)}
           color={Color.primary}
           size={Matrics.ScaleValue(20)}
         />
@@ -544,93 +558,287 @@ export default class ComplaintBooking extends Component {
     );
   };
 
-  renderRadioIcon = checked => {
-    if (!checked) {
-      return (
-        <MIcon name="radio-button-unchecked" color={Color.primary} size={22} />
-      );
-    }
+  renderCheckBoxShow = bool => {
+    return bool ? 'check-box' : 'check-box-outline-blank';
+  };
 
-    return (
-      <MIcon name="radio-button-checked" color={Color.primary} size={22} />
-    );
+  isMajorPress = () => {
+    this.setState({
+      isMajor: !this.state.isMajor,
+    });
   };
 
   renderAntivirus = () => {
-    const {antiVirus} = this.state;
+    const {antiVirus, isAntivirus} = this.state;
     return (
       <>
-        <TouchableOpacity style={styles.ismajorTouch}>
+        <TouchableOpacity
+          style={styles.ismajorTouch}
+          onPress={() => this.isAntivirusPress()}>
           <MIcon
-            name="check-box-outline-blank"
+            name={this.renderCheckBoxShow(isAntivirus)}
             color={Color.primary}
             size={Matrics.ScaleValue(20)}
           />
           <Text style={styles.isMajorText}>Antivirus</Text>
         </TouchableOpacity>
         <View style={styles.radioButtonAntivirus}>
-          {antiVirus.map(res => {
-            return (
-              <TouchableOpacity style={styles.radioTouchSelection}>
-                {this.renderRadioIcon()}
-                <Text style={[styles.text16Font, styles.mrg5]}>
-                  {_.get(res, 'CodeDesc', '')}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
+          {isAntivirus &&
+            antiVirus.map(res => {
+              return (
+                <TouchableOpacity
+                  style={styles.radioTouchSelection}
+                  onPress={() => this.chooseAntivirus(res)}>
+                  {this.renderRadioIcon(res)}
+                  <Text style={[styles.text16Font, styles.mrg5]}>
+                    {_.get(res, 'CodeDesc', '')}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
         </View>
       </>
     );
   };
 
+  renderRadioIcon = antivirusObject => {
+    const {selectedAntivirus} = this.state;
+
+    if (
+      _.get(antivirusObject, 'ID', '') == _.get(selectedAntivirus, 'ID', '')
+    ) {
+      return (
+        <MIcon name="radio-button-checked" color={Color.primary} size={22} />
+      );
+    }
+
+    return (
+      <MIcon name="radio-button-unchecked" color={Color.primary} size={22} />
+    );
+  };
+
+  chooseAntivirus = selectedAntivirus => {
+    this.setState({
+      selectedAntivirus,
+    });
+  };
+
+  isAntivirusPress = () => {
+    this.setState({
+      isAntivirus: !this.state.isAntivirus,
+    });
+  };
+
   renderThirdPartyInvolvement = () => {
-    const {thirdParty} = this.state;
+    const {thirdParty, isThirdParty} = this.state;
     return (
       <>
-        <TouchableOpacity style={styles.ismajorTouch}>
+        <TouchableOpacity
+          style={styles.ismajorTouch}
+          onPress={() => this.isThirdPartyPress()}>
           <MIcon
-            name="check-box-outline-blank"
+            name={this.renderCheckBoxShow(isThirdParty)}
             color={Color.primary}
             size={Matrics.ScaleValue(20)}
           />
           <Text style={styles.isMajorText}>Third Party Involvement</Text>
         </TouchableOpacity>
         <View style={styles.radioButtonAntivirus}>
-          {thirdParty.map(res => {
-            return (
-              <TouchableOpacity style={styles.radioTouchSelection}>
-                {this.renderRadioIcon()}
-                <Text style={[styles.text16Font, styles.mrg5]}>
-                  {_.get(res, 'CodeDesc', '')}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
+          {isThirdParty &&
+            thirdParty.map(res => {
+              return (
+                <TouchableOpacity
+                  style={styles.radioTouchSelection}
+                  onPress={() => this.chooseThirdParty(res)}>
+                  {this.renderThirdPartyRadioIcon(res)}
+                  <Text style={[styles.text16Font, styles.mrg5]}>
+                    {_.get(res, 'CodeDesc', '')}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
         </View>
       </>
     );
   };
 
+  renderThirdPartyRadioIcon = thirdPartyObject => {
+    const {selectedThirdParty} = this.state;
+    if (
+      _.get(thirdPartyObject, 'CodeDesc', '') ==
+      _.get(selectedThirdParty, 'CodeDesc', '')
+    ) {
+      return (
+        <MIcon name="radio-button-checked" color={Color.primary} size={22} />
+      );
+    }
+
+    return (
+      <MIcon name="radio-button-unchecked" color={Color.primary} size={22} />
+    );
+  };
+
+  chooseThirdParty = selectedThirdParty => {
+    this.setState({
+      selectedThirdParty,
+    });
+  };
+
+  isThirdPartyPress = () => {
+    this.setState({
+      isThirdParty: !this.state.isThirdParty,
+    });
+  };
+
   renderProblemList = () => {
     const {problem} = this.state;
     return (
-      <View style={styles.searchWithProblem}>
+      <TouchableOpacity
+        style={styles.searchWithProblem}
+        onPress={() => this.problemModalVisible(true)}>
         <MIcon name="search" size={24} color={Color.slateGrey} />
         <Text style={styles.problemText}>Problem</Text>
-      </View>
+      </TouchableOpacity>
     );
   };
 
   renderSystemPartList = () => {
     const {systemPart} = this.state;
     return (
-      <View style={styles.searchWithProblem}>
+      <TouchableOpacity
+        style={styles.searchWithProblem}
+        onPress={() => this.systemModalVisible(true)}>
         <MIcon name="search" size={24} color={Color.slateGrey} />
         <Text style={styles.problemText}>System Parts</Text>
+      </TouchableOpacity>
+    );
+  };
+
+  systemModalVisible = bool => {
+    this.setState({modalSystemList: bool});
+  };
+
+  problemModalVisible = bool => {
+    this.setState({modalProblemList: bool});
+  };
+
+  renderProblemListModal = () => {
+    const {
+      problemComplaintList,
+      modalProblemList, // modal close/open
+      selectedProblemList, // after deselect options
+    } = this.state;
+
+    return (
+      <ProblemListForComplaintBooking
+        item={problemComplaintList}
+        visible={modalProblemList}
+        modalVisible={bool => this.problemModalVisible(bool)}
+        selectedProblemsOptions={selectedProblemList}
+        selectedProblems={problems => {
+          this.problemModalVisible(false);
+          this.setState({selectedProblemList: problems});
+        }}
+        searchValue={''}
+      />
+    );
+  };
+
+  renderProblemTableList = () => {
+    const {selectedProblemList} = this.state;
+    if (!_.size(selectedProblemList)) return;
+    return (
+      <View style={styles.tableBg}>
+        {selectedProblemList.map((res, index) => (
+          <View key={`${index}_problems`} style={styles.problemTableRow}>
+            <View style={styles.problemPriceDesc}>
+              <Text style={styles.descCode}>{res.CodeDesc}</Text>
+              <Text style={styles.priceCode}>{res.ParentCodeType}</Text>
+            </View>
+            <TouchableOpacity
+              style={styles.closeButtonProblem}
+              onPress={() => this.dSelectProblem(index)}>
+              <McIcon name="close-circle-outline" size={25} color={'red'} />
+            </TouchableOpacity>
+          </View>
+        ))}
       </View>
     );
   };
+
+  dSelectProblem(index) {
+    console.log(index, 'indexx');
+    let {selectedProblemList} = this.state;
+    selectedProblemList.splice(index, 1);
+    this.setState({
+      selectedProblemList,
+    });
+    console.log(selectedProblemList, 'indexx');
+  }
+
+  /* System parts modal start */
+
+  renderSystemPartsListModal = () => {
+    const {
+      systemPartsComplaintList,
+      modalSystemList, // modal close/open
+      selectedSystemPartsList, // after deselect options
+    } = this.state;
+    console.log(systemPartsComplaintList, 'systemPartsComplaintList');
+    return (
+      <SystemPartsListForComplaintBooking
+        item={systemPartsComplaintList}
+        visible={modalSystemList}
+        modalVisible={bool => this.systemModalVisible(bool)}
+        selectedProblemsOptions={selectedSystemPartsList}
+        selectedProblems={problems => {
+          this.systemModalVisible(false);
+          this.setState({selectedSystemPartsList: problems});
+        }}
+        searchValue={''}
+      />
+    );
+  };
+
+  /* System parts modal End */
+
+  /* System parts Table view */
+
+  renderSystemTableList = () => {
+    const {selectedSystemPartsList} = this.state;
+    if (!_.size(selectedSystemPartsList)) return;
+    return (
+      <View style={styles.tableBg}>
+        {selectedSystemPartsList.map((res, index) => (
+          <View key={`${index}_problems`} style={styles.problemTableRow}>
+            <View style={styles.problemPriceDesc}>
+              <Text style={styles.descCode}>
+                {_.get(res, 'PartDescription', '')}
+              </Text>
+              <Text style={styles.priceCode}>{_.get(res, 'Price', '')}</Text>
+            </View>
+            <TouchableOpacity
+              style={styles.closeButtonProblem}
+              onPress={() => this.dSelectSystemParts(index)}>
+              <McIcon name="close-circle-outline" size={25} color={'red'} />
+            </TouchableOpacity>
+          </View>
+        ))}
+      </View>
+    );
+  };
+
+  dSelectSystemParts(index) {
+    console.log(index, 'indexx');
+    let {selectedSystemPartsList} = this.state;
+    selectedSystemPartsList.splice(index, 1);
+    this.setState({
+      selectedSystemPartsList,
+    });
+    console.log(selectedSystemPartsList, 'indexx');
+  }
+
+  /* System parts Table view end */
 
   render() {
     const {systemTag, complainCharge} = this.state;
@@ -685,7 +893,9 @@ export default class ComplaintBooking extends Component {
             {this.renderThirdPartyInvolvement()}
 
             {this.renderProblemList()}
+            {this.renderProblemTableList()}
             {this.renderSystemPartList()}
+            {this.renderSystemTableList()}
 
             <View style={styles.nextandSubmitClass}>
               <TouchableOpacity
@@ -701,11 +911,8 @@ export default class ComplaintBooking extends Component {
               </TouchableOpacity>
             </View>
           </View>
-
-          <ComplaintPriceModal
-            stateAll={this.state}
-            navigation={this.props.navigation}
-          />
+          {this.renderProblemListModal()}
+          {this.renderSystemPartsListModal()}
         </ScrollView>
       </SafeAreaView>
     );
