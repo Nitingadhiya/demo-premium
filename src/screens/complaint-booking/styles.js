@@ -237,4 +237,10 @@ export default (styles = {
     height: Matrics.ScaleValue(55),
     paddingHorizontal: Matrics.ScaleValue(5),
   },
+
+  foundMessage: {
+    fontSize: Matrics.ScaleValue(14),
+    color: 'red',
+    fontWeight: 'bold',
+  },
 });

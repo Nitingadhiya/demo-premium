@@ -5,7 +5,7 @@ import PickAddressModal from '../../pick-address-modal';
 
 const contantText = 'Road';
 
-export const RoadPickerTextBox = ({road}) => {
+export const RoadPickerTextBox = ({road, setRoadValue}) => {
   const [addressModalVisible, useaddressModalVisible] = useState(false);
   const [roadText, userRoadText] = useState();
   useEffect(() => {
@@ -23,6 +23,7 @@ export const RoadPickerTextBox = ({road}) => {
           closeModalPress={(type, item) => {
             userRoadText(item);
             useaddressModalVisible(false);
+            setRoadValue(item);
           }}
         />
       );

@@ -5,7 +5,7 @@ import PickAddressModal from '../../pick-address-modal';
 
 const contantText = 'Landmark';
 
-export const LandMarkTextPickerTextBox = ({landmark}) => {
+export const LandMarkTextPickerTextBox = ({landmark, setLandMarkValue}) => {
   const [addressModalVisible, useaddressModalVisible] = useState(false);
   const [landmarkText, userLandMarkText] = useState();
   useEffect(() => {
@@ -23,6 +23,7 @@ export const LandMarkTextPickerTextBox = ({landmark}) => {
           closeModalPress={(type, item) => {
             userLandMarkText(item);
             useaddressModalVisible(false);
+            setLandMarkValue(item);
           }}
         />
       );

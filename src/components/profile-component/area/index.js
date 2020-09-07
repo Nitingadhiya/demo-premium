@@ -5,14 +5,14 @@ import PickAddressModal from '../../pick-address-modal';
 
 const contantText = 'Area';
 
-export const AreaPickerTextBox = ({road}) => {
+export const AreaPickerTextBox = ({area, setAreaValue}) => {
   const [addressModalVisible, useaddressModalVisible] = useState(false);
   const [areaText, userareaText] = useState();
   useEffect(() => {
-    if (road) {
-      userareaText(road);
+    if (area) {
+      userareaText(area);
     }
-  }, [road]); // Only re-run the effect if images changes
+  }, [area]); // Only re-run the effect if images changes
 
   const renderPickerModal = () => {
     if (addressModalVisible) {
@@ -23,6 +23,7 @@ export const AreaPickerTextBox = ({road}) => {
           closeModalPress={(type, item) => {
             userareaText(item);
             useaddressModalVisible(false);
+            setAreaValue(item);
           }}
         />
       );

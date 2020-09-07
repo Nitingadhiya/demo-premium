@@ -82,6 +82,7 @@ export default class ComplaintBooking extends Component {
     systemPartsComplaintList: [],
     selectedSystemPartsList: [],
     totalCharge: 0,
+    mobileNo: null,
   };
 
   // ------------>>>LifeCycle Methods------------->>>
@@ -114,7 +115,7 @@ export default class ComplaintBooking extends Component {
       this.getUserInfo();
     }
     self = this;
-
+    this.getOrderDetailFromSystemTag();
     this.getComplaintBookAllData();
   }
 
@@ -124,6 +125,56 @@ export default class ComplaintBooking extends Component {
       userInfo,
     });
   }
+
+  getOrderDetailFromSystemTag() {
+    const endPoint = `GetOrderDetailsFromSystemTag?SystemTag=SER-CUJKFX`;
+    const method = 'GET';
+    APICaller(`${endPoint}`, method).then(json => {
+      console.log(json, 'json');
+      this.manageResponseOrderDetailData(json, 'array');
+    });
+  }
+
+  getDetailFromMobileNo(mobileNo) {
+    const endPoint = `GetUsersByMobileNo?MobileNo=${mobileNo}`;
+    const method = 'GET';
+    APICaller(`${endPoint}`, method).then(json => {
+      console.log(json, 'json');
+      this.manageResponseOrderDetailData(json, 'object');
+    });
+  }
+
+  manageResponseOrderDetailData = (json, type) => {
+    let data;
+    if (type == 'array') {
+      data = _.get(json, 'data.Response[0]', '');
+    } else {
+      data = _.get(json, 'data.Response', '');
+    }
+
+    if (data) {
+      this.setState({
+        mobileNo: _.get(data, 'MobileNo1', ''),
+        division: _.get(data, 'State', ''),
+        partyName:
+          _.get(data, 'FirstName', '') + ' ' + _.get(data, 'LastName', ''),
+        companyName: _.get(data, 'CompanyName', ''),
+        home: _.get(data, 'Home', ''),
+        landMark: _.get(data, 'Landmark', ''),
+        area: _.get(data, 'Area', ''),
+        road: _.get(data, 'Road', ''),
+        city: _.get(data, 'City', ''),
+        referenceBy: _.get(data, 'ReferenceBy', ''),
+        remark: _.get(data, 'Remark', ''),
+        pincode: _.get(data, 'Pincode', ''),
+        notFoundMessage: '',
+      });
+    } else {
+      this.setState({
+        notFoundMessage: _.get(json, 'data.Message', ''),
+      });
+    }
+  };
 
   getComplaintBookAllData() {
     const endPoint = `getComplaintBookAllData`;
@@ -326,8 +377,32 @@ export default class ComplaintBooking extends Component {
     }
   }
 
+  renderSystemQRcodeTextbox = () => {
+    return (
+      <>
+        <View style={styles.viewSystemName}>
+          <Text>System Tag</Text>
+        </View>
+
+        <View style={styles.textinputViewStyle}>
+          <TextInputView
+            placeholder={'System Tag'}
+            placeholderTextColor={Color.silver}
+            placeholderStyle={Styles.placeholderStyle}
+            style={styles.textInput}
+            value={'SYS-XYZQWE'}
+            returnKeyType={'done'}
+            keyboardType={'default'}
+            maxLength={255}
+            editable={false}
+          />
+        </View>
+      </>
+    );
+  };
+
   renderMobileNoTextBox = () => {
-    const {systemTag} = this.state;
+    const {mobileNo} = this.state;
     return (
       <View style={[styles.textinputViewStyle, styles.systemQRTextInput]}>
         <TextInputView
@@ -335,15 +410,26 @@ export default class ComplaintBooking extends Component {
           placeholderTextColor={Color.silver}
           placeholderStyle={Styles.placeholderStyle}
           style={styles.textInput}
-          value={systemTag}
+          value={mobileNo}
           returnKeyType={'done'}
           keyboardType={'default'}
           maxLength={255}
-          onChangeText={val => this.changeText(val)}
+          onChangeText={val => this.changeMobileNoText(val)}
           onFocus={() => this.onFocus()}
         />
       </View>
     );
+  };
+
+  changeMobileNoText = async val => {
+    await this.setState({
+      mobileNo: val,
+    });
+    console.log(_.size(val), 'Sizei');
+    if (_.size(val) == 10) {
+      console.log('val******', val);
+      this.getDetailFromMobileNo(val);
+    }
   };
 
   renderPartyName = () => {
@@ -359,11 +445,17 @@ export default class ComplaintBooking extends Component {
           returnKeyType={'done'}
           keyboardType={'default'}
           maxLength={255}
-          onChangeText={val => this.changeText(val)}
+          onChangeText={val => this.changeText(val, 'partyName')}
           onFocus={() => this.onFocus()}
         />
       </View>
     );
+  };
+
+  changeText = (val, stateName) => {
+    this.setState({
+      [stateName]: val,
+    });
   };
 
   renderCompanyName = () => {
@@ -379,7 +471,7 @@ export default class ComplaintBooking extends Component {
           returnKeyType={'done'}
           keyboardType={'default'}
           maxLength={255}
-          onChangeText={val => this.changeText(val)}
+          onChangeText={val => this.changeText(val, 'companyName')}
           onFocus={() => this.onFocus()}
         />
       </View>
@@ -387,7 +479,7 @@ export default class ComplaintBooking extends Component {
   };
 
   renderHomeSociety = () => {
-    const {companyName} = this.state;
+    const {home} = this.state;
     return (
       <View style={styles.textinputViewStyle}>
         <TextInputView
@@ -395,11 +487,11 @@ export default class ComplaintBooking extends Component {
           placeholderTextColor={Color.silver}
           placeholderStyle={Styles.placeholderStyle}
           style={styles.textInput}
-          value={companyName}
+          value={home}
           returnKeyType={'done'}
           keyboardType={'default'}
           maxLength={255}
-          onChangeText={val => this.changeText(val)}
+          onChangeText={val => this.changeText(val, 'home')}
           onFocus={() => this.onFocus()}
         />
       </View>
@@ -407,17 +499,25 @@ export default class ComplaintBooking extends Component {
   };
 
   renderLandMark = () => {
+    const {landMark} = this.state;
     return (
       <View style={styles.textinputViewStyle}>
-        <LandMarkTextPickerTextBox landmark={'asdsa'} />
+        <LandMarkTextPickerTextBox
+          landmark={landMark}
+          setLandMarkValue={val => this.setState({landMark: val})}
+        />
       </View>
     );
   };
 
   renderRoad = () => {
+    const {road} = this.state;
     return (
       <View style={styles.textinputViewStyle}>
-        <RoadPickerTextBox road={'asdsa***'} />
+        <RoadPickerTextBox
+          road={road}
+          setRoadValue={val => this.setState({road: val})}
+        />
       </View>
     );
   };
@@ -434,17 +534,21 @@ export default class ComplaintBooking extends Component {
           returnKeyType={'done'}
           keyboardType={'numeric'}
           maxLength={6}
-          onChangeText={val => this.changeText(val)}
-          onFocus={() => this.onFocus()}
+          onChangeText={val => this.changeText(val, 'pincode')}
         />
       </View>
     );
   };
 
   renderArea = () => {
+    const {area} = this.state;
+
     return (
       <View style={styles.textinputViewStyle}>
-        <AreaPickerTextBox area={'area***'} />
+        <AreaPickerTextBox
+          area={area}
+          setAreaValue={val => this.setState({area: val})}
+        />
       </View>
     );
   };
@@ -461,7 +565,7 @@ export default class ComplaintBooking extends Component {
           returnKeyType={'done'}
           keyboardType={'default'}
           maxLength={6}
-          onChangeText={val => this.changeText(val)}
+          onChangeText={val => this.changeText(val, 'city')}
           onFocus={() => this.onFocus()}
         />
       </View>
@@ -480,7 +584,7 @@ export default class ComplaintBooking extends Component {
           returnKeyType={'done'}
           keyboardType={'default'}
           maxLength={6}
-          onChangeText={val => this.changeText(val)}
+          onChangeText={val => this.changeText(val, 'division')}
           onFocus={() => this.onFocus()}
         />
       </View>
@@ -499,8 +603,7 @@ export default class ComplaintBooking extends Component {
           returnKeyType={'done'}
           keyboardType={'default'}
           maxLength={6}
-          onChangeText={val => this.changeText(val)}
-          onFocus={() => this.onFocus()}
+          onChangeText={val => this.changeText(val, 'referenceBy')}
         />
       </View>
     );
@@ -518,7 +621,7 @@ export default class ComplaintBooking extends Component {
           returnKeyType={'done'}
           keyboardType={'default'}
           maxLength={6}
-          onChangeText={val => this.changeText(val)}
+          onChangeText={val => this.changeText(val, 'remark')}
           onFocus={() => this.onFocus()}
         />
       </View>
@@ -782,13 +885,11 @@ export default class ComplaintBooking extends Component {
     let totalProblemCharge = 0;
     let totalPartsCharge = 0;
     selectedProblemList.map(res => {
-      console.log(res);
       totalProblemCharge =
         Number(totalProblemCharge) + Number(_.get(res, 'ParentCodeType', 0));
     });
 
     selectedSystemPartsList.map(res => {
-      console.log(res, 'YYYYY');
       totalPartsCharge =
         Number(totalPartsCharge) + Number(_.get(res, 'Price', 0));
     });
@@ -796,9 +897,6 @@ export default class ComplaintBooking extends Component {
     this.setState({
       totalCharge: totalPartsCharge + totalProblemCharge,
     });
-
-    console.log(totalPartsCharge, 'totalPartsCharge');
-    console.log(totalProblemCharge, 'chaege');
   }
 
   /* System parts modal start */
@@ -809,7 +907,6 @@ export default class ComplaintBooking extends Component {
       modalSystemList, // modal close/open
       selectedSystemPartsList, // after deselect options
     } = this.state;
-    console.log(systemPartsComplaintList, 'systemPartsComplaintList');
     return (
       <SystemPartsListForComplaintBooking
         item={systemPartsComplaintList}
@@ -855,7 +952,6 @@ export default class ComplaintBooking extends Component {
   };
 
   async dSelectSystemParts(index) {
-    console.log(index, 'indexx');
     let {selectedSystemPartsList} = this.state;
     selectedSystemPartsList.splice(index, 1);
     await this.setState({
@@ -897,6 +993,7 @@ export default class ComplaintBooking extends Component {
 
   renderQRcodeInfo = () => {
     const {openMoreInfo} = this.state;
+
     return (
       <TouchableOpacity
         style={styles.iconArrow}
@@ -911,11 +1008,11 @@ export default class ComplaintBooking extends Component {
   };
 
   checkSystemCodeAvailable = () => {
-    const {checkSystemAvailable} = this.state;
-    if (checkSystemAvailable) {
+    const {mobileNo} = this.state;
+    if (mobileNo) {
       return 'green';
     }
-    if (!checkSystemAvailable) {
+    if (!mobileNo) {
       return 'red';
     }
   };
@@ -940,6 +1037,15 @@ export default class ComplaintBooking extends Component {
     );
   };
 
+  renderMessage = () => {
+    const {notFoundMessage} = this.state;
+    return (
+      <View>
+        <Text style={styles.foundMessage}>{notFoundMessage}</Text>
+      </View>
+    );
+  };
+
   render() {
     const {systemTag, complainCharge} = this.state;
     return (
@@ -953,25 +1059,8 @@ export default class ComplaintBooking extends Component {
         ) : null}
         <ScrollView contentContainerStyle={{flexGrow: 1}}>
           <View style={styles.container}>
-            <View style={styles.viewSystemName}>
-              <Text>System Tag</Text>
-            </View>
-
-            <View style={styles.textinputViewStyle}>
-              <TextInputView
-                placeholder={'System Tag'}
-                placeholderTextColor={Color.silver}
-                placeholderStyle={Styles.placeholderStyle}
-                style={styles.textInput}
-                value={systemTag}
-                returnKeyType={'done'}
-                keyboardType={'default'}
-                maxLength={255}
-                onChangeText={val => this.changeText(val)}
-                langType={'Words'}
-                onFocus={() => this.onFocus()}
-              />
-            </View>
+            {this.renderMessage()}
+            {this.renderSystemQRcodeTextbox()}
 
             <View style={styles.systemQRcode}>
               {this.renderMobileNoTextBox()}
