@@ -23,6 +23,7 @@ import {
   LandMarkTextPickerTextBox,
   RoadPickerTextBox,
   AreaPickerTextBox,
+  CityPickerTextBox,
 } from '../../components/profile-component';
 import {ScrollView} from 'react-native-gesture-handler';
 import {
@@ -34,6 +35,10 @@ import {
   ProblemListForComplaintBooking,
   SystemPartsListForComplaintBooking,
 } from '../../components/complaint-booking';
+import {
+  getAreaFromRoadEndPoint,
+  getAreaFromPincodeEndPoint,
+} from '../../config/api-endpoint';
 
 let filterComplainDesc = [];
 let problemArray = [];
@@ -41,32 +46,14 @@ let problemArray = [];
 export default class ComplaintBooking extends Component {
   state = {
     loadingData: true,
-    productListArr: [],
-    toValue: false,
-    we: -50,
-    searchText: null,
-    filterResult: [],
-    searchFlag: false,
-    refreshing: false,
-    displayResult: false,
-    subject: [],
-    complainDesc: [],
-    systemTag: null,
-    filterComplainDesc: [],
-    withOutQrCode: false,
-    tmpSYS: [],
-    selectedtempSYS: null,
+
     complainCharge: 0,
-    complainChargeCOS: 350,
-    complaintId: null,
-    paymentMethod: '0',
-    paramsData: null,
-    selectedServices: 'Advance',
     userInfo: null,
     systemTag: null,
     itemTypes: [],
     businessTypes: [],
     antiVirus: [],
+    isAntivirus: false,
     thirdParty: [],
     systemTypes: [],
     problemComplaintList: [],
@@ -83,54 +70,42 @@ export default class ComplaintBooking extends Component {
     selectedSystemPartsList: [],
     totalCharge: 0,
     mobileNo: null,
+    systemType: null,
+    businessType: null,
+    itemType: null,
+    getRoadValue: false,
+    getPincodeValue: false,
   };
 
   // ------------>>>LifeCycle Methods------------->>>
 
   componentDidMount() {
-    const {route} = this.props;
-    const params = route.params;
-    this.systemTag = '';
-    this.getcompDescList();
-    this.getSystemPartsDescList();
-    if (params) {
-      this.setState({
-        systemTag: params.systemTag,
-        complainCharge: params.complainCharge,
-        paramsData: params.data,
-      });
-      if (params.tmpSystemName && params.tmpSystemName.length > 0) {
-        this.setState({
-          tmpSYS: params.tmpSystemName,
-          withOutQrCode: true,
-          systemTag: params.tmpSystemName[0].sysTag,
-        });
-        this.systemTag = params.tmpSystemName[0].sysTag;
-      }
-      if (params.complainCharge > 0) {
-        // this.setState({
-        //   paymentServiceModal: true,
-        // });
-      }
-      this.getUserInfo();
-    }
-    self = this;
+    this.getUserInfo();
     this.getOrderDetailFromSystemTag();
     this.getComplaintBookAllData();
+    this.getcompDescList();
+    this.getSystemPartsDescList();
+
+    self = this;
+
+    this.searchingDelayed = _.debounce(text => {
+      this.getAreaFromPincode(text);
+    }, 300);
   }
 
   async getUserInfo() {
     const userInfo = await Helper.getLocalStorageItem('userInfo');
+    console.log(userInfo, 'useriii');
     this.setState({
       userInfo,
     });
   }
 
   getOrderDetailFromSystemTag() {
-    const endPoint = `GetOrderDetailsFromSystemTag?SystemTag=SER-CUJKFX`;
+    const endPoint = `GetOrderDetailsFromSystemTag?SystemTag=TST-123456`;
     const method = 'GET';
     APICaller(`${endPoint}`, method).then(json => {
-      console.log(json, 'json');
+      console.log(json, 'json    88887');
       this.manageResponseOrderDetailData(json, 'array');
     });
   }
@@ -139,7 +114,7 @@ export default class ComplaintBooking extends Component {
     const endPoint = `GetUsersByMobileNo?MobileNo=${mobileNo}`;
     const method = 'GET';
     APICaller(`${endPoint}`, method).then(json => {
-      console.log(json, 'json');
+      console.log(json, 'json **');
       this.manageResponseOrderDetailData(json, 'object');
     });
   }
@@ -148,6 +123,11 @@ export default class ComplaintBooking extends Component {
     let data;
     if (type == 'array') {
       data = _.get(json, 'data.Response[0]', '');
+      this.setState({
+        itemType: _.get(data, 'ItemType', ''),
+        systemType: _.get(data, 'SystemType', ''),
+        businessType: _.get(data, 'Business', ''),
+      });
     } else {
       data = _.get(json, 'data.Response', '');
     }
@@ -307,72 +287,132 @@ export default class ComplaintBooking extends Component {
   submitComplaintMethod() {
     const {
       userInfo,
-      selectedCompSubject,
-      selectedCompDesc,
       systemTag,
-      complainCharge,
+      businessType,
+      systemType,
+      itemType,
+      totalCharge,
+      isThirdParty,
+      selectedThirdParty,
+      isMajor,
+      isAntivirus,
+      selectedAntivirus,
+      remark,
+      selectedProblemList,
+      selectedSystemPartsList,
+      referenceBy,
     } = this.state;
+
+    let prepareProblemsDesc = [];
+    let prepareSystemPartDesc = [];
+
+    selectedProblemList.map(res => {
+      prepareProblemsDesc.push({
+        Id: '0',
+        Problem_Part_No: res.CodeId,
+        Problem_Part: res.CodeDesc,
+        Problem_Part_Rate: res.ParentCodeType,
+        IsPart: 'false',
+      });
+    });
+    console.log(selectedProblemList, 'selectedProblemList');
+    console.log(selectedSystemPartsList, 'selectedSystemPartsList ***');
+    selectedSystemPartsList.map(res => {
+      console.log(res, 'reddd');
+      prepareSystemPartDesc.push({
+        Id: '0',
+        Problem_Part_No: res.PartNo,
+        Problem_Part: res.PartDescription,
+        Problem_Part_Rate: res.Price,
+        IsPart: 'true',
+      });
+    });
+
+    console.log(prepareSystemPartDesc, 'prepareSystemPartDesc');
+
+    let AN_Master_Complaint_Details = _.concat(
+      prepareProblemsDesc,
+      prepareSystemPartDesc,
+    );
+
+    console.log(AN_Master_Complaint_Details, 'AN_Master_Complaint_Details');
 
     if (userInfo.UserName) {
       this.setState({
         loadingData: true,
       });
 
-      const endPoint = `ComplaintSubmit`;
+      const endPoint = `AddComplaint`;
       const method = 'POST';
       const body = {
-        An_Master_Complaint: [
-          {
-            ComplaintSubject: selectedCompSubject,
-            ComplaintDesc: selectedCompDesc,
-            ComplaintBy: userInfo.UserName,
-            SystemTag: systemTag,
-            TotalCharges: complainCharge,
-            PaymentMode: null,
+        ComplaintViewModel: {
+          AMC: {
+            ID: '0',
+            SystemTag: systemTag, //'SYS-XYMRUJ',
+            BusinessType: businessType,
+            SystemType: systemType, //'Home',
+            ItemType: itemType, //'Desktop',
+            ComplaintBy: 'bhariz001',
+            EntryBy: userInfo.UserName,
+            TotalCharges: totalCharge.toFixed(2), //'350',
+            IsThirdParty: isThirdParty, //'false',
+            ThirdParty: _.get(selectedThirdParty, 'CodeDesc', ''), // 'Nitin Variya (Laptop)',
+            IsMajor: isMajor,
+            IsAntivirus: isAntivirus, //'false',
+            Antivirus: _.get(selectedAntivirus, 'CodeDesc', ''), //'ESET 1-Year Smart Security',
+            IsBranded: 'false',
+            ComplaintType: 'Paid Office Service',
+            BookRemarks: remark,
+            ReferenceBy: referenceBy,
           },
-        ],
+          AMCDList: {
+            AN_Master_Complaint_Details,
+          },
+        },
       };
+
+      console.log(body);
 
       APICaller(`${endPoint}`, method, JSON.stringify(body)).then(json => {
         this.setState({
           loadingData: false,
         });
-        if (!json) {
-          Alert.alert('Something went to wrong');
-        }
-        if (json.status !== 200) {
-          Alert.alert('Error Status', `${json.status}`);
-          return;
-        }
-        if (json.data.Success === '1') {
-          if (json.data.Response) {
-            if (
-              complainCharge > 0 &&
-              this.state.selectedServices !== 'Cash on Service'
-            ) {
-              const dataEvent = {
-                complaintId: _.get(json, 'data.Response[0].ComplaintID', ''), //json.data.Response[0].ComplaintID
-                complainCharge: totalCharge,
-                visible: true,
-              };
-              Events.trigger('complaint-advance-payment', dataEvent);
-            } else {
-              Alert.alert(
-                'Complaint',
-                'Complaint successfully submitted.',
-                [{text: 'OK', onPress: () => this.props.navigation.goBack()}],
-                {cancelable: false},
-              );
-            }
-          } else {
-            Alert.alert('Complaint', json.data.Message);
-          }
-        } else if (json.data.Success === '2') {
-          Alert.alert('Alert', 'Complaint Already Booked');
-        } else {
-          Alert.alert('Alert', json.data.Message);
-          // Alert.alert('Error -','Something went to wrong, please try again')
-        }
+        // if (!json) {
+        //   Alert.alert('Something went to wrong');
+        // }
+        // if (json.status !== 200) {
+        //   Alert.alert('Error Status', `${json.status}`);
+        //   return;
+        // }
+        // if (json.data.Success === '1') {
+        //   if (json.data.Response) {
+        //     if (
+        //       complainCharge > 0 &&
+        //       this.state.selectedServices !== 'Cash on Service'
+        //     ) {
+        //       const dataEvent = {
+        //         complaintId: _.get(json, 'data.Response[0].ComplaintID', ''), //json.data.Response[0].ComplaintID
+        //         complainCharge: totalCharge,
+        //         visible: true,
+        //       };
+        //       Events.trigger('complaint-advance-payment', dataEvent);
+        //     } else {
+        //       Alert.alert(
+        //         'Complaint',
+        //         'Complaint successfully submitted.',
+        //         [{text: 'OK', onPress: () => this.props.navigation.goBack()}],
+        //         {cancelable: false},
+        //       );
+        //     }
+        //   } else {
+        //     Alert.alert('Complaint', json.data.Message);
+        //   }
+        // } else if (json.data.Success === '2') {
+        //   Alert.alert('Alert', 'Complaint Already Booked');
+        // } else {
+        //   Alert.alert('Alert', json.data.Message);
+        //   // Alert.alert('Error -','Something went to wrong, please try again')
+        // }
       });
     }
   }
@@ -511,16 +551,82 @@ export default class ComplaintBooking extends Component {
   };
 
   renderRoad = () => {
-    const {road} = this.state;
+    const {road, getRoadValue, getPincodeValue} = this.state;
     return (
       <View style={styles.textinputViewStyle}>
         <RoadPickerTextBox
           road={road}
-          setRoadValue={val => this.setState({road: val})}
+          setRoadValue={val => {
+            this.setState({road: val});
+            this.getAreaFromRoad(val);
+          }}
+          opacityValue={getRoadValue || getPincodeValue}
         />
       </View>
     );
   };
+
+  getAreaFromRoad(road) {
+    this.selectPincode = false;
+    APICaller(getAreaFromRoadEndPoint(road), 'GET').then(async json => {
+      if (json.data.Success === 1 || json.data.Success === '1') {
+        const data = _.get(json, 'data.Response[0]', '');
+        if (!data) return;
+        this.setState({
+          area: data.Area,
+          city: data.City,
+          pincode: data.Pincode,
+          division: data.State,
+          getRoadValue: true,
+          loadingData: false,
+        });
+      } else {
+        this.setState({
+          getRoadValue: false,
+        });
+        //Alert.alert('Failed', json.data.Message || 'Failed to save address');
+      }
+    });
+  }
+
+  getAreaFromPincode(pincode) {
+    this.setState({
+      loadingData: true,
+    });
+    if (!pincode) return;
+    if (pincode.length < 2) return;
+    APICaller(getAreaFromPincodeEndPoint(pincode), 'GET').then(async json => {
+      if (json.data.Success === 1 || json.data.Success === '1') {
+        //Events.trigger('systemAdded'); //this for update address
+        const data = _.get(json, 'data.Response[0]', '');
+        if (!data) return;
+
+        console.log('data', data);
+        this.setState({
+          area: data.Area,
+          city: data.City,
+          road: data.Road,
+          division: data.State,
+          getPincodeValue: true,
+          loadingData: false,
+        });
+      } else {
+        this.setState({
+          getPincodeValue: false,
+          loadingData: false,
+        });
+        //Alert.alert('Failed', json.data.Message || 'Failed to save address');
+      }
+    });
+  }
+
+  editableState() {
+    if (this.selectPincode) {
+      return !this.state.getPincodeValue === false ? false : true;
+    } else {
+      return !this.state.getRoadValue === false ? false : true;
+    }
+  }
 
   renderPincodeTextBox = () => {
     const {pincode} = this.state;
@@ -534,39 +640,41 @@ export default class ComplaintBooking extends Component {
           returnKeyType={'done'}
           keyboardType={'numeric'}
           maxLength={6}
-          onChangeText={val => this.changeText(val, 'pincode')}
+          onChangeText={val => this.pincodeChange(val)}
+          editable={this.editableState()}
         />
       </View>
     );
   };
 
+  pincodeChange(value) {
+    this.selectPincode = true;
+    this.setState({pincode: value});
+    this.searchingDelayed(value);
+  }
+
   renderArea = () => {
-    const {area} = this.state;
+    const {area, getRoadValue, getPincodeValue} = this.state;
 
     return (
       <View style={styles.textinputViewStyle}>
         <AreaPickerTextBox
           area={area}
           setAreaValue={val => this.setState({area: val})}
+          opacityValue={getRoadValue || getPincodeValue}
         />
       </View>
     );
   };
 
   renderCityTextBox = () => {
-    const {city} = this.state;
+    const {city, getRoadValue, getPincodeValue} = this.state;
     return (
       <View style={styles.textinputViewStyle}>
-        <TextInputView
-          placeholder={'City'}
-          placeholderTextColor={Color.silver}
-          style={styles.textInput}
-          value={city}
-          returnKeyType={'done'}
-          keyboardType={'default'}
-          maxLength={6}
-          onChangeText={val => this.changeText(val, 'city')}
-          onFocus={() => this.onFocus()}
+        <CityPickerTextBox
+          city={city}
+          setAreaValue={val => this.setState({city: val})}
+          opacityValue={getRoadValue || getPincodeValue}
         />
       </View>
     );
@@ -583,9 +691,8 @@ export default class ComplaintBooking extends Component {
           value={division}
           returnKeyType={'done'}
           keyboardType={'default'}
-          maxLength={6}
+          maxLength={22}
           onChangeText={val => this.changeText(val, 'division')}
-          onFocus={() => this.onFocus()}
         />
       </View>
     );
@@ -602,7 +709,7 @@ export default class ComplaintBooking extends Component {
           value={referenceBy}
           returnKeyType={'done'}
           keyboardType={'default'}
-          maxLength={6}
+          maxLength={255}
           onChangeText={val => this.changeText(val, 'referenceBy')}
         />
       </View>
@@ -620,7 +727,7 @@ export default class ComplaintBooking extends Component {
           value={remark}
           returnKeyType={'done'}
           keyboardType={'default'}
-          maxLength={6}
+          maxLength={255}
           onChangeText={val => this.changeText(val, 'remark')}
           onFocus={() => this.onFocus()}
         />
@@ -628,22 +735,46 @@ export default class ComplaintBooking extends Component {
     );
   };
 
+  itemChange = (stateName, val) => {
+    this.setState({
+      [stateName]: val,
+    });
+  };
+
   renderItemType = () => {
-    const {itemTypes} = this.state;
+    const {itemTypes, itemType} = this.state;
     if (!_.size(itemTypes)) return null;
-    return <ItemTypeSelectBox item={itemTypes} />;
+    return (
+      <ItemTypeSelectBox
+        item={itemTypes}
+        selectedItem={itemType}
+        itemChange={val => this.itemChange('itemType', val)}
+      />
+    );
   };
 
   renderSystemType = () => {
-    const {systemTypes} = this.state;
+    const {systemTypes, systemType} = this.state;
     if (!_.size(systemTypes)) return null;
-    return <SystemTypeSelectBox item={systemTypes} />;
+    return (
+      <SystemTypeSelectBox
+        item={systemTypes}
+        selectedItem={systemType}
+        itemChange={val => this.itemChange('systemType', val)}
+      />
+    );
   };
 
   renderBusinessType = () => {
-    const {businessTypes} = this.state;
+    const {businessTypes, businessType} = this.state;
     if (!_.size(businessTypes)) return null;
-    return <BusinessTypeSelectBox item={businessTypes} />;
+    return (
+      <BusinessTypeSelectBox
+        item={businessTypes}
+        selectedItem={businessType}
+        itemChange={val => this.itemChange('businessType', val)}
+      />
+    );
   };
 
   renderIsMajor = () => {
@@ -688,9 +819,10 @@ export default class ComplaintBooking extends Component {
         </TouchableOpacity>
         <View style={styles.radioButtonAntivirus}>
           {isAntivirus &&
-            antiVirus.map(res => {
+            antiVirus.map((res, index) => {
               return (
                 <TouchableOpacity
+                  key={`${index}_string`}
                   style={styles.radioTouchSelection}
                   onPress={() => this.chooseAntivirus(res)}>
                   {this.renderRadioIcon(res)}
@@ -749,9 +881,10 @@ export default class ComplaintBooking extends Component {
         </TouchableOpacity>
         <View style={styles.radioButtonAntivirus}>
           {isThirdParty &&
-            thirdParty.map(res => {
+            thirdParty.map((res, index) => {
               return (
                 <TouchableOpacity
+                  key={`${index}_string`}
                   style={styles.radioTouchSelection}
                   onPress={() => this.chooseThirdParty(res)}>
                   {this.renderThirdPartyRadioIcon(res)}
@@ -971,15 +1104,9 @@ export default class ComplaintBooking extends Component {
           <Text style={styles.priceTotalValue}>₹ {totalCharge}</Text>
         </View>
         <TouchableOpacity
-          onPress={() => {
-            complainCharge > 0
-              ? this.nextAndSubmit()
-              : this.submitComplaintMethod();
-          }}
+          onPress={() => this.submitComplaintMethod()}
           style={styles.touchNextButton}>
-          <Text style={styles.font16White}>
-            {complainCharge > 0 ? 'Next' : 'Submit'}
-          </Text>
+          <Text style={styles.font16White}>Submit</Text>
         </TouchableOpacity>
       </View>
     );

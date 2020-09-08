@@ -239,8 +239,9 @@ export default (styles = {
   },
 
   foundMessage: {
-    fontSize: Matrics.ScaleValue(14),
+    fontSize: Matrics.ScaleValue(16),
     color: 'red',
     fontWeight: 'bold',
+    textAlign: 'center',
   },
 });

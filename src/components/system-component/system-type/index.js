@@ -2,8 +2,8 @@ import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, Picker} from 'react-native';
 import styles from './styles';
 
-export const SystemTypeSelectBox = ({item}) => {
-  const [selectedItem, setItemPickerValue] = useState();
+export const SystemTypeSelectBox = ({item, selectedItem, itemChange}) => {
+  //const [selectedItem, setItemPickerValue] = useState();
 
   return (
     <View style={styles.container}>
@@ -12,10 +12,10 @@ export const SystemTypeSelectBox = ({item}) => {
       </View>
       <View style={styles.borderW1}>
         <Picker
-          prompt="Enter Complaint Subject"
+          prompt="Select System"
           selectedValue={selectedItem || 0}
           onValueChange={(itemValue, itemIndex) => {
-            setItemPickerValue(itemValue);
+            itemChange(itemValue);
             // this.subjectChange(itemValue);
             // this.setState({selectedCompSubject: itemValue});
           }}>

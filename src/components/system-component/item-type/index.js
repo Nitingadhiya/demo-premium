@@ -5,8 +5,8 @@ import PickAddressModal from '../../pick-address-modal';
 
 const contantText = 'Area';
 
-export const ItemTypeSelectBox = ({item}) => {
-  const [selectedItem, setItemPickerValue] = useState();
+export const ItemTypeSelectBox = ({item, selectedItem, itemChange}) => {
+  // const [selectedItem, setItemPickerValue] = useState();
 
   return (
     <View style={styles.container}>
@@ -15,10 +15,11 @@ export const ItemTypeSelectBox = ({item}) => {
       </View>
       <View style={styles.borderW1}>
         <Picker
-          prompt="Enter Item Type"
-          selectedValue={selectedItem || 0}
+          prompt="Select Item Type"
+          selectedValue={selectedItem}
           onValueChange={(itemValue, itemIndex) => {
-            setItemPickerValue(itemValue);
+            // setItemPickerValue(itemValue);
+            itemChange(itemValue);
             // this.subjectChange(itemValue);
             // this.setState({selectedCompSubject: itemValue});
           }}>

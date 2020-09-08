@@ -5,7 +5,7 @@ import PickAddressModal from '../../pick-address-modal';
 
 const contantText = 'Area';
 
-export const AreaPickerTextBox = ({area, setAreaValue}) => {
+export const AreaPickerTextBox = ({area, setAreaValue, opacityValue}) => {
   const [addressModalVisible, useaddressModalVisible] = useState(false);
   const [areaText, userareaText] = useState();
   useEffect(() => {
@@ -32,7 +32,8 @@ export const AreaPickerTextBox = ({area, setAreaValue}) => {
   return (
     <>
       <TouchableOpacity
-        style={styles.labelClass}
+        style={[styles.labelClass, {opacity: opacityValue ? 0.5 : 1}]}
+        disabled={opacityValue}
         onPress={() => {
           useaddressModalVisible(true);
         }}>
