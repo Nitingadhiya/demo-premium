@@ -96,46 +96,45 @@ class ChatList extends Component {
         loading: true,
       });
     }
-    APICaller(
-      chatListEndPoint(userInfo.UserName, search, from, size),
-      'GET',
-    ).then(json => {
-      //console.log(json, 'json');
-      if (json.data.Success === '1') {
-        if (isRefreshing) {
-          this.updateData(json, false);
-          // return;
+    APICaller(chatListEndPoint('admin', search, from, size), 'GET').then(
+      json => {
+        console.log(json, 'json');
+        if (json.data.Success === '1') {
+          if (isRefreshing) {
+            this.updateData(json, false);
+            // return;
+          } else {
+            this.updateData(json, true);
+          }
         } else {
-          this.updateData(json, true);
+          this.setState({
+            threadList: [],
+            errorMessage: json.data.Message,
+            loading: false,
+            isRefreshing: false,
+            loadMore: false,
+          });
         }
-      } else {
-        this.setState({
-          threadList: [],
-          errorMessage: json.data.Message,
-          loading: false,
-          isRefreshing: false,
-          loadMore: false,
-        });
-      }
-    });
+      },
+    );
   }
 
-  updateData(json, bool) {
+  async updateData(json, bool) {
     if (bool) {
-      this.setState({
-        threadList: _.concat(
-          this.state.threadList,
-          _.get(json, 'data.Response', []),
+      await this.setState({
+        threadList: _.uniqBy(
+          _.concat(this.state.threadList, _.get(json, 'data.Response', [])),
+          'UserName',
         ),
         from: this.state.from + size,
       });
     } else {
-      this.setState({
-        threadList: _.get(json, 'data.Response', []),
+      await this.setState({
+        threadList: _.uniqBy(_.get(json, 'data.Response', []), 'UserName'),
         from: 1,
       });
     }
-    this.setState({
+    await this.setState({
       loading: false,
       isRefreshing: false,
       loadMore: false,

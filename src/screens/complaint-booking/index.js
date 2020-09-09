@@ -344,29 +344,69 @@ export default class ComplaintBooking extends Component {
 
       const endPoint = `AddComplaint`;
       const method = 'POST';
+      // const body = {
+      //   ComplaintViewModel: {
+      //     AMC: {
+      //       ID: '0',
+      //       SystemTag: systemTag, //'SYS-XYMRUJ',
+      //       BusinessType: businessType,
+      //       SystemType: systemType, //'Home',
+      //       ItemType: itemType, //'Desktop',
+      //       ComplaintBy: 'bhariz001',
+      //       EntryBy: userInfo.UserName,
+      //       TotalCharges: totalCharge.toFixed(2), //'350',
+      //       IsThirdParty: isThirdParty, //'false',
+      //       ThirdParty: _.get(selectedThirdParty, 'CodeDesc', ''), // 'Nitin Variya (Laptop)',
+      //       IsMajor: isMajor,
+      //       IsAntivirus: isAntivirus, //'false',
+      //       Antivirus: _.get(selectedAntivirus, 'CodeDesc', ''), //'ESET 1-Year Smart Security',
+      //       IsBranded: 'false',
+      //       ComplaintType: 'Paid Office Service',
+      //       BookRemarks: remark,
+      //       ReferenceBy: referenceBy,
+      //     },
+      //     AMCDList: {
+      //       AN_Master_Complaint_Details,
+      //     },
+      //   },
+      // };
+
       const body = {
         ComplaintViewModel: {
           AMC: {
             ID: '0',
-            SystemTag: systemTag, //'SYS-XYMRUJ',
-            BusinessType: businessType,
-            SystemType: systemType, //'Home',
-            ItemType: itemType, //'Desktop',
+            SystemTag: 'SYS-XYMRUJ',
+            Antivirus: 'ESET 1-Year Smart Security',
+            SystemType: 'Home',
+            ItemType: 'Desktop',
             ComplaintBy: 'bhariz001',
-            EntryBy: userInfo.UserName,
-            TotalCharges: totalCharge.toFixed(2), //'350',
-            IsThirdParty: isThirdParty, //'false',
-            ThirdParty: _.get(selectedThirdParty, 'CodeDesc', ''), // 'Nitin Variya (Laptop)',
-            IsMajor: isMajor,
-            IsAntivirus: isAntivirus, //'false',
-            Antivirus: _.get(selectedAntivirus, 'CodeDesc', ''), //'ESET 1-Year Smart Security',
+            EntryBy: '10001',
+            TotalCharges: '350',
+            IsThirdParty: 'false',
+            ThirdParty: 'Nitin Variya (Laptop)',
+            IsMajor: 'true',
+            IsAntivirus: 'false',
             IsBranded: 'false',
             ComplaintType: 'Paid Office Service',
-            BookRemarks: remark,
-            ReferenceBy: referenceBy,
+            BookRemarks: 'Lenovo M72e SFF',
           },
           AMCDList: {
-            AN_Master_Complaint_Details,
+            AN_Master_Complaint_Details: [
+              {
+                Id: '0',
+                Problem_Part_No: '1',
+                Problem_Part: 'Laptop Body Top (A-Panel)',
+                Problem_Part_Rate: '1600',
+                IsPart: 'false',
+              },
+              {
+                Id: '0',
+                Problem_Part_No: 'PRT000509',
+                Problem_Part: 'Graphics nVidia GeForce 4GB DDR5 1650 (New)',
+                Problem_Part_Rate: '14784.00',
+                IsPart: 'true',
+              },
+            ],
           },
         },
       };
