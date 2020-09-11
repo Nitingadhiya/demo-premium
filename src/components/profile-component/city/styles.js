@@ -1,9 +1,11 @@
+import {Matrics} from '../../../common/styles';
+
 export default (styles = {
   labelClass: {
     borderBottomWidth: 1,
     borderColor: '#d3d3d3',
     flexDirection: 'row',
-    height: 60,
+    height: Matrics.ScaleValue(44),
     alignItems: 'center',
   },
   width120: {width: 120},

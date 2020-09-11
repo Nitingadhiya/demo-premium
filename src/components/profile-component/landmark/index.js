@@ -5,7 +5,11 @@ import PickAddressModal from '../../pick-address-modal';
 
 const contantText = 'Landmark';
 
-export const LandMarkTextPickerTextBox = ({landmark, setLandMarkValue}) => {
+export const LandMarkTextPickerTextBox = ({
+  landmark,
+  setLandMarkValue,
+  customLabelStyle,
+}) => {
   const [addressModalVisible, useaddressModalVisible] = useState(false);
   const [landmarkText, userLandMarkText] = useState();
   useEffect(() => {
@@ -32,7 +36,7 @@ export const LandMarkTextPickerTextBox = ({landmark, setLandMarkValue}) => {
   return (
     <>
       <TouchableOpacity
-        style={styles.labelClass}
+        style={[styles.labelClass, customLabelStyle]}
         onPress={() => {
           useaddressModalVisible(true);
         }}>

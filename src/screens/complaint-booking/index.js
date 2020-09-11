@@ -34,11 +34,13 @@ import {
 import {
   ProblemListForComplaintBooking,
   SystemPartsListForComplaintBooking,
+  ComplaintBookingWithQRCode,
 } from '../../components/complaint-booking';
 import {
   getAreaFromRoadEndPoint,
   getAreaFromPincodeEndPoint,
 } from '../../config/api-endpoint';
+import NavigationHelper from '../../utils/navigation-helper';
 
 let filterComplainDesc = [];
 let problemArray = [];
@@ -75,13 +77,17 @@ export default class ComplaintBooking extends Component {
     itemType: null,
     getRoadValue: false,
     getPincodeValue: false,
+    remark: null,
+    referenceBy: null,
   };
 
   // ------------>>>LifeCycle Methods------------->>>
 
   componentDidMount() {
+    Events.trigger('ComplaintBookingWithQRCodeEvent', 'Open Qr code');
+
     this.getUserInfo();
-    this.getOrderDetailFromSystemTag();
+
     this.getComplaintBookAllData();
     this.getcompDescList();
     this.getSystemPartsDescList();
@@ -101,8 +107,8 @@ export default class ComplaintBooking extends Component {
     });
   }
 
-  getOrderDetailFromSystemTag() {
-    const endPoint = `GetOrderDetailsFromSystemTag?SystemTag=TST-123456`;
+  getOrderDetailFromSystemTag(qrCode) {
+    const endPoint = `GetOrderDetailsFromSystemTag?SystemTag=${qrCode}`;
     const method = 'GET';
     APICaller(`${endPoint}`, method).then(json => {
       console.log(json, 'json    88887');
@@ -121,12 +127,17 @@ export default class ComplaintBooking extends Component {
 
   manageResponseOrderDetailData = (json, type) => {
     let data;
+    const {itemTypes, systemTypes, businessTypes} = this.state;
+    const itemDefaultType = _.get(itemTypes, '[0]CodeDesc', '');
+    const systemDefaultType = _.get(systemTypes, '[0]CodeDesc', '');
+    const businessDefaultType = _.get(businessTypes, '[0]CodeDesc', '');
+
     if (type == 'array') {
       data = _.get(json, 'data.Response[0]', '');
       this.setState({
-        itemType: _.get(data, 'ItemType', ''),
-        systemType: _.get(data, 'SystemType', ''),
-        businessType: _.get(data, 'Business', ''),
+        itemType: _.get(data, 'ItemType', '') || itemDefaultType,
+        systemType: _.get(data, 'SystemType', '') || systemDefaultType,
+        businessType: _.get(data, 'Business', '') || businessDefaultType,
       });
     } else {
       data = _.get(json, 'data.Response', '');
@@ -135,6 +146,7 @@ export default class ComplaintBooking extends Component {
     if (data) {
       this.setState({
         mobileNo: _.get(data, 'MobileNo1', ''),
+        userVerify: _.get(data, 'MobileNo1', '') ? true : false,
         division: _.get(data, 'State', ''),
         partyName:
           _.get(data, 'FirstName', '') + ' ' + _.get(data, 'LastName', ''),
@@ -167,6 +179,7 @@ export default class ComplaintBooking extends Component {
 
   manageResponseBookAllData(json) {
     const data = _.get(json, 'data.Response', '');
+    console.log(_.get(data, 'ItemTypes[0]', ''), '*******************');
     if (data) {
       this.setState({
         itemTypes: _.get(data, 'ItemTypes', []),
@@ -176,6 +189,9 @@ export default class ComplaintBooking extends Component {
         systemTypes: _.get(data, 'SystemTypes', []),
         selectedAntivirus: _.get(data, 'AntiVirus[0]', []),
         selectedThirdParty: _.get(data, 'ThirdParty[0]', []),
+        itemType: _.get(data, 'ItemTypes[0].CodeDesc', ''),
+        systemType: _.get(data, 'SystemTypes[0].CodeDesc', ''),
+        businessType: _.get(data, 'BusinessTypes[0].CodeDesc', ''),
       });
     }
     console.log(data, 'FDD');
@@ -315,10 +331,8 @@ export default class ComplaintBooking extends Component {
         IsPart: 'false',
       });
     });
-    console.log(selectedProblemList, 'selectedProblemList');
-    console.log(selectedSystemPartsList, 'selectedSystemPartsList ***');
+
     selectedSystemPartsList.map(res => {
-      console.log(res, 'reddd');
       prepareSystemPartDesc.push({
         Id: '0',
         Problem_Part_No: res.PartNo,
@@ -327,8 +341,6 @@ export default class ComplaintBooking extends Component {
         IsPart: 'true',
       });
     });
-
-    console.log(prepareSystemPartDesc, 'prepareSystemPartDesc');
 
     let AN_Master_Complaint_Details = _.concat(
       prepareProblemsDesc,
@@ -344,138 +356,84 @@ export default class ComplaintBooking extends Component {
 
       const endPoint = `AddComplaint`;
       const method = 'POST';
-      // const body = {
-      //   ComplaintViewModel: {
-      //     AMC: {
-      //       ID: '0',
-      //       SystemTag: systemTag, //'SYS-XYMRUJ',
-      //       BusinessType: businessType,
-      //       SystemType: systemType, //'Home',
-      //       ItemType: itemType, //'Desktop',
-      //       ComplaintBy: 'bhariz001',
-      //       EntryBy: userInfo.UserName,
-      //       TotalCharges: totalCharge.toFixed(2), //'350',
-      //       IsThirdParty: isThirdParty, //'false',
-      //       ThirdParty: _.get(selectedThirdParty, 'CodeDesc', ''), // 'Nitin Variya (Laptop)',
-      //       IsMajor: isMajor,
-      //       IsAntivirus: isAntivirus, //'false',
-      //       Antivirus: _.get(selectedAntivirus, 'CodeDesc', ''), //'ESET 1-Year Smart Security',
-      //       IsBranded: 'false',
-      //       ComplaintType: 'Paid Office Service',
-      //       BookRemarks: remark,
-      //       ReferenceBy: referenceBy,
-      //     },
-      //     AMCDList: {
-      //       AN_Master_Complaint_Details,
-      //     },
-      //   },
-      // };
 
       const body = {
-        ComplaintViewModel: {
-          AMC: {
+        AMC: [
+          {
             ID: '0',
-            SystemTag: 'SYS-XYMRUJ',
-            Antivirus: 'ESET 1-Year Smart Security',
-            SystemType: 'Home',
-            ItemType: 'Desktop',
+            SystemTag: systemTag, //'SYS-XYMRUJ',
+            BusinessType: businessType,
+            SystemType: systemType, //'Home',
+            ItemType: itemType, //'Desktop',
             ComplaintBy: 'bhariz001',
-            EntryBy: '10001',
-            TotalCharges: '350',
-            IsThirdParty: 'false',
-            ThirdParty: 'Nitin Variya (Laptop)',
-            IsMajor: 'true',
-            IsAntivirus: 'false',
+            EntryBy: userInfo.UserName,
+            TotalCharges: totalCharge.toFixed(2), //'350',
+            IsThirdParty: isThirdParty, //'false',
+            ThirdParty: _.get(selectedThirdParty, 'CodeDesc', ''), // 'Nitin Variya (Laptop)',
+            IsMajor: isMajor,
+            IsAntivirus: isAntivirus, //'false',
+            Antivirus: _.get(selectedAntivirus, 'CodeDesc', ''), //'ESET 1-Year Smart Security',
             IsBranded: 'false',
             ComplaintType: 'Paid Office Service',
-            BookRemarks: 'Lenovo M72e SFF',
+            BookRemarks: remark,
+            ReferenceBy: referenceBy,
           },
-          AMCDList: {
-            AN_Master_Complaint_Details: [
-              {
-                Id: '0',
-                Problem_Part_No: '1',
-                Problem_Part: 'Laptop Body Top (A-Panel)',
-                Problem_Part_Rate: '1600',
-                IsPart: 'false',
-              },
-              {
-                Id: '0',
-                Problem_Part_No: 'PRT000509',
-                Problem_Part: 'Graphics nVidia GeForce 4GB DDR5 1650 (New)',
-                Problem_Part_Rate: '14784.00',
-                IsPart: 'true',
-              },
-            ],
-          },
-        },
+        ],
+        AMCDList: AN_Master_Complaint_Details,
       };
 
       console.log(body);
 
       APICaller(`${endPoint}`, method, JSON.stringify(body)).then(json => {
+        console.log(json, 'jsonnnn');
         this.setState({
           loadingData: false,
         });
-        // if (!json) {
-        //   Alert.alert('Something went to wrong');
-        // }
-        // if (json.status !== 200) {
-        //   Alert.alert('Error Status', `${json.status}`);
-        //   return;
-        // }
-        // if (json.data.Success === '1') {
-        //   if (json.data.Response) {
-        //     if (
-        //       complainCharge > 0 &&
-        //       this.state.selectedServices !== 'Cash on Service'
-        //     ) {
-        //       const dataEvent = {
-        //         complaintId: _.get(json, 'data.Response[0].ComplaintID', ''), //json.data.Response[0].ComplaintID
-        //         complainCharge: totalCharge,
-        //         visible: true,
-        //       };
-        //       Events.trigger('complaint-advance-payment', dataEvent);
-        //     } else {
-        //       Alert.alert(
-        //         'Complaint',
-        //         'Complaint successfully submitted.',
-        //         [{text: 'OK', onPress: () => this.props.navigation.goBack()}],
-        //         {cancelable: false},
-        //       );
-        //     }
-        //   } else {
-        //     Alert.alert('Complaint', json.data.Message);
-        //   }
-        // } else if (json.data.Success === '2') {
-        //   Alert.alert('Alert', 'Complaint Already Booked');
-        // } else {
-        //   Alert.alert('Alert', json.data.Message);
-        //   // Alert.alert('Error -','Something went to wrong, please try again')
-        // }
+        if (!json) {
+          Alert.alert('Something went to wrong');
+        }
+        if (json.status !== 200) {
+          Alert.alert('Error Status', `${json.status}`);
+          return;
+        }
+        if (json.data.Success === '1') {
+          if (json.data.Response) {
+            Alert.alert('Success', 'Complaint Booked Successfully');
+            NavigationHelper.navigate(this.props.navigation, 'Dashboard');
+          } else {
+            Alert.alert('Complaint', json.data.Message);
+          }
+        } else if (json.data.Success === '2') {
+          Alert.alert('Alert', 'Complaint Already Booked');
+        } else {
+          Alert.alert('Alert', json.data.Message);
+          // Alert.alert('Error -','Something went to wrong, please try again')
+        }
       });
     }
   }
 
   renderSystemQRcodeTextbox = () => {
+    const {systemTag} = this.state;
     return (
       <>
         <View style={styles.viewSystemName}>
           <Text>System Tag</Text>
         </View>
 
-        <View style={styles.textinputViewStyle}>
-          <TextInputView
+        <View style={[styles.textinputViewStyle, styles.viewTxt]}>
+          <Text style={styles.sysTag}>{systemTag}</Text>
+          {/* <TextInputView
             placeholder={'System Tag'}
             placeholderTextColor={Color.silver}
             placeholderStyle={Styles.placeholderStyle}
             style={styles.textInput}
-            value={'SYS-XYZQWE'}
+            value={systemTag}
             returnKeyType={'done'}
             keyboardType={'default'}
             maxLength={255}
             editable={false}
-          />
+          /> */}
         </View>
       </>
     );
@@ -492,8 +450,8 @@ export default class ComplaintBooking extends Component {
           style={styles.textInput}
           value={mobileNo}
           returnKeyType={'done'}
-          keyboardType={'default'}
-          maxLength={255}
+          keyboardType={'numeric'}
+          maxLength={10}
           onChangeText={val => this.changeMobileNoText(val)}
           onFocus={() => this.onFocus()}
         />
@@ -585,6 +543,7 @@ export default class ComplaintBooking extends Component {
         <LandMarkTextPickerTextBox
           landmark={landMark}
           setLandMarkValue={val => this.setState({landMark: val})}
+          customLabelStyle={styles.borderWidth0}
         />
       </View>
     );
@@ -601,6 +560,7 @@ export default class ComplaintBooking extends Component {
             this.getAreaFromRoad(val);
           }}
           opacityValue={getRoadValue || getPincodeValue}
+          customLabelStyle={styles.borderWidth0}
         />
       </View>
     );
@@ -702,6 +662,7 @@ export default class ComplaintBooking extends Component {
           area={area}
           setAreaValue={val => this.setState({area: val})}
           opacityValue={getRoadValue || getPincodeValue}
+          customLabelStyle={styles.borderWidth0}
         />
       </View>
     );
@@ -715,6 +676,7 @@ export default class ComplaintBooking extends Component {
           city={city}
           setAreaValue={val => this.setState({city: val})}
           opacityValue={getRoadValue || getPincodeValue}
+          customLabelStyle={styles.borderWidth0}
         />
       </View>
     );
@@ -1175,11 +1137,11 @@ export default class ComplaintBooking extends Component {
   };
 
   checkSystemCodeAvailable = () => {
-    const {mobileNo} = this.state;
-    if (mobileNo) {
+    const {userVerify} = this.state;
+    if (userVerify) {
       return 'green';
     }
-    if (!mobileNo) {
+    if (!userVerify) {
       return 'red';
     }
   };
@@ -1206,11 +1168,19 @@ export default class ComplaintBooking extends Component {
 
   renderMessage = () => {
     const {notFoundMessage} = this.state;
+    if (!notFoundMessage) return null;
     return (
       <View>
         <Text style={styles.foundMessage}>{notFoundMessage}</Text>
       </View>
     );
+  };
+
+  scanQrCode = qrCode => {
+    this.getOrderDetailFromSystemTag(qrCode);
+    this.setState({
+      systemTag: qrCode,
+    });
   };
 
   render() {
@@ -1252,6 +1222,9 @@ export default class ComplaintBooking extends Component {
           {this.renderSystemPartsListModal()}
         </ScrollView>
         {this.renderFixedButton(complainCharge)}
+        <ComplaintBookingWithQRCode
+          scanQrCode={qrCode => this.scanQrCode(qrCode)}
+        />
       </SafeAreaView>
     );
   }

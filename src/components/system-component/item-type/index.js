@@ -27,7 +27,7 @@ export const ItemTypeSelectBox = ({item, selectedItem, itemChange}) => {
             return (
               <Picker.Item
                 label={data.CodeDesc}
-                value={data.CodeId}
+                value={data.CodeDesc}
                 key={`${index}`}
               />
             );

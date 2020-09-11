@@ -49,13 +49,13 @@ export default (styles = {
   },
   textInput: {
     backgroundColor: 'transparent',
-    height: Matrics.ScaleValue(50),
+    height: Matrics.ScaleValue(40),
     borderWidth: 1,
     marginLeft: 0,
     marginTop: 0,
     borderColor: Color.paleGreyTwo,
     paddingHorizontal: 10,
-    color: Color.black70,
+    color: Color.black30,
     fontSize: Matrics.ScaleValue(16),
   },
   userDetailView: {
@@ -114,8 +114,9 @@ export default (styles = {
   nextandSubmitClass: {
     height: Matrics.ScaleValue(85),
     alignItems: 'center',
-    marginTop: 10,
-    backgroundColor: '#f3f3f3',
+    backgroundColor: '#fefefe',
+    borderTopWidth: 2,
+    borderColor: '#eee',
   },
   touchNextButton: {
     width: '60%',
@@ -234,7 +235,7 @@ export default (styles = {
   iconArrow: {
     alignItems: 'center',
     justifyContent: 'center',
-    height: Matrics.ScaleValue(55),
+    height: Matrics.ScaleValue(40),
     paddingHorizontal: Matrics.ScaleValue(5),
   },
 
@@ -243,5 +244,17 @@ export default (styles = {
     color: 'red',
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  sysTag: {
+    color: Color.black30,
+    fontSize: Matrics.ScaleValue(14),
+  },
+  viewTxt: {
+    height: Matrics.ScaleValue(40),
+    justifyContent: 'center',
+    paddingLeft: Matrics.ScaleValue(5),
+  },
+  borderWidth0: {
+    borderBottomWidth: 0,
   },
 });

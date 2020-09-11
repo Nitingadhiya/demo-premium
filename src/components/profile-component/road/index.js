@@ -5,7 +5,12 @@ import PickAddressModal from '../../pick-address-modal';
 
 const contantText = 'Road';
 
-export const RoadPickerTextBox = ({road, setRoadValue, opacityValue}) => {
+export const RoadPickerTextBox = ({
+  road,
+  setRoadValue,
+  opacityValue,
+  customLabelStyle,
+}) => {
   const [addressModalVisible, useaddressModalVisible] = useState(false);
   const [roadText, userRoadText] = useState();
   useEffect(() => {
@@ -32,7 +37,11 @@ export const RoadPickerTextBox = ({road, setRoadValue, opacityValue}) => {
   return (
     <>
       <TouchableOpacity
-        style={[styles.labelClass, {opacity: opacityValue ? 0.5 : 1}]}
+        style={[
+          styles.labelClass,
+          {opacity: opacityValue ? 0.5 : 1},
+          customLabelStyle,
+        ]}
         disabled={opacityValue}
         onPress={() => {
           useaddressModalVisible(true);
