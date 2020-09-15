@@ -131,7 +131,7 @@ export default class ComplaintBooking extends Component {
     const itemDefaultType = _.get(itemTypes, '[0]CodeDesc', '');
     const systemDefaultType = _.get(systemTypes, '[0]CodeDesc', '');
     const businessDefaultType = _.get(businessTypes, '[0]CodeDesc', '');
-
+    console.log(json, 'jsonnn');
     if (type == 'array') {
       data = _.get(json, 'data.Response[0]', '');
       this.setState({

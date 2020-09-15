@@ -197,6 +197,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-permissions')
+    implementation project(':react-native-camera')
     implementation project(':react-native-firebase')
     implementation "com.google.android.gms:play-services-base:17.0.0"
     implementation "com.google.firebase:firebase-core:17.0.1"

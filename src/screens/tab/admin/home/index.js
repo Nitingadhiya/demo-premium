@@ -8,6 +8,8 @@ import {
   SafeAreaView,
 } from 'react-native';
 import {VersionNumber} from '../../../../package';
+import QRCodeScanner from 'react-native-qrcode-scanner';
+import {RNCamera} from 'react-native-camera';
 
 import APICaller from '../../../../utils/api-caller';
 import {userDashboardEndPoint} from '../../../../config/api-endpoint';
@@ -32,6 +34,7 @@ export default class Dashboard extends Component {
     updateAvailable: false,
     systemDescription: null,
     refreshing: false,
+    scanQrCode: false,
   };
 
   componentDidMount() {
@@ -100,6 +103,13 @@ export default class Dashboard extends Component {
     this.userDashboard(this.state.userInfo.UserName);
   };
 
+  onSuccess = e => {
+    alert(e.data);
+    this.setState({
+      scanQrCode: false,
+    });
+  };
+
   render() {
     const {navigation} = this.props;
     const {
@@ -136,6 +146,11 @@ export default class Dashboard extends Component {
           <TeamTasksOverview text="Today Team Work Tasks Overview" />
 
           <View style={styles.bodyView}>
+            <TouchableOpacity
+              style={styles.TouchBTN}
+              onPress={() => this.setState({scanQrCode: true})}>
+              <Text style={styles.dashBtnText}>Demo QR code</Text>
+            </TouchableOpacity>
             <TouchableOpacity
               style={styles.TouchBTN}
               onPress={() =>
@@ -187,6 +202,28 @@ export default class Dashboard extends Component {
         />
         {/* complaint with QR Code */}
         <ComplaintWithQRCode userInfo={userInfo} navigation={navigation} />
+        {this.state.scanQrCode ? (
+          <>
+            <QRCodeScanner
+              onRead={e => this.onSuccess(e)}
+              flashMode={RNCamera.Constants.FlashMode.torch}
+              topContent={
+                <Text style={styles.centerText}>
+                  Go to{' '}
+                  <Text style={styles.textBold}>
+                    wikipedia.org/wiki/QR_code
+                  </Text>{' '}
+                  on your computer and scan the QR code.
+                </Text>
+              }
+              bottomContent={
+                <TouchableOpacity style={styles.buttonTouchable}>
+                  <Text style={styles.buttonText}>OK. Got it!</Text>
+                </TouchableOpacity>
+              }
+            />
+          </>
+        ) : null}
       </SafeAreaView>
     );
   }
