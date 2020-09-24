@@ -22,17 +22,24 @@ import Helper from '../../utils/helper';
 import NavigationHelper from '../../utils/navigation-helper';
 import {TextInputView, Header, SpinnerView} from '../../common/components';
 import {MIcon} from '../../common/assets/vector-icon';
+import ScanWithQRCodeForMobileNo from '../../components/scan-with-qr-code-mobileno';
+import {_} from '../../package';
 
 class ForgotPassword extends Component {
   state = {
     userName: null,
+    scanQRCode: false,
   };
   componentDidMount() {
     const {route} = this.props;
     if (route.params) {
       this.setState({
         mobileNo: route.params.mobileNo,
+        scanQRCode: _.get(route, 'params.scanQRCode', false),
       });
+      if (_.get(route, 'params.scanQRCode', '')) {
+        Events.trigger('ScanQRCodeMobileNoEvent', true);
+      }
     }
     Events.on('OTP', 'receive', res => {
       this.onFinishCheckingCode(res);
@@ -112,12 +119,27 @@ class ForgotPassword extends Component {
     });
   }
 
+  setMobileNo = async userName => {
+    await this.setState({
+      userName,
+    });
+    this.forgotPasswordMethod();
+  };
+
+  renderHeaderTitle = () => {
+    const {scanQRCode} = this.state;
+    if (scanQRCode) {
+      return 'Forgot Mobile No';
+    }
+    return 'Forgot Password';
+  };
+
   render() {
     const {userName, userNameError, loadingData} = this.state;
 
     return (
       <SafeAreaView style={{flex: 1}}>
-        <Header title={'Forgot Password'} left="back" />
+        <Header title={this.renderHeaderTitle()} left="back" />
         <KeyboardAvoidingView style={{flex: 1}}>
           <View style={styles.container}>
             <View style={styles.textBoxView}>
@@ -160,6 +182,9 @@ class ForgotPassword extends Component {
           <Text style={styles.bottomText}>AHMEDABAD</Text>
           <Text style={styles.bottomText}>NAVSARI</Text>
         </View>
+        <ScanWithQRCodeForMobileNo
+          getQRCode={mobileNo => this.setMobileNo(mobileNo)}
+        />
       </SafeAreaView>
     );
   }

@@ -133,11 +133,19 @@ class POrder extends Component {
             ]}
           />
         </View>
-        <View style={{marginVertical: 5}}>
+        <View
+          style={{
+            marginVertical: 5,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}>
           <Text style={{fontSize: 16}}>
             <Text style={{fontWeight: 'bold'}}>OrderStatus :</Text>{' '}
             {data.OrderStatus}
           </Text>
+          {data.IsDeliveryRequired ? (
+            <McIcon name="truck-delivery" size={24} color={'#00bcd4'} />
+          ) : null}
         </View>
       </TouchableOpacity>
     );

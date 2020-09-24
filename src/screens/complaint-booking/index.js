@@ -79,6 +79,7 @@ export default class ComplaintBooking extends Component {
     getPincodeValue: false,
     remark: null,
     referenceBy: null,
+    complaintBy: null,
   };
 
   // ------------>>>LifeCycle Methods------------->>>
@@ -160,6 +161,7 @@ export default class ComplaintBooking extends Component {
         remark: _.get(data, 'Remark', ''),
         pincode: _.get(data, 'Pincode', ''),
         notFoundMessage: '',
+        complaintBy: _.get(data, 'CustomerUserName', ''),
       });
     } else {
       this.setState({
@@ -317,6 +319,7 @@ export default class ComplaintBooking extends Component {
       selectedProblemList,
       selectedSystemPartsList,
       referenceBy,
+      complaintBy,
     } = this.state;
 
     let prepareProblemsDesc = [];
@@ -365,14 +368,18 @@ export default class ComplaintBooking extends Component {
             BusinessType: businessType,
             SystemType: systemType, //'Home',
             ItemType: itemType, //'Desktop',
-            ComplaintBy: 'bhariz001',
+            ComplaintBy: complaintBy,
             EntryBy: userInfo.UserName,
             TotalCharges: totalCharge.toFixed(2), //'350',
             IsThirdParty: isThirdParty, //'false',
-            ThirdParty: _.get(selectedThirdParty, 'CodeDesc', ''), // 'Nitin Variya (Laptop)',
+            ThirdParty: isThirdParty
+              ? _.get(selectedThirdParty, 'CodeDesc', '')
+              : null, // 'Nitin Variya (Laptop)',
             IsMajor: isMajor,
             IsAntivirus: isAntivirus, //'false',
-            Antivirus: _.get(selectedAntivirus, 'CodeDesc', ''), //'ESET 1-Year Smart Security',
+            Antivirus: isAntivirus
+              ? _.get(selectedAntivirus, 'CodeDesc', '')
+              : null, //'ESET 1-Year Smart Security',
             IsBranded: 'false',
             ComplaintType: 'Paid Office Service',
             BookRemarks: remark,
@@ -382,7 +389,7 @@ export default class ComplaintBooking extends Component {
         AMCDList: AN_Master_Complaint_Details,
       };
 
-      console.log(body);
+      console.log(body, 'bodyyy');
 
       APICaller(`${endPoint}`, method, JSON.stringify(body)).then(json => {
         console.log(json, 'jsonnnn');

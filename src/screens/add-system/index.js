@@ -25,6 +25,7 @@ class AddSystem extends Component {
     itemTypeList: null,
     systemTypeList: null,
     loadingData: false,
+    selectedBusinessType: 'B',
   };
 
   async componentDidMount() {
@@ -72,6 +73,7 @@ class AddSystem extends Component {
       selectedItemType,
       selectedSystemType,
       systemName,
+      selectedBusinessType,
     } = this.state;
     if (!userName) {
       Alert.alert('Invalid username');
@@ -88,6 +90,7 @@ class AddSystem extends Component {
         selectedSystemType,
         systemName,
         userName,
+        selectedBusinessType,
       ),
       'GET',
     ).then(json => {
@@ -106,6 +109,28 @@ class AddSystem extends Component {
       }
     });
   }
+
+  renderBusinessType = () => {
+    const {selectedBusinessType} = this.state;
+    return (
+      <>
+        <View style={styles.viewItemTypeText}>
+          <Text>Enter Use Type</Text>
+        </View>
+        <View style={styles.viewPicker}>
+          <Picker
+            selectedValue={selectedBusinessType}
+            style={styles.cityList}
+            onValueChange={(itemValue, itemIndex) => {
+              this.setState({selectedBusinessType: itemValue});
+            }}>
+            <Picker.Item label="Business Use" value="B" />
+            <Picker.Item label="Home Use" value="H" />
+          </Picker>
+        </View>
+      </>
+    );
+  };
 
   render() {
     const {
@@ -142,6 +167,8 @@ class AddSystem extends Component {
                 ))}
             </Picker>
           </View>
+
+          {this.renderBusinessType()}
 
           <View style={styles.viewItemTypeText}>
             <Text>Enter System Type</Text>

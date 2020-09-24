@@ -3,10 +3,37 @@ import {View, Text, Image, TouchableOpacity} from 'react-native';
 import styles from './styles';
 import {useNavigation} from '@react-navigation/native';
 import NavigationHelper from '../../../utils/navigation-helper';
+import {Images} from '../../styles';
 
 export const UserInfoDashboardView = ({userInfo}) => {
   const navigation = useNavigation();
   if (!userInfo) return <View />;
+
+  const renderCoin = () => {
+    console.log(userInfo, 'innn');
+    if (userInfo && userInfo.LoginType == '4') {
+      return <Text style={{marginLeft: 5}}>{`₹. ${userInfo.Coins || 0}`}</Text>;
+    }
+    if (userInfo && (userInfo.LoginType == '2' || userInfo.LoginType == '3')) {
+      return renderGoldSilverCoin();
+    }
+  };
+
+  const renderGoldSilverCoin = () => {
+    return (
+      <View style={styles.viewFLXD}>
+        <View style={styles.coinView}>
+          <Text style={styles.coinCount}>{userInfo.Gold || 0}</Text>
+          <Image source={Images.goldCoin} style={{width: 15, height: 15}} />
+        </View>
+        <View style={styles.coinView}>
+          <Text style={styles.coinCount}>{userInfo.Silver || 0}</Text>
+          <Image source={Images.silverCoin} style={{width: 15, height: 15}} />
+        </View>
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -36,12 +63,13 @@ export const UserInfoDashboardView = ({userInfo}) => {
         </View>
         <View style={styles.viewStyle1}>
           <View style={styles.mainRightDash}>
-            <View style={styles.rightDash}>
-              <Text style={{marginLeft: 5}}>₹. {userInfo.Coins || 0}</Text>
-            </View>
+            <View style={styles.rightDash}>{renderCoin()}</View>
           </View>
         </View>
       </TouchableOpacity>
     </View>
   );
 };
+
+// Customer  => Balnace
+// Manager / Engineer => Gold / Silver

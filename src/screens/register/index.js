@@ -18,6 +18,7 @@ import {userRegistrationEndPoint} from '../../config/api-endpoint';
 import {TextInputView, SpinnerView, Header} from '../../common/components';
 import {Color} from '../../common/styles';
 import NavigationHelper from '../../utils/navigation-helper';
+import {_} from '../../package';
 
 const radio_props = [
   {label: 'Male', value: 'Male'},
@@ -52,6 +53,10 @@ class Register extends Component {
     loadingData: false,
     modalType: null,
   };
+
+  componentDidMount() {
+    this.getBusinessList();
+  }
 
   changeTexInputValue(type, value) {
     this.setState(prevState => {
@@ -118,6 +123,7 @@ class Register extends Component {
       gender,
       businessType,
       pincode,
+      business,
     } = this.state.registerForm;
 
     // Reset Validation error
@@ -154,7 +160,7 @@ class Register extends Component {
         if (!password) error.password = 'Please enter password';
         if (!cityText) error.cityText = 'Please enter city';
         if (!pincode) error.pincode = 'Please enter pincode';
-        if (!businessType) error.businessType = 'Please select Usage type';
+        // if (!businessType) error.businessType = 'Please select Usage type';
         return {error};
       });
       return;
@@ -179,10 +185,12 @@ class Register extends Component {
           EmailId: email,
           City: cityText,
           Pincode: pincode,
-          BusinessType: businessType,
+          //BusinessType: businessType,
+          Business: business,
         },
       ],
     };
+
     if (!this.genrateUserName) return;
     APICaller(userRegistrationEndPoint, 'POST', JSON.stringify(body)).then(
       json => {
@@ -205,6 +213,7 @@ class Register extends Component {
   getBusinessList = () => {
     const endPoint = 'GetBusinessList';
     APICaller(`${endPoint}`, 'GET').then(json => {
+      console.log(json, 'jjj');
       if (json.data.Success === '0' || json.data.Success === 0) {
         Alert.alert('Alert', json.data.Message);
       }
@@ -212,8 +221,10 @@ class Register extends Component {
         loadingData: false,
       });
       if (json.data.Success === '1') {
+        const indexValue = _.get(json, 'data.Response[0].CodeDesc');
         this.setState({
           businessList: json.data.Response,
+          selectedBusiness: indexValue,
         });
       }
     });
@@ -225,6 +236,7 @@ class Register extends Component {
       passwordSecure,
       addressModalVisible,
       loadingData,
+      businessList,
     } = this.state;
     return (
       <SafeAreaView style={styles.container}>
@@ -393,7 +405,31 @@ class Register extends Component {
                   />
                 </View>
                 {this.errorView('pincode')}
+
                 <Picker
+                  selectedValue={this.state.registerForm.business}
+                  style={styles.cityList}
+                  onValueChange={(itemValue, itemIndex) => {
+                    this.state.registerForm.business = itemValue;
+                    this.setState({
+                      selectedBusiness: itemValue,
+                    });
+                  }}>
+                  {businessList &&
+                    businessList.map(res => (
+                      <Picker.Item label={res.CodeDesc} value={res.CodeDesc} />
+                    ))}
+                </Picker>
+                <View
+                  style={{
+                    width: '80%',
+                    borderBottomWidth: 1,
+                    borderBottomColor: '#d3d3d3',
+                  }}
+                />
+                {this.errorView('business')}
+
+                {/* <Picker
                   selectedValue={this.state.registerForm.businessType}
                   style={styles.cityList}
                   onValueChange={(itemValue, itemIndex) => {
@@ -409,7 +445,7 @@ class Register extends Component {
                     borderBottomColor: '#d3d3d3',
                   }}
                 />
-                {this.errorView('businessType')}
+                {this.errorView('businessType')} */}
 
                 <View style={styles.loginView}>
                   {loadingData ? (

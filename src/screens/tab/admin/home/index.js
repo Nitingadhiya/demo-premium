@@ -146,11 +146,11 @@ export default class Dashboard extends Component {
           <TeamTasksOverview text="Today Team Work Tasks Overview" />
 
           <View style={styles.bodyView}>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.TouchBTN}
               onPress={() => this.setState({scanQrCode: true})}>
               <Text style={styles.dashBtnText}>Demo QR code</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               style={styles.TouchBTN}
               onPress={() =>

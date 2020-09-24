@@ -17,6 +17,8 @@ const images = {
   fmcIcon: require('./files/shield-fmc.png'),
   dashBoardIcon: require('./files/dashboard-logo.png'),
 
+  goldCoin: require('./files/gold-coin.png'),
+  silverCoin: require('./files/silver-coin.png'),
   // welcomeBg: assetsImages.welcomeBg,
   // welcomeLogo: assetsImages.welcomeLogo,
   // listDefault: assetsImages.listDefault,

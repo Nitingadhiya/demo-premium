@@ -66,6 +66,7 @@ export default class Dashboard extends Component {
       userDashboardEndPoint(userName, VersionNumber.buildVersion),
       'GET',
     ).then(json => {
+      console.log(json, 'jsonnn');
       this.setState({
         loadingData: false,
         refreshing: false,

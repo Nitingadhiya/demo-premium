@@ -3,11 +3,14 @@ import {Text, View, TouchableOpacity} from 'react-native';
 import {CommonActions} from '@react-navigation/native';
 import {TextInputView, SpinnerView} from '../../common/components';
 import {MIcon, McIcon} from '../../common/assets/vector-icon';
-import {Color} from '../../common/styles';
+import {Color, Matrics} from '../../common/styles';
 import styles from './styles';
 import Helper from '../../utils/helper';
 import APICaller from '../../utils/api-caller';
-import {userLoginEndPoint} from '../../config/api-endpoint';
+import {
+  userLoginEndPoint,
+  loginWithOTPEndPoint,
+} from '../../config/api-endpoint';
 import Events from '../../utils/events';
 import NavigationHelper from '../../utils/navigation-helper';
 
@@ -28,6 +31,7 @@ class LoginComponent extends Component {
       formError: null,
     },
     rememberme: false,
+    activeStep: '1',
   };
 
   async componentDidMount() {
@@ -93,6 +97,7 @@ class LoginComponent extends Component {
 
     // User Login API
     APICaller(userLoginEndPoint(email, password), 'GET').then(async json => {
+      console.log(json, 'json');
       this.setState({loadingData: false});
       if (json.data.Success === '1') {
         const userInfo = json.data.Response;
@@ -121,11 +126,166 @@ class LoginComponent extends Component {
     );
   };
 
+  loginWithOTPMethod = () => {
+    const {rememberme, loginForm, error} = this.state;
+    const {email, password} = loginForm;
+    this.resetFormState();
+
+    // Check validation
+    if (!email) {
+      this.setState(prevState => {
+        let error = Object.assign({}, prevState.error);
+        if (!email) error.email = 'Please enter mobile number';
+        return {error};
+      });
+      return;
+    }
+    this.setState({loadingData: true});
+
+    // User Login API
+    APICaller(loginWithOTPEndPoint(), 'GET').then(async json => {
+      console.log(json, 'json');
+      this.setState({loadingData: false});
+      if (json.data.Success === '1') {
+        NavigationHelper.navigate(this.props.navigation, 'OTPScreen', {
+          mobileNo: email,
+        });
+      } else {
+        const message = json.data.Message;
+        this.setState(prevState => {
+          let error = Object.assign({}, prevState.formError);
+          error.formError = message;
+          return {error};
+        });
+      }
+    });
+  };
+
+  activeTouch = type => {
+    const {activeStep} = this.state;
+    if (type == activeStep) {
+      return styles.activeBorder;
+    }
+  };
+
+  renderTabView = () => {
+    return (
+      <View style={styles.loginTabView}>
+        <TouchableOpacity
+          style={[styles.tabTouch, this.activeTouch('1')]}
+          onPress={() => this.tabPress('1')}>
+          <Text style={styles.touchText}>Password</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tabTouch, this.activeTouch('2')]}
+          onPress={() => this.tabPress('2')}>
+          <Text style={styles.touchText}>OTP</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  tabPress = type => {
+    this.setState({
+      activeStep: type,
+    });
+  };
+
+  renderPasswordField = () => {
+    const {loginForm, passwordSecure, rememberme, activeStep} = this.state;
+    if (activeStep != '1') return null;
+    return (
+      <>
+        <View style={styles.subTextBoxView}>
+          <TextInputView
+            placeholder="Password"
+            labelIcon={
+              <McIcon name="lock-outline" size={22} color={Color.lightGray} />
+            }
+            onChangeText={value => this.changeTexInputValue('password', value)}
+            value={loginForm.password}
+            secureTextEntry={passwordSecure}
+          />
+          <TouchableOpacity
+            style={styles.passwordVisible}
+            onPress={() => this.passwordVisible()}>
+            <McIcon
+              name={this.state.passwordSecure ? 'eye' : 'eye-off'}
+              size={22}
+              color={Color.lightGray}
+            />
+          </TouchableOpacity>
+        </View>
+        {this.errorView('password')}
+        <View style={styles.forgotRememberView}>
+          <TouchableOpacity
+            style={styles.rememberView}
+            activeOpacity={1}
+            onPress={() => this.setState({rememberme: !this.state.rememberme})}>
+            <MIcon
+              name={`${rememberme ? 'check-box' : 'check-box-outline-blank'}`}
+              size={20}
+              color={Color.primary}
+            />
+            <Text style={{marginLeft: 2}}>Remember me</Text>
+          </TouchableOpacity>
+        </View>
+        {this.errorView('formError')}
+        <View style={styles.loginView}>
+          {this.state.loadingData ? (
+            <SpinnerView />
+          ) : (
+            <View style={styles.flexButton}>
+              <TouchableOpacity
+                style={[styles.touchableLogin]}
+                onPress={() => this.loginWithCredentials()}>
+                <Text style={styles.loginText}>Login</Text>
+              </TouchableOpacity>
+
+              {/* <TouchableOpacity
+                  style={[styles.touchableLoginWithOTP, styles.touchRightLogin]}
+                  onPress={() => this.loginWithCredentials()}>
+                  <Text style={styles.loginText}>Login With OTP</Text>
+                </TouchableOpacity> */}
+            </View>
+          )}
+        </View>
+      </>
+    );
+  };
+
+  renderLoginWithOTP = () => {
+    const {activeStep} = this.state;
+    if (activeStep != '2') return null;
+    return (
+      <View style={styles.loginView}>
+        {this.state.loadingData ? (
+          <SpinnerView />
+        ) : (
+          <View style={styles.flexButton}>
+            <TouchableOpacity
+              style={[styles.touchableLoginWithOTP]}
+              onPress={() => this.loginWithOTPMethod()}>
+              <Text style={styles.loginText}>Login With OTP</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+    );
+  };
+
+  forgotMobileNo = () => {
+    NavigationHelper.navigate(this.props.navigation, 'ForgotPassword', {
+      scanQRCode: true,
+    });
+  };
+
   render() {
     const {loginForm, passwordSecure, rememberme} = this.state;
     const {navigation} = this.props;
     return (
       <View style={styles.container}>
+        {this.renderTabView()}
         <View style={styles.textBoxView}>
           <View style={styles.subTextBoxView}>
             <TextInputView
@@ -142,63 +302,9 @@ class LoginComponent extends Component {
             />
           </View>
           {this.errorView('email')}
-          <View style={styles.subTextBoxView}>
-            <TextInputView
-              placeholder="Password"
-              labelIcon={
-                <McIcon name="lock-outline" size={22} color={Color.lightGray} />
-              }
-              onChangeText={value =>
-                this.changeTexInputValue('password', value)
-              }
-              value={loginForm.password}
-              secureTextEntry={passwordSecure}
-            />
-            <TouchableOpacity
-              style={styles.passwordVisible}
-              onPress={() => this.passwordVisible()}>
-              <McIcon
-                name={this.state.passwordSecure ? 'eye' : 'eye-off'}
-                size={22}
-                color={Color.lightGray}
-              />
-            </TouchableOpacity>
-          </View>
-          {this.errorView('password')}
-          <View style={styles.forgotRememberView}>
-            <TouchableOpacity
-              style={styles.rememberView}
-              activeOpacity={1}
-              onPress={() =>
-                this.setState({rememberme: !this.state.rememberme})
-              }>
-              <MIcon
-                name={`${rememberme ? 'check-box' : 'check-box-outline-blank'}`}
-                size={20}
-                color={Color.primary}
-              />
-              <Text style={{marginLeft: 2}}>Remember me</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.rememberView}
-              onPress={() =>
-                NavigationHelper.navigate(navigation, 'ForgotPassword')
-              }>
-              <Text>Forgot password?</Text>
-            </TouchableOpacity>
-          </View>
-          {this.errorView('formError')}
-          <View style={styles.loginView}>
-            {this.state.loadingData ? (
-              <SpinnerView />
-            ) : (
-              <TouchableOpacity
-                style={styles.touchableLogin}
-                onPress={() => this.loginWithCredentials()}>
-                <Text style={styles.loginText}>Login</Text>
-              </TouchableOpacity>
-            )}
-          </View>
+          {this.renderPasswordField()}
+          {this.renderLoginWithOTP()}
+
           <View style={styles.dontAccountView}>
             <TouchableOpacity
               style={styles.touchDontAccount}
@@ -206,6 +312,30 @@ class LoginComponent extends Component {
               <Text style={styles.dontAccText}>Don't have an Account?</Text>
               <Text style={styles.createAccText}> Create Account</Text>
             </TouchableOpacity>
+          </View>
+
+          <View style={styles.dontAccountView}>
+            <View
+              style={styles.forgotView}
+              onPress={() => NavigationHelper.navigate(navigation, 'Register')}>
+              <View style={styles.forgotRowView}>
+                <Text style={styles.forgotText}>Forgot</Text>
+              </View>
+              <View style={styles.flexForgotMobile}>
+                <TouchableOpacity
+                  style={styles.forgotPasswordTouch}
+                  onPress={() =>
+                    NavigationHelper.navigate(navigation, 'ForgotPassword')
+                  }>
+                  <Text style={styles.createAccText}>Password ?</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.forgotPasswordTouch}
+                  onPress={() => this.forgotMobileNo()}>
+                  <Text style={styles.createAccText}>Mobile No ?</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
         </View>
       </View>

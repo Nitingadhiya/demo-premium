@@ -59,6 +59,7 @@ class Order extends Component {
   getOrderList(userName) {
     if (!this.state.refreshing) this.setState({loadingData: true});
     APICaller(getOrderListEndPoint(userName), 'GET').then(json => {
+      console.log(json, 'json');
       if (json.data.Success === 1 || json.data.Success === '1') {
         this.setState({
           orderItem: json.data.Response,

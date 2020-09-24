@@ -264,5 +264,13 @@ const ApplicationStyles = {
     fontSize: 16,
   },
   fontBold16: {fontWeight: 'bold', fontSize: 16},
+  spinnerCenter: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: Matrics.screenHeight,
+    width: '100%',
+    borderWidth: 1,
+  },
 };
 export default ApplicationStyles;

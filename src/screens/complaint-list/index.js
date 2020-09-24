@@ -34,6 +34,7 @@ import {
   EIcon,
   F5Icon,
   Ionicons,
+  AIcon,
 } from '../../common/assets/vector-icon';
 import APICaller from '../../utils/api-caller';
 import Helper from '../../utils/helper';
@@ -369,7 +370,7 @@ class ComplainList extends Component {
       return;
     }
 
-    this.setModalVisible(bool, index);
+    // this.setModalVisible(bool, index);
   }
 
   onRefresh = () => {
@@ -533,10 +534,10 @@ class ComplainList extends Component {
           width: 30,
           borderRadius: 30,
           borderWidth: 1,
-          borderColor: '#f44336',
+          borderColor: '#4FCE5D',
         }}>
         {/* <Text style={{color: 'white', fontSize: 14}}>Close</Text> */}
-        <McIcon name="close" size={20} color={'#f44336'} />
+        <AIcon name="like2" size={20} color={'#4FCE5D'} />
       </TouchableOpacity>
     );
   };
@@ -555,7 +556,7 @@ class ComplainList extends Component {
           borderRadius: 30,
           marginRight: 8,
         }}>
-        <McIcon name="cancel" size={20} color={'red'} />
+        <McIcon name="close" size={20} color={'red'} />
       </TouchableOpacity>
     );
   };
@@ -675,41 +676,45 @@ class ComplainList extends Component {
           <Text style={{fontSize: 12, color: '#545454'}}>{item.Address}</Text>
         </View>
         <View style={{flexDirection: 'row'}}>
-          {item.ComplaintStatus === 'Active' ||
-            (item.ComplaintStatus === 'Assigned' &&
-              this.state.LoginType === '2' && (
-                <View
-                  style={{
-                    alignItems: 'flex-end',
-                    flex: 1,
-                    flexDirection: 'row',
-                    marginVertical: 5,
-                    //justifyContent: 'space-around',
-                  }}>
-                  {this.renderCallIcon(item)}
-                  {this.renderComplaintAssign(item)}
-                  {this.renderCloseCompliantIcon(item)}
-                  {this.renderPauseButton(item, index)}
-                  {this.renderReviseButton(item, index)}
-                  {this.renderLocationNavigate(item, index)}
-                </View>
-              ))}
+          {(item.ComplaintStatus === 'Active' ||
+            item.ComplaintStatus === 'Assigned' ||
+            item.ComplaintStatus === 'On Hold') &&
+            this.state.LoginType === '2' && (
+              <View
+                style={{
+                  alignItems: 'flex-end',
+                  flex: 1,
+                  flexDirection: 'row',
+                  marginVertical: 5,
+                  //justifyContent: 'space-around',
+                }}>
+                {this.renderCallIcon(item)}
+                {this.renderComplaintAssign(item)}
+                {this.renderCloseCompliantIcon(item)}
+                {this.renderPauseButton(item, index)}
+                {this.renderReviseButton(item, index)}
+                {this.renderLocationNavigate(item, index)}
+              </View>
+            )}
 
-          {item.ComplaintStatus === 'Assigned' && this.state.LoginType === '3' && (
-            <View
-              style={{
-                alignItems: 'flex-end',
-                flex: 1,
-                flexDirection: 'row',
-                marginVertical: 5,
-              }}>
-              {this.renderCloseCompliantIcon(item)}
-              {this.renderLocationNavigate(item, index)}
-            </View>
-          )}
+          {(item.ComplaintStatus === 'Assigned' ||
+            item.ComplaintStatus === 'On Hold') &&
+            this.state.LoginType === '3' && (
+              <View
+                style={{
+                  alignItems: 'flex-end',
+                  flex: 1,
+                  flexDirection: 'row',
+                  marginVertical: 5,
+                }}>
+                {this.renderCloseCompliantIcon(item)}
+                {this.renderLocationNavigate(item, index)}
+              </View>
+            )}
 
           {(item.ComplaintStatus === 'Active' ||
-            item.ComplaintStatus === 'Assigned') &&
+            item.ComplaintStatus === 'Assigned' ||
+            item.ComplaintStatus === 'On Hold') &&
             this.state.LoginType === '1' && (
               <View
                 style={{

@@ -178,6 +178,20 @@ const Helper = {
     }
     return color;
   },
+  responseSuccess(json) {
+    const success = _.get(json, 'data.Success', '');
+    if (success == '1') {
+      return true;
+    }
+    return false;
+  },
+  responseInvalid(json) {
+    const success = _.get(json, 'data.Success', '');
+    if (success != '1') {
+      return true;
+    }
+    return false;
+  },
 };
 
 export default Helper;

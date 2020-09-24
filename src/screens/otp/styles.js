@@ -1,6 +1,7 @@
-import {Color} from '../../common/styles';
+import {ApplicationStyles, Color, Matrics} from '../../common/styles';
 
-export default styles = {
+export default (styles = {
+  ...ApplicationStyles,
   container: {
     flex: 1,
   },
@@ -29,4 +30,22 @@ export default styles = {
     alignItems: 'center',
     backgroundColor: Color.primary,
   },
-};
+  resendOTPView: {
+    height: Matrics.ScaleValue(40),
+    marginBottom: 30,
+  },
+  smsResendTouch: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    backgroundColor: Color.paleGreyThree,
+    height: Matrics.ScaleValue(40),
+    padding: Matrics.ScaleValue(10),
+    borderRadius: Matrics.ScaleValue(5),
+  },
+  resendText: {
+    fontSize: Matrics.ScaleValue(14),
+    color: Color.black30,
+    marginLeft: Matrics.ScaleValue(10),
+  },
+});

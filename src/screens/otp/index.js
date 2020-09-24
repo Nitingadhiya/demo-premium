@@ -10,17 +10,24 @@ import {
 import RNOtpVerify from 'react-native-otp-verify';
 import CodeInput from 'react-native-confirmation-code-input';
 import APICaller from '../../utils/api-caller';
-import {validateOtpEndPoint} from '../../config/api-endpoint';
-import {Header} from '../../common/components';
+import {
+  validateOtpEndPoint,
+  resendOTPEndPoint,
+} from '../../config/api-endpoint';
+import {Header, SpinnerView} from '../../common/components';
 import styles from './styles';
-import {Matrics} from '../../common/styles';
+import {Color, Matrics} from '../../common/styles';
 import Events from '../../utils/events';
 import Helper from '../../utils/helper';
 import NavigationHelper from '../../utils/navigation-helper';
+import {TouchableOpacity} from 'react-native';
+import {MIcon} from '../../common/assets/vector-icon';
+import Spinner from 'react-native-spinkit';
 
 class OTPScreen extends Component {
   state = {
     mobileNo: null,
+    loading: false,
   };
   componentDidMount() {
     const {params} = this.props.route;
@@ -81,10 +88,53 @@ class OTPScreen extends Component {
       },
     );
   }
+
+  loadingView(loading) {
+    this.setState({loading});
+  }
+
+  resendOTP = () => {
+    this.loadingView(true);
+    const {mobileNo} = this.state;
+    APICaller(resendOTPEndPoint(mobileNo), 'GET').then(json => {
+      this.loadingView(false);
+      if (Helper.responseSuccess(json)) {
+        console.log('Successfully');
+      } else if (Helper.responseInvalid(json)) {
+        const message = _.get(json, 'data.Message', '');
+        Alert.alert('Failed', message || 'Something went to wrong');
+      }
+    });
+  };
+
+  renderResendOTP = () => {
+    return (
+      <View style={styles.resendOTPView}>
+        <TouchableOpacity
+          style={styles.smsResendTouch}
+          onPress={() => this.resendOTP()}>
+          <MIcon
+            name="sms"
+            size={Matrics.ScaleValue(18)}
+            color={Color.primary}
+          />
+          <Text style={styles.resendText}>Resend OTP</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  renderSpinner = () => {
+    const {loading} = this.state;
+    if (!loading) return;
+    return <SpinnerView color={Color.primary} />;
+  };
+
   render() {
     return (
       <SafeAreaView style={{flex: 1}}>
         <Header title="Verify otp" left="back" />
+        {this.renderSpinner()}
         <View
           style={{
             justifyContent: 'center',
@@ -107,6 +157,7 @@ class OTPScreen extends Component {
             codeInputStyle={{borderWidth: 1.5}}
           />
         </View>
+        {this.renderResendOTP()}
         <View style={styles.lastLineScreen}>
           <Text style={styles.bottomText}>SURAT</Text>
           <Text style={styles.bottomText}>BARODA</Text>

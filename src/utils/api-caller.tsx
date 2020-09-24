@@ -12,7 +12,7 @@ const APICaller = (endPoint, method, body) => {
     responseType: 'json',
   })
     .then(response => {
-      // console.log(response);
+      console.log(response);
       return response;
     })
     .catch(error => {

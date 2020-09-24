@@ -1,6 +1,6 @@
 import {Color, Matrics} from '../../styles';
 
-export default Styles = {
+export default (Styles = {
   container: {
     padding: Matrics.ScaleValue(10),
     backgroundColor: Color.white,
@@ -30,7 +30,7 @@ export default Styles = {
   },
   textStyle1: {
     fontSize: Matrics.ScaleValue(12),
-    color: Color.greyishBrown30,
+    color: Color.black70,
   },
   textStyleLocation: {
     fontSize: Matrics.ScaleValue(11),
@@ -51,5 +51,19 @@ export default Styles = {
     flexDirection: 'row',
     height: 20,
   },
-};
+  coinView: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  coinCount: {
+    fontSize: 13,
+    marginRight: 5,
+    fontWeight: 'bold',
+  },
+  viewFLXD: {
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+  },
+});
 module.exports = Styles;

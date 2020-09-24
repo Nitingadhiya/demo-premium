@@ -17,8 +17,14 @@ const getComplaintChargeEndPoint = (systemTag, userName) =>
   `GetComplaintCharges?SystemTag=${systemTag}&BaseUserName=${userName}`;
 const getItemTypeListEndPoint = 'GetItemTypeList';
 const getSystemTypeListEndPoint = 'GetSystemTypeList';
-const addSystemEndPoint = (itemType, systemType, systemName, userName) =>
-  `AddSystem?ItemType=${itemType}&SystemType=${systemType}&SystemName=${systemName}&Username=${userName}&ServiceTag=`;
+const addSystemEndPoint = (
+  itemType,
+  systemType,
+  systemName,
+  userName,
+  businessType,
+) =>
+  `AddSystem?ItemType=${itemType}&SystemType=${systemType}&SystemName=${systemName}&Username=${userName}&BusinessType=${businessType}&ServiceTag=`;
 const updateSystemNameEndPoint = (systemName, userName, systemTag) =>
   `AddSystem?SystemName=${systemName}&Username=${userName}&ServiceTag=${systemTag}`;
 const getServiceEndPoint = tag => `GetService?SystemTag=${tag}`;
@@ -118,6 +124,10 @@ const complaintConfirmEndPoint = (complainId, ConfirmBy) =>
 const messageEndpoint = (FromUser, ToUser, ChatMessage) =>
   `/InsertChat?FromUser=${FromUser}&ToUser=${ToUser}&ChatMessage=${ChatMessage}`;
 
+const resendOTPEndPoint = mobileNo => `ReSendOTP?MobileNo=${mobileNo}`;
+
+const loginWithOTPEndPoint = mobileNo => `UserLoginWithOTP?Username=9727782497`;
+
 module.exports = {
   checkVersionEndPoint,
   sliderImagesEndPoint,
@@ -187,4 +197,6 @@ module.exports = {
   complaintOnHoldEndPoint,
   complaintConfirmEndPoint,
   messageEndpoint,
+  resendOTPEndPoint,
+  loginWithOTPEndPoint,
 };

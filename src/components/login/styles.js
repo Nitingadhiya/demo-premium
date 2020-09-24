@@ -1,11 +1,11 @@
 import {Color, Matrics, Fonts, ApplicationStyles} from '../../common/styles';
 
-export default styles = {
+export default (styles = {
   container: {
     // flex: 1,
     width: '90%',
     backgroundColor: Color.white,
-    paddingTop: 20,
+    //paddingTop: 20,
     position: 'absolute',
     borderWidth: 1,
     borderRadius: 10,
@@ -102,7 +102,7 @@ export default styles = {
   },
   loginView: {
     height: 40,
-    width: '60%',
+    width: '100%',
     marginVertical: 10,
     alignItems: 'center',
   },
@@ -114,14 +114,24 @@ export default styles = {
     justifyContent: 'center',
     alignItems: 'center',
   },
+  touchLeftLogin: {
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0,
+    marginRight: 7,
+  },
+  touchRightLogin: {
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0,
+  },
   loginText: {color: '#fff', fontSize: 16, fontWeight: 'bold'},
-  dontAccountView: {flex: 1, flexDirection: 'row', marginTop: 5},
+  forgotAccountView: {flex: 1, flexDirection: 'row'},
+  dontAccountView: {flex: 1, flexDirection: 'row'},
   touchDontAccount: {
     justifyContent: 'center',
     flexDirection: 'row',
-    height: 40,
+    height: 30,
   },
-  dontAccText: {color: '#000', fontSize: 14},
+  dontAccText: {color: '#000', fontSize: 16},
   createAccText: {color: '#393184', fontSize: 14},
   lastLineScreen: {
     height: 30,
@@ -177,4 +187,80 @@ export default styles = {
     justifyContent: 'center',
     alignItems: 'center',
   },
-};
+  touchableLoginWithOTP: {
+    backgroundColor: '#393184',
+    width: 180,
+    height: 40,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loginOTPView: {
+    height: 40,
+    width: '60%',
+    marginBottom: 10,
+    alignItems: 'center',
+  },
+  forgotPasswordTouch: {
+    backgroundColor: Color.paleGreyThree,
+    paddingHorizontal: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 20,
+    marginLeft: 10,
+    borderRadius: 5,
+  },
+  flexForgotMobile: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  forgotView: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    width: '100%',
+    paddingHorizontal: Matrics.ScaleValue(10),
+    marginBottom: 10,
+  },
+  forgotRowView: {
+    flexDirection: 'row',
+    height: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    //flex: 1,
+  },
+  flexButton: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    width: '100%',
+    paddingHorizontal: 10,
+  },
+  forgotText: {
+    fontSize: 14,
+    color: Color.black2d,
+  },
+  loginTabView: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Color.primary,
+    padding: 10,
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5,
+  },
+  tabTouch: {
+    width: 100,
+    borderBottomWidth: 2,
+    borderBottomColor: Color.primary,
+    marginHorizontal: 5,
+    paddingBottom: 5,
+  },
+  touchText: {
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  activeBorder: {
+    borderBottomColor: Color.white,
+  },
+});
