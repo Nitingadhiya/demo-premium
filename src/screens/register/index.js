@@ -38,6 +38,7 @@ class Register extends Component {
       cityText: null,
       businessType: 'B',
       pincode: '',
+      Business: null,
     },
     passwordSecure: true,
     cPasswordSecure: true,
@@ -55,7 +56,7 @@ class Register extends Component {
   };
 
   componentDidMount() {
-    this.getBusinessList();
+    // this.getBusinessList();
   }
 
   changeTexInputValue(type, value) {
@@ -124,6 +125,7 @@ class Register extends Component {
       businessType,
       pincode,
       business,
+      Business,
     } = this.state.registerForm;
 
     // Reset Validation error
@@ -138,7 +140,8 @@ class Register extends Component {
       !password ||
       !cityText ||
       !pincode ||
-      !businessType
+      !businessType ||
+      !Business
     ) {
       this.setState(prevState => {
         let error = Object.assign({}, prevState.error);
@@ -158,8 +161,9 @@ class Register extends Component {
         if (mobileNo && mobileNo.length < 9)
           error.mobileNo = 'Please enter mobile number';
         if (!password) error.password = 'Please enter password';
-        if (!cityText) error.cityText = 'Please enter city';
+        if (!cityText) error.cityText = 'Please select city';
         if (!pincode) error.pincode = 'Please enter pincode';
+        if (!Business) error.Business = 'Please select Business';
         // if (!businessType) error.businessType = 'Please select Usage type';
         return {error};
       });
@@ -191,6 +195,8 @@ class Register extends Component {
       ],
     };
 
+    console.log(body, 'body returnn');
+    return;
     if (!this.genrateUserName) return;
     APICaller(userRegistrationEndPoint, 'POST', JSON.stringify(body)).then(
       json => {
@@ -230,6 +236,30 @@ class Register extends Component {
     });
   };
 
+  searchPlaceholderHere = () => {
+    const {modalType} = this.state;
+    if (modalType == 'Business') {
+      return 'Search Business';
+    } else {
+      return 'Search City';
+    }
+  };
+
+  closeModalAddressPress = (type, value) => {
+    console.log(type, 'type');
+    this.setState(prevState => {
+      let registerForm = Object.assign({}, prevState.registerForm);
+      if (type == 'Business') {
+        console.log(value, 'value');
+        registerForm.Business = value;
+      } else {
+        registerForm.cityText = value;
+      }
+      console.log(registerForm, 'gooo');
+      return {registerForm};
+    });
+  };
+
   render() {
     const {
       registerForm,
@@ -237,6 +267,7 @@ class Register extends Component {
       addressModalVisible,
       loadingData,
       businessList,
+      modalType,
     } = this.state;
     return (
       <SafeAreaView style={styles.container}>
@@ -406,7 +437,29 @@ class Register extends Component {
                 </View>
                 {this.errorView('pincode')}
 
-                <Picker
+                {/*business list*/}
+                <TouchableOpacity
+                  style={styles.cityList}
+                  onPress={() =>
+                    this.setState({
+                      addressModalVisible: true,
+                      modalType: 'Business',
+                    })
+                  }>
+                  <Text style={{color: '#000', fontSize: 14}}>
+                    {registerForm.Business || 'Business'}
+                  </Text>
+
+                  <MIcon
+                    name="keyboard-arrow-down"
+                    color={'black'}
+                    size={25}
+                    style={{right: 0}}
+                  />
+                </TouchableOpacity>
+                {this.errorView('Business')}
+
+                {/* <Picker
                   selectedValue={this.state.registerForm.business}
                   style={styles.cityList}
                   onValueChange={(itemValue, itemIndex) => {
@@ -427,7 +480,7 @@ class Register extends Component {
                     borderBottomColor: '#d3d3d3',
                   }}
                 />
-                {this.errorView('business')}
+                {this.errorView('business')} */}
 
                 {/* <Picker
                   selectedValue={this.state.registerForm.businessType}
@@ -465,18 +518,30 @@ class Register extends Component {
         </KeyboardAvoidingView>
         {addressModalVisible ? (
           <PickAddressModal
-            searchPlaceholderText="Search city here"
-            modalType={'City'}
+            searchPlaceholderText={this.searchPlaceholderHere()}
+            modalType={modalType}
             closeModalPress={(type, value) => {
-              this.setState(prevState => {
-                let registerForm = Object.assign({}, prevState.registerForm);
-                registerForm.cityText = value;
-                return {registerForm};
-              });
+              this.closeModalAddressPress(type, value);
               this.setState({addressModalVisible: false});
             }}
           />
         ) : null}
+
+        {/* {businessModalVisible ? (
+          <PickAddressModal
+            searchPlaceholderText="Search Business"
+            modalType={'Business'}
+            closeModalPress={(type, value) => {
+              this.setState(prevState => {
+                let registerForm = Object.assign({}, prevState.registerForm);
+                registerForm.Business = value;
+                return {registerForm};
+              });
+              this.setState({businessModalVisible: false});
+            }}
+          />
+        ) : null} */}
+
         <View style={styles.lastLineScreen}>
           <Text style={styles.bottomText}>SURAT</Text>
           <Text style={styles.bottomText}>BARODA</Text>

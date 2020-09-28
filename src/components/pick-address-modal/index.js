@@ -43,6 +43,9 @@ class PickAddressModal extends Component {
     if (modalType === 'City') {
       this.getCityList();
     }
+    if (modalType === 'Business') {
+      this.getBusinessList();
+    }
     setTimeout(() => {
       if (this.searchTextInput) this.searchTextInput.focus();
     }, 400);
@@ -89,6 +92,16 @@ class PickAddressModal extends Component {
       );
       this.setState({citySearch: text, filterCityList: epi});
     }
+
+    if (modalType === 'Business') {
+      console.log(this.state.businessList, 'llik');
+      const epi = this.state.businessList.filter(business =>
+        this.replaceCustomExpression(city.CodeDesc).includes(
+          this.replaceCustomExpression(text),
+        ),
+      );
+      this.setState({businessSearch: text, filterBusinessList: epi});
+    }
   }
 
   saveSearchValue() {
@@ -104,6 +117,9 @@ class PickAddressModal extends Component {
     }
     if (modalType === 'City') {
       this.props.closeModalPress(modalType, this.state.citySearch);
+    }
+    if (modalType === 'Business') {
+      this.props.closeModalPress(modalType, this.state.businessSearch);
     }
   }
 
@@ -169,6 +185,29 @@ class PickAddressModal extends Component {
     });
   };
 
+  getBusinessList = () => {
+    console.log('pickkk');
+    const endPoint = 'GetBusinessList';
+    APICaller(`${endPoint}`, 'GET').then(json => {
+      console.log(json, 'jjj');
+      if (json.data.Success === '0' || json.data.Success === 0) {
+        Alert.alert('Alert', json.data.Message);
+      }
+      this.setState({
+        loadingData: false,
+      });
+      if (json.data.Success === '1') {
+        console.log(json.data.Response, 'reso');
+        //const indexValue = _.get(json, 'data.Response[0].CodeDesc');
+        this.setState({
+          businessList: json.data.Response,
+          filterBusinessList: json.data.Response,
+          // selectedBusiness: indexValue,
+        });
+      }
+    });
+  };
+
   loadModalFlatListData() {
     const {modalType} = this.props;
     if (modalType === 'Landmark') {
@@ -182,6 +221,10 @@ class PickAddressModal extends Component {
     }
     if (modalType === 'City') {
       return this.state.filterCityList; //this.state.roadList;
+    }
+    if (modalType === 'Business') {
+      console.log(this.state.filterBusinessList, 'BBB');
+      return this.state.filterBusinessList; //this.state.roadList;
     }
   }
 
@@ -283,12 +326,16 @@ class PickAddressModal extends Component {
                     if (modalType === 'Landmark') {
                       this.props.closeModalPress(modalType, item.Landmark);
                     }
+                    if (modalType === 'Business') {
+                      this.props.closeModalPress(modalType, item.CodeDesc);
+                    }
                   }}>
                   <Text style={{color: '#333'}}>
                     {modalType === 'Area' && item.Area}
                     {modalType === 'Landmark' && item.Landmark}
                     {modalType === 'Road' && item.Road}
                     {modalType === 'City' && item.CityName}
+                    {modalType === 'Business' && item.CodeDesc}
                   </Text>
                 </TouchableOpacity>
               )}
