@@ -126,7 +126,8 @@ const messageEndpoint = (FromUser, ToUser, ChatMessage) =>
 
 const resendOTPEndPoint = mobileNo => `ReSendOTP?MobileNo=${mobileNo}`;
 
-const loginWithOTPEndPoint = mobileNo => `UserLoginWithOTP?Username=9727782497`;
+const loginWithOTPEndPoint = mobileNo =>
+  `UserLoginWithOTP?Username=${mobileNo}`;
 
 module.exports = {
   checkVersionEndPoint,

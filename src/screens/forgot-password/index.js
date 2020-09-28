@@ -29,6 +29,7 @@ class ForgotPassword extends Component {
   state = {
     userName: null,
     scanQRCode: false,
+    actualMobileNo: null,
   };
   componentDidMount() {
     const {route} = this.props;
@@ -41,9 +42,9 @@ class ForgotPassword extends Component {
         Events.trigger('ScanQRCodeMobileNoEvent', true);
       }
     }
-    Events.on('OTP', 'receive', res => {
-      this.onFinishCheckingCode(res);
-    });
+    // Events.on('OTP', 'receive', res => {
+    //   this.onFinishCheckingCode(res);
+    // });
   }
 
   getHash = () =>
@@ -104,24 +105,36 @@ class ForgotPassword extends Component {
       loadingData: true,
     });
 
-    APICaller(forgotPasswordendPoint(this.state.userName), 'GET').then(json => {
-      if (json.data.Success === '1') {
-        NavigationHelper.navigate(this.props.navigation, 'Login');
-        Alert.alert('Alert', json.data.Message);
-      } else {
+    APICaller(forgotPasswordendPoint(this.state.actualMobileNo), 'GET').then(
+      json => {
+        if (json.data.Success === '1') {
+          NavigationHelper.navigate(this.props.navigation, 'Login');
+          Alert.alert('Alert', json.data.Message);
+        } else {
+          this.setState({
+            userNameError: json.data.Message || 'something went to wrong',
+          });
+        }
         this.setState({
-          userNameError: json.data.Message || 'something went to wrong',
+          loadingData: false,
         });
-      }
-      this.setState({
-        loadingData: false,
-      });
-    });
+      },
+    );
   }
+
+  first3Words = strings => {
+    return strings.substring(0, 3);
+  };
+
+  last3Words = strings => {
+    //str.substring(0,3); first 3 char
+    return strings.substr(strings.length - 3);
+  };
 
   setMobileNo = async userName => {
     await this.setState({
-      userName,
+      userName: this.first3Words(userName) + 'XXXX' + this.last3Words(userName),
+      actualMobileNo: userName,
     });
     this.forgotPasswordMethod();
   };

@@ -141,9 +141,9 @@ class LoginComponent extends Component {
       return;
     }
     this.setState({loadingData: true});
-
+    console.log(loginWithOTPEndPoint(email), 'loginWithOTPEndPoint()');
     // User Login API
-    APICaller(loginWithOTPEndPoint(), 'GET').then(async json => {
+    APICaller(loginWithOTPEndPoint(email), 'GET').then(async json => {
       console.log(json, 'json');
       this.setState({loadingData: false});
       if (json.data.Success === '1') {
@@ -231,26 +231,33 @@ class LoginComponent extends Component {
           </TouchableOpacity>
         </View>
         {this.errorView('formError')}
-        <View style={styles.loginView}>
-          {this.state.loadingData ? (
-            <SpinnerView />
-          ) : (
-            <View style={styles.flexButton}>
-              <TouchableOpacity
-                style={[styles.touchableLogin]}
-                onPress={() => this.loginWithCredentials()}>
-                <Text style={styles.loginText}>Login</Text>
-              </TouchableOpacity>
+      </>
+    );
+  };
 
-              {/* <TouchableOpacity
+  renderLoginWithPassword = () => {
+    const {activeStep} = this.state;
+    if (activeStep != '1') return null;
+    return (
+      <View style={styles.loginView}>
+        {this.state.loadingData ? (
+          <SpinnerView />
+        ) : (
+          <View style={styles.flexButton}>
+            <TouchableOpacity
+              style={[styles.touchableLogin]}
+              onPress={() => this.loginWithCredentials()}>
+              <Text style={styles.loginText}>Login</Text>
+            </TouchableOpacity>
+
+            {/* <TouchableOpacity
                   style={[styles.touchableLoginWithOTP, styles.touchRightLogin]}
                   onPress={() => this.loginWithCredentials()}>
                   <Text style={styles.loginText}>Login With OTP</Text>
                 </TouchableOpacity> */}
-            </View>
-          )}
-        </View>
-      </>
+          </View>
+        )}
+      </View>
     );
   };
 
@@ -280,6 +287,25 @@ class LoginComponent extends Component {
     });
   };
 
+  renderLoginMobileNoField = () => {
+    const {loginForm} = this.state;
+    return (
+      <>
+        <View style={styles.subTextBoxView}>
+          <TextInputView
+            placeholder="Mobile Number"
+            labelIcon={
+              <McIcon name="email-outline" size={22} color={Color.lightGray} />
+            }
+            onChangeText={value => this.changeTexInputValue('email', value)}
+            value={loginForm.email}
+          />
+        </View>
+        {this.errorView('email')}
+      </>
+    );
+  };
+
   render() {
     const {loginForm, passwordSecure, rememberme} = this.state;
     const {navigation} = this.props;
@@ -287,22 +313,17 @@ class LoginComponent extends Component {
       <View style={styles.container}>
         {this.renderTabView()}
         <View style={styles.textBoxView}>
-          <View style={styles.subTextBoxView}>
-            <TextInputView
-              placeholder="Mobile Number"
-              labelIcon={
-                <McIcon
-                  name="email-outline"
-                  size={22}
-                  color={Color.lightGray}
-                />
-              }
-              onChangeText={value => this.changeTexInputValue('email', value)}
-              value={loginForm.email}
-            />
+          <View
+            style={{
+              width: '100%',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: 135,
+            }}>
+            {this.renderLoginMobileNoField()}
+            {this.renderPasswordField()}
           </View>
-          {this.errorView('email')}
-          {this.renderPasswordField()}
+          {this.renderLoginWithPassword()}
           {this.renderLoginWithOTP()}
 
           <View style={styles.dontAccountView}>
