@@ -30,6 +30,7 @@
     "react-native-contacts": "^5.2.0",
     "react-native-datepicker": "^1.7.2",
     "react-native-firebase": "^5.6.0",
+    "react-native-floating-action-menu": "^1.1.10",
     "react-native-geolocation-service": "^4.0.0",
     "react-native-gesture-handler": "^1.6.1",
     "react-native-image-crop-picker": "^0.28.0",

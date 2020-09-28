@@ -1,6 +1,6 @@
 import {Color} from '../../common/styles';
 
-export default styles = {
+export default (styles = {
   container: {
     flex: 1,
   },
@@ -16,4 +16,9 @@ export default styles = {
     alignItems: 'center',
     backgroundColor: Color.primary,
   },
-};
+  floatView: {
+    borderWidth: 1,
+
+    // marginRight: -20,
+  },
+});

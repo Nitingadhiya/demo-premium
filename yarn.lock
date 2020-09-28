@@ -6306,6 +6306,11 @@ react-native-firebase@^5.6.0:
     opencollective-postinstall "^2.0.0"
     prop-types "^15.7.2"
 
+react-native-floating-action-menu@^1.1.10:
+  version "1.1.10"
+  resolved "https://registry.yarnpkg.com/react-native-floating-action-menu/-/react-native-floating-action-menu-1.1.10.tgz#920e135488aa7ea3671b737edb392eea41e1693c"
+  integrity sha512-lis9TPzMjnWkeYMXLcM9pcrlW877TcFc0lixRpOZvJ4eLcpXcaBqSTQUVDNZgYwtvQcp4P+itbXQ95H24Cbpsw==
+
 react-native-geolocation-service@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/react-native-geolocation-service/-/react-native-geolocation-service-4.0.0.tgz#257187ea08965dac16016edd383454d310eb7809"
