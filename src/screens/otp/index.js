@@ -36,9 +36,10 @@ class OTPScreen extends Component {
         mobileNo: params.mobileNo,
       });
     }
-    Events.on('OTP', 'receive', res => {
-      this.onFinishCheckingCode(res);
-    });
+    // Events.on('OTP', 'receive', res => {
+    //   console.log(res, 'REEE');
+    //   this.onFinishCheckingCode(res);
+    // });
     if (Platform.OS === 'android') {
       this.getHash();
       this.startListeningForOtp();
@@ -56,6 +57,7 @@ class OTPScreen extends Component {
       .catch(p => console.log(p));
 
   otpHandler = message => {
+    console.log('OTP handler');
     const otp = /(\d{6})/g.exec(message)[1];
     this.setState({otpText: otp});
     this.onFinishCheckingCode(otp);
@@ -64,7 +66,7 @@ class OTPScreen extends Component {
   };
 
   componentWillUnmount() {
-    RNOtpVerify.removeListener();
+    //RNOtpVerify.removeListener();
   }
 
   onFinishCheckingCode(valid) {

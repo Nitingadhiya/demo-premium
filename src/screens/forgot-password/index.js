@@ -47,50 +47,50 @@ class ForgotPassword extends Component {
     // });
   }
 
-  getHash = () =>
-    RNOtpVerify.getHash()
-      .then(console.log)
-      .catch(console.log);
+  // getHash = () =>
+  //   RNOtpVerify.getHash()
+  //     .then(console.log)
+  //     .catch(console.log);
 
-  startListeningForOtp = () =>
-    RNOtpVerify.getOtp()
-      .then(p => RNOtpVerify.addListener(this.otpHandler))
-      .catch(p => console.log(p));
+  // startListeningForOtp = () =>
+  //   RNOtpVerify.getOtp()
+  //     .then(p => RNOtpVerify.addListener(this.otpHandler))
+  //     .catch(p => console.log(p));
 
-  otpHandler = message => {
-    const otp = /(\d{6})/g.exec(message)[1];
-    this.setState({otpText: otp});
-    this.onFinishCheckingCode(otp);
-    // RNOtpVerify.removeListener();
-    Keyboard.dismiss();
-  };
+  // otpHandler = message => {
+  //   const otp = /(\d{6})/g.exec(message)[1];
+  //   this.setState({otpText: otp});
+  //   this.onFinishCheckingCode(otp);
+  //   // RNOtpVerify.removeListener();
+  //   Keyboard.dismiss();
+  // };
 
-  componentWillUnmount() {
-    RNOtpVerify.removeListener();
-  }
+  // componentWillUnmount() {
+  //   RNOtpVerify.removeListener();
+  // }
 
-  onFinishCheckingCode(valid) {
-    this.setState({loadingData: true});
-    APICaller(validateOtpEndPoint(this.state.mobileNo, valid), 'GET').then(
-      json => {
-        this.setState({loadingData: false});
-        if (json.data.Success === 1 || json.data.Success === '1') {
-          const userInfo = json.data.Response;
-          Helper.setLocalStorageItem('userInfo', userInfo);
-          NavigationHelper.reset(this.props.navigation, 'FeedList');
-          // Events.trigger('refreshMenu');
-          // Events.trigger('appRouteRefresh', userInfo);
-          // this.props.navigation.navigate('Home');
-        } else {
-          NavigationHelper.reset(this.props.navigation, 'FeedList');
-          Alert.alert('Failed', json.data.Message);
-          this.setState({
-            loginError: json.data.Message,
-          });
-        }
-      },
-    );
-  }
+  // onFinishCheckingCode(valid) {
+  //   this.setState({loadingData: true});
+  //   APICaller(validateOtpEndPoint(this.state.mobileNo, valid), 'GET').then(
+  //     json => {
+  //       this.setState({loadingData: false});
+  //       if (json.data.Success === 1 || json.data.Success === '1') {
+  //         const userInfo = json.data.Response;
+  //         Helper.setLocalStorageItem('userInfo', userInfo);
+  //         NavigationHelper.reset(this.props.navigation, 'FeedList');
+  //         // Events.trigger('refreshMenu');
+  //         // Events.trigger('appRouteRefresh', userInfo);
+  //         // this.props.navigation.navigate('Home');
+  //       } else {
+  //         NavigationHelper.reset(this.props.navigation, 'FeedList');
+  //         Alert.alert('Failed', json.data.Message);
+  //         this.setState({
+  //           loginError: json.data.Message,
+  //         });
+  //       }
+  //     },
+  //   );
+  // }
 
   forgotPasswordMethod() {
     if (this.state.userName === null) {
@@ -166,7 +166,11 @@ class ForgotPassword extends Component {
                   autoCorrect={false}
                   autoCapitalize="none"
                   onChangeText={value =>
-                    this.setState({userName: value, userNameError: null})
+                    this.setState({
+                      userName: value,
+                      actualMobileNo: value,
+                      userNameError: null,
+                    })
                   }
                 />
               </View>
