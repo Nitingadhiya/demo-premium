@@ -11,6 +11,18 @@ let img;
 const ordTrue = 'green';
 const ordFalse = 'grey';
 class POrder extends Component {
+  renderVerification = type => {
+    if (type == 0 || type == '0') {
+      return 'white';
+    }
+    if (type == 1 || type == '1') {
+      return 'grey';
+    }
+    if (type == 2 || type == '2') {
+      return 'green';
+    }
+  };
+
   render() {
     const {data, onPress} = this.props;
     return (
@@ -133,6 +145,7 @@ class POrder extends Component {
             ]}
           />
         </View>
+        {console.log(data)}
         <View
           style={{
             marginVertical: 5,
@@ -143,9 +156,24 @@ class POrder extends Component {
             <Text style={{fontWeight: 'bold'}}>OrderStatus :</Text>{' '}
             {data.OrderStatus}
           </Text>
-          {data.IsDeliveryRequired ? (
-            <McIcon name="truck-delivery" size={24} color={'#00bcd4'} />
-          ) : null}
+
+          <View style={{flexDirection: 'row'}}>
+            <TouchableOpacity
+              style={{paddingHorizontal: 10}}
+              onPress={() => this.props.plugOnPress()}>
+              <McIcon
+                name="power-plug"
+                size={24}
+                color={this.renderVerification(
+                  data.IsAdvanceVerificationRequired,
+                )}
+              />
+            </TouchableOpacity>
+
+            {data.IsDeliveryRequired ? (
+              <McIcon name="truck-delivery" size={24} color={'#00bcd4'} />
+            ) : null}
+          </View>
         </View>
       </TouchableOpacity>
     );

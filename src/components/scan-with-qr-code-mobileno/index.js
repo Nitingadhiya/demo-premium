@@ -52,7 +52,7 @@ class ScanWithQRCodeForMobileNo extends Component {
   }
 
   getOrderDetailFromSystemTag(qrCode) {
-    const endPoint = `GetOrderDetailsFromSystemTag?SystemTag=${qrCode}`;
+    const endPoint = `GetUserDetailsFromSystemTag?SystemTag=${qrCode}`; //`GetOrderDetailsFromSystemTag?SystemTag=${qrCode}`;
     const method = 'GET';
     APICaller(`${endPoint}`, method).then(json => {
       this.manageResponseOrderDetailData(json, 'array');
@@ -60,10 +60,15 @@ class ScanWithQRCodeForMobileNo extends Component {
   }
 
   manageResponseOrderDetailData(json) {
+    console.log(json, 'jsoooo');
+    const status = _.get(json, 'data.Success', '');
     let data = _.get(json, 'data.Response[0]', '');
     if (data) {
       const mobileNo = _.get(data, 'MobileNo1', '');
       if (mobileNo) self.props.getQRCode(mobileNo);
+    } else {
+      const Message = _.get(json, 'data.Message', '');
+      Alert.alert('Alert', Message || 'Something went to wrong');
     }
   }
 

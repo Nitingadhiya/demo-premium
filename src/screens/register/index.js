@@ -195,8 +195,6 @@ class Register extends Component {
       ],
     };
 
-    console.log(body, 'body returnn');
-    return;
     if (!this.genrateUserName) return;
     APICaller(userRegistrationEndPoint, 'POST', JSON.stringify(body)).then(
       json => {
@@ -216,25 +214,24 @@ class Register extends Component {
   }
 
   // We not used anywhere just put in backlog
-  getBusinessList = () => {
-    const endPoint = 'GetBusinessList';
-    APICaller(`${endPoint}`, 'GET').then(json => {
-      console.log(json, 'jjj');
-      if (json.data.Success === '0' || json.data.Success === 0) {
-        Alert.alert('Alert', json.data.Message);
-      }
-      this.setState({
-        loadingData: false,
-      });
-      if (json.data.Success === '1') {
-        const indexValue = _.get(json, 'data.Response[0].CodeDesc');
-        this.setState({
-          businessList: json.data.Response,
-          selectedBusiness: indexValue,
-        });
-      }
-    });
-  };
+  // getBusinessList = () => {
+  //   const endPoint = 'GetBusinessList';
+  //   APICaller(`${endPoint}`, 'GET').then(json => {
+  //     if (json.data.Success === '0' || json.data.Success === 0) {
+  //       Alert.alert('Alert', json.data.Message);
+  //     }
+  //     this.setState({
+  //       loadingData: false,
+  //     });
+  //     if (json.data.Success === '1') {
+  //       const indexValue = _.get(json, 'data.Response[0].CodeDesc');
+  //       this.setState({
+  //         businessList: json.data.Response,
+  //         selectedBusiness: indexValue,
+  //       });
+  //     }
+  //   });
+  // };
 
   searchPlaceholderHere = () => {
     const {modalType} = this.state;
@@ -246,16 +243,13 @@ class Register extends Component {
   };
 
   closeModalAddressPress = (type, value) => {
-    console.log(type, 'type');
     this.setState(prevState => {
       let registerForm = Object.assign({}, prevState.registerForm);
       if (type == 'Business') {
-        console.log(value, 'value');
         registerForm.Business = value;
       } else {
         registerForm.cityText = value;
       }
-      console.log(registerForm, 'gooo');
       return {registerForm};
     });
   };

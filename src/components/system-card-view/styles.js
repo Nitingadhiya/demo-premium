@@ -151,7 +151,7 @@ export default (styles = {
   },
   complaintText: {
     color: '#fff',
-    fontSize: Matrics.ScaleValue(12),
+    fontSize: Matrics.ScaleValue(11),
   },
   addressShowView: {
     flexDirection: 'row',

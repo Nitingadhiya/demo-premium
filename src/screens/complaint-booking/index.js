@@ -146,6 +146,7 @@ export default class ComplaintBooking extends Component {
 
     if (data) {
       this.setState({
+        responseData: data,
         mobileNo: _.get(data, 'MobileNo1', ''),
         userVerify: _.get(data, 'MobileNo1', '') ? true : false,
         division: _.get(data, 'State', ''),
@@ -161,7 +162,7 @@ export default class ComplaintBooking extends Component {
         remark: _.get(data, 'Remark', ''),
         pincode: _.get(data, 'Pincode', ''),
         notFoundMessage: '',
-        complaintBy: _.get(data, 'CustomerUserName', ''),
+        complaintBy: _.get(data, 'CustomerUserName', 'New System Tag'),
       });
     } else {
       this.setState({
@@ -320,6 +321,17 @@ export default class ComplaintBooking extends Component {
       selectedSystemPartsList,
       referenceBy,
       complaintBy,
+      responseData,
+      mobileNo,
+      companyName,
+      home,
+      landMark,
+      road,
+      area,
+      city,
+      division,
+      pincode,
+      partyName,
     } = this.state;
 
     let prepareProblemsDesc = [];
@@ -350,6 +362,26 @@ export default class ComplaintBooking extends Component {
       prepareSystemPartDesc,
     );
 
+    let amuData = [
+      {
+        ID: '0',
+        FirstName: partyName,
+        LastName: '',
+        MobileNo1: mobileNo,
+        MobileNo2: '',
+        CompanyName: companyName,
+        Home: home,
+        Landmark: landMark,
+        Road: road,
+        Pincode: pincode,
+        Area: area,
+        City: city,
+        State: division,
+        ReferenceBy: referenceBy,
+        Business: businessType,
+      },
+    ];
+
     console.log(AN_Master_Complaint_Details, 'AN_Master_Complaint_Details');
 
     if (userInfo.UserName) {
@@ -357,7 +389,7 @@ export default class ComplaintBooking extends Component {
         loadingData: true,
       });
 
-      const endPoint = `AddComplaint`;
+      const endPoint = 'AddComplaintV1'; //`AddComplaint`;
       const method = 'POST';
 
       const body = {
@@ -368,7 +400,7 @@ export default class ComplaintBooking extends Component {
             BusinessType: businessType,
             SystemType: systemType, //'Home',
             ItemType: itemType, //'Desktop',
-            ComplaintBy: complaintBy,
+            ComplaintBy: complaintBy || 'New System Tag',
             EntryBy: userInfo.UserName,
             TotalCharges: totalCharge.toFixed(2), //'350',
             IsThirdParty: isThirdParty, //'false',
@@ -386,11 +418,11 @@ export default class ComplaintBooking extends Component {
             ReferenceBy: referenceBy,
           },
         ],
+        AMU: amuData,
         AMCDList: AN_Master_Complaint_Details,
       };
 
       console.log(body, 'bodyyy');
-
       APICaller(`${endPoint}`, method, JSON.stringify(body)).then(json => {
         console.log(json, 'jsonnnn');
         this.setState({

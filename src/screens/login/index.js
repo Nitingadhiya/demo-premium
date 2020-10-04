@@ -9,11 +9,23 @@ import {McIcon} from '../../common/assets/vector-icon';
 import {Color} from '../../common/styles';
 
 const items = [
-  {label: 'Facebook', icon: 'facebook', url: 'http://appfb.shr.pw/'},
-  {label: 'Instagram', icon: 'instagram', url: 'http://appig.shr.pw/'},
-  {label: 'Telegram', icon: 'telegram', url: 'http://apptg.shr.pw/'},
-  {label: 'Twitter', icon: 'twitter', url: 'http://apptw.shr.pw/'},
-  {label: 'WhatsApp', icon: 'whatsapp', url: 'http://chat.shr.pw/'},
+  {label: 'Facebook', icon: 'facebook', url: 'https://www.facebook.com/pscsrt'},
+  {
+    label: 'Instagram',
+    icon: 'instagram',
+    url: 'https://www.instagram.com/pscsurat',
+  },
+  {
+    label: 'Telegram',
+    icon: 'telegram',
+    url: 'https://t.me/joinchat/AAAAAEnltsxmb1GF_S6Xgg',
+  },
+  {label: 'Twitter', icon: 'twitter', url: 'https://twitter.com/premiumsurat'},
+  {
+    label: 'WhatsApp',
+    icon: 'whatsapp',
+    url: 'https://wa.me/919033685001?text=Send+me+Updates',
+  },
   {label: 'Product List', icon: 'file-document'},
 ];
 
@@ -66,7 +78,8 @@ class Login extends Component {
     if (item.icon == 'file-document') {
       NavigationHelper.navigate(navigation, 'ProductListScreen');
     } else {
-      Linking.canOpenURL(item.url);
+      console.log('URL', item.url);
+      Linking.openURL(item.url);
     }
   };
 
@@ -79,6 +92,7 @@ class Login extends Component {
         onItemPress={this.handleItemPress}
         renderItemIcon={this.renderItemIcon}
         renderMenuIcon={this.renderMenuIcon}
+        style={{marginRight: -20}}
       />
     );
   };

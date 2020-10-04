@@ -94,9 +94,8 @@ class PickAddressModal extends Component {
     }
 
     if (modalType === 'Business') {
-      console.log(this.state.businessList, 'llik');
       const epi = this.state.businessList.filter(business =>
-        this.replaceCustomExpression(city.CodeDesc).includes(
+        this.replaceCustomExpression(business.CodeDesc).includes(
           this.replaceCustomExpression(text),
         ),
       );
@@ -186,10 +185,8 @@ class PickAddressModal extends Component {
   };
 
   getBusinessList = () => {
-    console.log('pickkk');
     const endPoint = 'GetBusinessList';
     APICaller(`${endPoint}`, 'GET').then(json => {
-      console.log(json, 'jjj');
       if (json.data.Success === '0' || json.data.Success === 0) {
         Alert.alert('Alert', json.data.Message);
       }
@@ -197,7 +194,6 @@ class PickAddressModal extends Component {
         loadingData: false,
       });
       if (json.data.Success === '1') {
-        console.log(json.data.Response, 'reso');
         //const indexValue = _.get(json, 'data.Response[0].CodeDesc');
         this.setState({
           businessList: json.data.Response,
@@ -223,7 +219,6 @@ class PickAddressModal extends Component {
       return this.state.filterCityList; //this.state.roadList;
     }
     if (modalType === 'Business') {
-      console.log(this.state.filterBusinessList, 'BBB');
       return this.state.filterBusinessList; //this.state.roadList;
     }
   }

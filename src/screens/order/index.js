@@ -12,6 +12,7 @@ import {
   TextInput,
   LayoutAnimation,
   Modal,
+  Alert,
 } from 'react-native';
 import _ from 'lodash';
 import {Appbar, Avatar, useTheme, Badge} from 'react-native-paper';
@@ -106,6 +107,36 @@ class Order extends Component {
     // });
   }
 
+  async verifyOrder(orderNo, index) {
+    const userInfo = await Helper.getLocalStorageItem('userInfo');
+    if (!userInfo) return;
+    const userName = userInfo.UserName;
+    this.setState({
+      loadingData: true,
+    });
+    APICaller(
+      `VerifyOrder?OrderNo=${orderNo}&LoginUser=${userName}`,
+      'GET',
+    ).then(json => {
+      this.setState({
+        loadingData: false,
+      });
+
+      if (json.data.Success === '1') {
+        Alert.alert(`Success`, json.data.Message);
+        this.state.orderItem[index].IsAdvanceVerificationRequired = 2;
+        this.setState({
+          orderItem: this.state.orderItem,
+        });
+      } else {
+        Alert.alert(
+          `Error code - ${json.status}`,
+          json.data.Message || 'Something went to wrong, please try again.',
+        );
+      }
+    });
+  }
+
   render() {
     const {loadingData, refreshing, orderItem, orderNotText} = this.state;
     const {navigation} = this.props;
@@ -126,11 +157,13 @@ class Order extends Component {
           }>
           {orderItem ? (
             orderItem.map((res, index) => {
+              console.log(res, 'res**');
               return (
                 <POrder
                   data={res}
                   key={`${index.toString()}`}
                   onPress={() => this.LeadInfo(res)}
+                  plugOnPress={() => this.verifyOrder(res.OrderNo, index)}
                 />
               );
             })
