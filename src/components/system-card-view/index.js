@@ -177,11 +177,12 @@ class SystemCardView extends Component {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.protectedDTSubView}
-            onPress={() =>
-              Events.trigger('systemServiceEvent', {
-                systemTag: item.SystemTag,
-              })
-            }>
+            onPress={() =>{
+              NavigationHelper.navigate(self.props.navigation,'ComplaintList',{title: 'Services', tag: item.SystemTag});
+              // Events.trigger('systemServiceEvent', {
+              //   systemTag: item.SystemTag,
+              // })
+             } }>
             {animatedCircle(item.ServicePercentage, item.ServiceDays)}
             <View style={styles.textdescView}>
               <Text style={styles.textdesc}>{'Services'.toUpperCase()}</Text>
@@ -203,7 +204,7 @@ class SystemCardView extends Component {
         {item.ComplaintID ? (
           <TouchableOpacity
             onPress={() => {
-              self.getcomplainList();
+              self.getcomplainList(item);
             }}
             style={styles.complaintListButton}>
             <Text style={styles.complaintText}>{item.ComplaintID}</Text>
@@ -227,8 +228,8 @@ class SystemCardView extends Component {
     );
   }
 
-  getcomplainList() {
-    NavigationHelper.navigate(this.props.navigation, 'ComplaintList');
+  getcomplainList(item) {
+    NavigationHelper.navigate(this.props.navigation, 'ComplaintList',{tag: _.get(item,'SystemTag',''), filter: true});
   }
 
   editAddress(item) {

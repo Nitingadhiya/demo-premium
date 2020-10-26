@@ -42,7 +42,8 @@ import ComplaintWithQRCode from '../../components/complaint-with-qr-code';
 import ComplaintRemarkModal from '../../components/complaint-remark-modal';
 import ComplaintHoldRemarkModal from '../../components/complaint-hold-remark';
 import ComplaintRevisedModal from '../../components/complaint-revised-modal';
-import {complaintConfirmEndPoint} from '../../config/api-endpoint';
+import {complaintConfirmEndPoint,getServiceEndPoint} from '../../config/api-endpoint';
+
 
 let self;
 
@@ -91,6 +92,7 @@ class ComplainList extends Component {
     complaintRemarkValidation: null,
     complaintCloseQRcode: '',
     onHoldRemarkModal: false,
+    headerTitle: null
   };
 
   constructor(props) {
@@ -121,12 +123,53 @@ class ComplainList extends Component {
       userInfo,
       LoginType,
     });
-    this.getComplainList(statusC);
-    this.getComplaintStatus();
-    this.getAntivirusList();
-    if (LoginType) {
+
+    const {params} = this.props.route;
+    console.log(this.props,'parrra');
+    const tag = _.get(params,'tag','');
+    if(_.get(params,'title','') === 'Services' || tag){
+      //this.getServiceDayFn(tag);
+      const filter = _.get(params,'filter','');
+        if(filter) {
+          this.setState({
+            headerTitle: tag,
+            serviceTag: tag
+          });
+        } else {
+          this.setState({
+            headerTitle: 'Services',
+            serviceTag: tag
+          });
+        }
+      
+     
+      this.getComplainList(statusC, tag);
+    } else {
+      this.getComplainList(statusC, '');
+      this.getComplaintStatus();
+      this.getAntivirusList();
+    }   
+    if (LoginType && !tag) {
       this.getUser(LoginType);
     }
+  }
+
+  getServiceDayFn(tag) {
+    //this.setState({loading: true});
+    APICaller(getServiceEndPoint(tag), 'GET').then(json => {
+      if (json.data.Success === '1') {
+        this.setState({
+          // serviceList: json.data.Response,
+          // serviceModal: true,
+          complainListArr: json.data.Response,
+          displayResult: true,
+          filterComplaintArr: json.data.Response,
+          // loading: false,
+        });
+      } else {
+        Alert.alert('Alert', json.data.Message || 'No Services Found.');
+      }
+    });
   }
 
   setModalVisible(visible, index) {
@@ -134,7 +177,7 @@ class ComplainList extends Component {
     this.setState({compDetails: this.state.complainListArr[index]});
   }
 
-  getComplainList(status) {
+  getComplainList(status, tag) {
     if (!this.state.refreshing) {
       this.setState({loadingData: true});
     }
@@ -143,7 +186,7 @@ class ComplainList extends Component {
     }
     const endPoint = `GetComplaint?ComplainId=&ComplainType=${status}&ComplaintBy=${
       this.UserName
-    }`;
+    }&SystemTag=${tag}`;
     const method = 'GET';
     APICaller(`${endPoint}`, method).then(json => {
       console.log(json, 'jsooooo');
@@ -830,6 +873,11 @@ class ComplainList extends Component {
   };
 
   renderFlatListItem = (item, index) => {
+    const {params} = this.props.route;
+    let bgcolor = item.Color;
+    if(_.get(params,'filter','') && _.get(item,'ComplaintStatus','') !== 'Assigned') {
+      bgcolor = '#ccc';
+    }
     return (
       <TouchableOpacity
         onPress={() => this.complaintDetail(item, true, index)}
@@ -839,7 +887,7 @@ class ComplainList extends Component {
           paddingHorizontal: 10,
           marginHorizontal: 8,
           marginVertical: 5,
-          backgroundColor: item.Color, //,
+          backgroundColor: bgcolor, //,
 
           shadowColor: '#000',
           shadowOffset: {
@@ -924,6 +972,7 @@ class ComplainList extends Component {
                 : _.upperCase('Free')}
             </Text>
             <TouchableOpacity
+             activeOpacity={0.8}
               onPress={() => this.collapsibleContentPress(item, index)}
               style={{
                 paddingHorizontal: 3,
@@ -953,7 +1002,7 @@ class ComplainList extends Component {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => this.collapsibleContentPress(item, index)}
-              activeOpacity={1}
+              activeOpacity={0.8}
               style={{
                 borderWidth: 1,
                 borderColor: Color.primary,
@@ -978,7 +1027,7 @@ class ComplainList extends Component {
                   borderColor: '#fff',
                   marginRight: -5,
                 }}>
-                <EIcon name="arrow-down" size={18} color={Color.white} />
+                 <EIcon name={!this.state.collapsible ? "arrow-down" : 'arrow-up'} size={18} color={Color.white} />
               </View>
             </TouchableOpacity>
           </View>
@@ -1036,18 +1085,20 @@ class ComplainList extends Component {
   // ----------->>>Render Method-------------->>>
 
   render() {
-    const {LoginType} = this.state;
+    const {LoginType, headerTitle,serviceTag} = this.state;
     const {navigation} = this.props;
     return (
       <SafeAreaView style={{flex: 1}}>
         <Header
-          title={'Complaint list'}
+          title={headerTitle ? headerTitle : 'Complaint list'}
           left={
             LoginType === '3' || LoginType === '2' || LoginType === '1'
               ? 'menu'
               : 'back'
           }
         />
+
+        { serviceTag ? <View /> :
         <View
           style={{
             borderWidth: 1,
@@ -1074,7 +1125,7 @@ class ComplainList extends Component {
               );
             })}
           </Picker>
-        </View>
+          </View> }
 
         <Modal
           animationType="slide"

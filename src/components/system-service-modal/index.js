@@ -51,7 +51,7 @@ class SystemServiceModal extends Component {
   modalShowHide(bool) {
     this.setState({serviceModal: bool});
   }
-
+//
   render() {
     const {serviceModal, serviceList} = this.state;
     if (!serviceList) return <View />;
