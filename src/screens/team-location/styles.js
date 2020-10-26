@@ -59,4 +59,31 @@ export default styles = {
   refreshText: {
     fontWeight: 'bold',
   },
+  personCalloutView: {
+    padding: 5, 
+    width: 160, 
+    borderRadius: 5,
+    backgroundColor: Color.white
+  },
+  pinNameText: {
+    fontSize: 13,
+    color: Color.black30,
+    textAlign: 'center',
+    fontWeight: 'bold'
+  },
+  pinComplaint: {
+    fontSize: 13,
+    color: Color.black30,
+    fontWeight: 'bold'
+  },
+  complaintSub: {
+    fontSize: 13,
+    color: Color.black70,
+  },
+  complaintCalloutView: {
+    width: 260, 
+    padding: 5, 
+    borderRadius: 5,
+    backgroundColor: Color.white
+  }
 };

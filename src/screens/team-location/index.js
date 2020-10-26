@@ -14,7 +14,8 @@ import {
   Dimensions,
 } from 'react-native';
 import {Images, Color, Matrics} from '../../common/styles';
-import {getLocationListEndPoint} from '../../config/api-endpoint';
+import {MIcon} from '../../common/assets/vector-icon'
+import {getLocationListEndPoint, getComplaintMarkerEndpoint} from '../../config/api-endpoint';
 import APICaller from '../../utils/api-caller';
 import {generateRandomPoints, generateRandomPoint} from '../../generator';
 import {Marker, Callout} from 'react-native-maps';
@@ -24,6 +25,7 @@ import Helper from '../../utils/helper';
 import Events from '../../utils/events';
 import styles from './styles';
 import ToastComponent from '../../common/components/toast';
+import _ from 'lodash';
 
 let self;
 const italyCenterLatitude = 41.8962667,
@@ -40,6 +42,7 @@ class ServicePackage extends Component {
     self = this;
     //this.reload();
     this.getMarkerPoint();
+    this.getCompalintMarkerPoint()
     setInterval(() => {
       this.getMarkerPoint();
     }, 90000);
@@ -47,6 +50,45 @@ class ServicePackage extends Component {
 
   componentWillUnmount() {
     clearInterval();
+  }
+
+  async getCompalintMarkerPoint() {
+    const userInfo = await Helper.getLocalStorageItem('userInfo');
+    if (!userInfo) return;
+
+    const body = {
+      LoginType: userInfo.LoginType,
+    };
+    this.setState({
+      loadingData: true,
+    });
+    const userName = _.get(userInfo,'UserName','')
+    APICaller(getComplaintMarkerEndpoint(userName), 'GET', JSON.stringify(body)).then(
+      json => {
+        const data = json.data.Response;
+        console.log(data,'dataaa')
+        let markerPin = [];
+        data &&
+          data.map(res => {
+            markerPin.push({
+              id: res.ComplaintID,
+              location: {latitude: res.Latitude, longitude: res.Longitude},
+              type:'complaint',
+              complaintDesc: res.ComplaintDesc,
+              companyName: res.CompanyName,
+              complaintSubject: res.ComplaintSubject,
+              name: res.Name,
+              systemTag: res.SystemTag
+            });
+          });
+        if (markerPin.length === 0) {
+          Events.trigger('toast', 'No Data Found');
+        }
+        this.setState({pins: _.concat(this.state.pins ,markerPin), loadingData: false});
+        // { id: 'pin86',
+        // location: { latitude: 43.759953662747066, longitude: 11.988450525880259 } },
+      },
+    );
   }
 
   async getMarkerPoint() {
@@ -62,17 +104,20 @@ class ServicePackage extends Component {
       json => {
         const data = json.data.Response;
         let markerPin = [];
+        console.log(data,'data..')
         data &&
           data.map(res => {
             markerPin.push({
               id: res.ID,
               location: {latitude: res.Latitude, longitude: res.Longitude},
+              type: 'person',
+              name: _.get(res,'FirstName','') + _.get(res,'LastName',''),
             });
           });
         if (markerPin.length === 0) {
           Events.trigger('toast', 'No Data Found');
         }
-        this.setState({pins: markerPin, loadingData: false});
+        this.setState({pins: _.concat(this.state.pins ,markerPin), loadingData: false});
         // { id: 'pin86',
         // location: { latitude: 43.759953662747066, longitude: 11.988450525880259 } },
       },
@@ -105,18 +150,32 @@ class ServicePackage extends Component {
         // title="You can also open this callout"
         // description="by pressing on transparent area of custom callout"
       >
-        <Image
+        { pin.type == 'person' ? 
+        <MIcon name="person-pin-circle" size={30} color={'green'} />
+        :
+        <MIcon name="pin-drop" size={30} color={'red'} />
+        }
+        {/* <Image
           source={{
             uri:
               'https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678111-map-marker-512.png',
           }}
           style={{width: 30, height: 30}}
-        />
-        {/* <Callout style={styles.customView}>
-          <View>
-            <Text>hello</Text>
+        /> */}
+        
+        <Callout>
+        {pin.type == 'person' ?
+          <View style={styles.personCalloutView}>
+            <Text style={styles.pinNameText}>{pin.name}</Text>
           </View>
-        </Callout> */}
+          : 
+          <View style={styles.complaintCalloutView}>
+            <Text style={styles.pinComplaint}>{pin.name} ({pin.companyName})</Text>
+            <Text style={styles.complaintSub}>{pin.complaintSubject}</Text>
+            <Text style={styles.complaintSub}>{pin.complaintDesc}</Text>
+          </View>
+          }
+        </Callout>
       </Marker>
     );
   };
@@ -142,7 +201,8 @@ class ServicePackage extends Component {
       latitudeDelta: 12,
       longitudeDelta: 12,
     };
-    const {toastVisible} = this.state;
+    const {toastVisible,pins} = this.state;
+    console.log(pins,'pinsss')
     return (
       <SafeAreaView style={{flex: 1}}>
         <Header left="menu" title="Location" />
