@@ -281,12 +281,20 @@ class ProductList extends Component {
 
   async onRefresh() {
     const {UserName} = this.state.userInfo;
-    this.setState({
-      categoryFilterValue: '',
-      searchText: '',
-      refreshing: true,
-    });
-    this.fetchProductList(UserName);
+    if(this.state.categoryFilterValue) {
+      this.setState({
+        searchText: '',
+        refreshing: true,
+      });
+      this.categoryFilterValidation()
+    } else {
+      this.setState({
+        categoryFilterValue: '',
+        searchText: '',
+        refreshing: true,
+      });
+      this.fetchProductList(UserName);
+    }
   }
 
   noItemFound = () => {
@@ -330,6 +338,7 @@ class ProductList extends Component {
         searchFlag: false,
         displayResult: true,
         searchText: '',
+        refreshing: false
       });
     }
   }

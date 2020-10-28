@@ -49,12 +49,13 @@ export default (Styles = {
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
     flexDirection: 'row',
-    height: 20,
+    height: 50,
   },
   coinView: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    marginVertical: Matrics.ScaleValue(2)
   },
   coinCount: {
     fontSize: 13,

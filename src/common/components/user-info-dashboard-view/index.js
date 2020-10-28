@@ -10,7 +10,6 @@ export const UserInfoDashboardView = ({userInfo}) => {
   if (!userInfo) return <View />;
 
   const renderCoin = () => {
-    console.log(userInfo, 'innn');
     if (userInfo && userInfo.LoginType == '4') {
       return <Text style={{marginLeft: 5}}>{`₹. ${userInfo.Coins || 0}`}</Text>;
     }
@@ -22,6 +21,10 @@ export const UserInfoDashboardView = ({userInfo}) => {
   const renderGoldSilverCoin = () => {
     return (
       <View style={styles.viewFLXD}>
+        <View style={styles.coinView}>
+          <Text style={styles.coinCount}>{userInfo.Coins || 0}</Text>
+          <Image source={Images.coinAmount} style={{width: 15, height: 15}} />
+        </View>
         <View style={styles.coinView}>
           <Text style={styles.coinCount}>{userInfo.Gold || 0}</Text>
           <Image source={Images.goldCoin} style={{width: 15, height: 15}} />

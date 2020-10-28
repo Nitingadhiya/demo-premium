@@ -19,6 +19,7 @@ const images = {
 
   goldCoin: require('./files/gold-coin.png'),
   silverCoin: require('./files/silver-coin.png'),
+  coinAmount: require('./files/amount-coin.png'),
   // welcomeBg: assetsImages.welcomeBg,
   // welcomeLogo: assetsImages.welcomeLogo,
   // listDefault: assetsImages.listDefault,

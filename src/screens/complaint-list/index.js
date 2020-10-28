@@ -124,10 +124,17 @@ class ComplainList extends Component {
       LoginType,
     });
 
+    
     const {params} = this.props.route;
     console.log(this.props,'parrra');
     const tag = _.get(params,'tag','');
+
+    if (LoginType && !tag) {
+      this.getUser(LoginType);
+    }
+
     if(_.get(params,'title','') === 'Services' || tag){
+     
       //this.getServiceDayFn(tag);
       const filter = _.get(params,'filter','');
         if(filter) {
@@ -136,6 +143,7 @@ class ComplainList extends Component {
             serviceTag: tag
           });
         } else {
+          alert("sa")
           this.setState({
             headerTitle: 'Services',
             serviceTag: tag
@@ -149,9 +157,6 @@ class ComplainList extends Component {
       this.getComplaintStatus();
       this.getAntivirusList();
     }   
-    if (LoginType && !tag) {
-      this.getUser(LoginType);
-    }
   }
 
   getServiceDayFn(tag) {
@@ -186,7 +191,7 @@ class ComplainList extends Component {
     }
     const endPoint = `GetComplaint?ComplainId=&ComplainType=${status}&ComplaintBy=${
       this.UserName
-    }&SystemTag=${tag}`;
+    }&SystemTag=${tag || ''}`;
     const method = 'GET';
     APICaller(`${endPoint}`, method).then(json => {
       console.log(json, 'jsooooo');
@@ -200,10 +205,12 @@ class ComplainList extends Component {
           complainListArr: json.data.Response,
           displayResult: true,
           filterComplaintArr: json.data.Response,
+        },()=>{
+          setTimeout(() => {
+           this.setState({loadingData: false, refreshing: false});
+          }, 100);
         });
-        setTimeout(() => {
-          this.setState({loadingData: false, refreshing: false});
-        }, 500);
+       
       } else {
         this.setState({
           loginError: json.data.Message,
@@ -277,7 +284,7 @@ class ComplainList extends Component {
 
   filterComplaintFn(itemValue) {
     statusC = itemValue;
-    this.getComplainList(itemValue);
+    this.getComplainList(itemValue,'');
   }
 
   closeComplaint(item) {
@@ -323,7 +330,7 @@ class ComplainList extends Component {
     APICaller(`${endPoint}`, method).then(json => {
       this.setState({loadingData: false, refreshing: false});
       if (json.data.Success === '1') {
-        this.getComplainList(statusC);
+        this.getComplainList(statusC,'');
         Alert.alert('Complaint', 'Successfully close complaint');
       } else {
         Alert.alert('Alert', json.data.Message);
@@ -355,7 +362,7 @@ class ComplainList extends Component {
     APICaller(`${endPoint}`, method).then(json => {
       this.setState({loadingData: false, refreshing: false});
       if (json.data.Success === '1') {
-        this.getComplainList(statusC);
+        this.getComplainList(statusC,'');
         Alert.alert('Complaint', 'Successfully Cancel complaint');
       } else {
         Alert.alert('Alert', json.data.Message);
@@ -364,11 +371,11 @@ class ComplainList extends Component {
   }
 
   getUser(LoginType) {
-    this.setState({loadingData: true, refreshing: false});
+    this.setState({refreshing: false});
     const endPoint = `GetUsers?UserType=${LoginType}`;
     const method = 'GET';
     APICaller(`${endPoint}`, method).then(json => {
-      this.setState({loadingData: false, refreshing: false});
+      this.setState({ refreshing: false});
       if (json.data.Success === '1') {
         this.setState({
           userList: json.data.Response,
@@ -393,7 +400,7 @@ class ComplainList extends Component {
         return;
       }
       if (json.data.Success === '1') {
-        this.getComplainList(statusC);
+        this.getComplainList(statusC,'');
         Alert.alert('Complaint', json.data.Message);
       } else {
         Alert.alert('Alert', json.data.Message);
@@ -417,7 +424,7 @@ class ComplainList extends Component {
   }
 
   onRefresh = () => {
-    this.getComplainList(statusC);
+    this.getComplainList(statusC,'');
   };
 
   dateSplit(date) {
