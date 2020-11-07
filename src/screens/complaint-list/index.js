@@ -143,7 +143,6 @@ class ComplainList extends Component {
             serviceTag: tag
           });
         } else {
-          alert("sa")
           this.setState({
             headerTitle: 'Services',
             serviceTag: tag

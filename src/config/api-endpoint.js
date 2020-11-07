@@ -129,7 +129,9 @@ const resendOTPEndPoint = mobileNo => `ReSendOTP?MobileNo=${mobileNo}`;
 const loginWithOTPEndPoint = mobileNo =>
   `UserLoginWithOTP?Username=${mobileNo}`;
 
-const getComplaintMarkerEndpoint = (user) => `GetComplaintForMap?ComplainId=&ComplainType=Assign&ComplaintBy=${user}`
+const getComplaintMarkerEndpoint = (user) => `GetComplaintForMap?ComplainId=&ComplainType=Assign&ComplaintBy=${user}`;
+
+const GetOfferListEndPoint = 'GetOfferList';
 
 module.exports = {
   checkVersionEndPoint,
@@ -202,5 +204,6 @@ module.exports = {
   messageEndpoint,
   resendOTPEndPoint,
   loginWithOTPEndPoint,
-  getComplaintMarkerEndpoint
+  getComplaintMarkerEndpoint,
+  GetOfferListEndPoint
 };

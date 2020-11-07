@@ -11,17 +11,58 @@ import {
   TextInput,
   KeyboardAvoidingView,
   SafeAreaView,
+  ScrollView
 } from 'react-native';
+import {_} from "../../package"
 import {Color, Matrics} from '../../common/styles';
 import OfferList from '../../components/offer-list';
 import {Header} from '../../common/components';
+import {GetOfferListEndPoint} from '../../config/api-endpoint';
+import Helper from '../../utils/helper';
+import APICaller from '../../utils/api-caller';
 
 let self;
 
 //= ===CLASS DECLARATION====//
 class Offer extends Component {
+  state = {
+    offers: []
+  }
   componentDidMount() {
     self = this;
+    this.userInfo()
+  }
+
+  async userInfo() {
+    const userInfo = await Helper.getLocalStorageItem('userInfo');
+    await this.setState({
+      userInfo,
+    });
+    const userName = _.get(userInfo,'UserName','')
+    this.getOffers(userName)
+  }
+
+
+  getOffers(userName) {
+    if (!userName) {
+      Alert.alert('Invalid username');
+      return;
+    }
+    this.setState({loadingData: true});
+    APICaller(GetOfferListEndPoint, 'GET').then(json => {
+      console.log(json);
+      if (json.data.Success === '1') {
+        const offers = json.data.Response;
+        this.setState({
+          offers: offers,
+        });
+      } else {
+        this.setState({
+          message: json.data.Message,
+        });
+      }
+      this.setState({loadingData: false});
+    });
   }
 
   // ------------->>>Controllers/Functions------------>>>>
@@ -58,7 +99,6 @@ class Offer extends Component {
         <Image
           source={Images.SendIcon}
           style={{alignSelf: 'center', marginRight: Matrics.ScaleValue(15)}}
-        />
         />
       </View>
     );
@@ -111,15 +151,15 @@ class Offer extends Component {
   // ----------->>>Render Method-------------->>>
 
   render() {
+    const {offers} = this.state;
     return (
       <SafeAreaView style={{flex: 1}}>
         <Header title="Offer" left="menu" />
-
-        <OfferList />
-        <OfferList />
-        <OfferList />
-        <OfferList />
-        <OfferList />
+        <ScrollView style={{ flexGrow: 1}}>
+          {offers && offers.map((res, index)=>
+            <OfferList data={res} />
+          )}
+        </ScrollView>
       </SafeAreaView>
     );
   }
