@@ -7,6 +7,7 @@ import {
   Text,
   Dimensions,
 } from 'react-native';
+import { Ionicons, MIcon } from '../../common/assets/vector-icon';
 import {Matrics, Color} from '../../common/styles';
 
 const styles = StyleSheet.create({
@@ -41,12 +42,13 @@ const styles = StyleSheet.create({
     height: 1,
   }, 
   promocodeText:{
-    fontSize: 14,
-    color: Color.white
+    fontSize: 12,
+    color: Color.black,
+    fontWeight: 'bold'
   },
   offerView: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#F1F5D4',
     padding: 10,
     margin: 10,
     shadowOffset: {width: 2, height: 0},
@@ -68,12 +70,12 @@ const styles = StyleSheet.create({
   },
   dateText: {
     color: Color.white,
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: 'bold'
   },
   offerAvailablePrice: {
-    color:Color.black70,
-    fontSize: 14,
+    color:Color.primary,
+    fontSize: 12,
   },
   overlayView: {
     position: 'absolute',
@@ -85,11 +87,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
   promocodeView: {
-    padding: 5, 
-    backgroundColor: Color.primary, 
+    paddingHorizontal: 5, 
+    paddingVertical: 2,
+    backgroundColor: '#75C5F1', 
     alignSelf: 'flex-start', 
     marginVertical: 5, 
-    borderRadius: 5
+    borderRadius: 5,
+    flexDirection: 'row'
   },
   offerPrice: {
     fontWeight: 'bold',
@@ -102,7 +106,34 @@ const styles = StyleSheet.create({
   },
   flxRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+  },
+  titleText: {
+    fontSize: 16, color: Color.primary, fontWeight: 'bold'
+  },
+  descriptionText: {
+    fontSize: 14, color: Color.black70,
+  },
+  dotted: {
+    fontSize: 20
+  },
+  viewDotted: {
+    height:20,
+    overflow:'hidden',
+    marginBottom: 10
+  },
+  fontWeight: {
+    fontWeight: 'bold'
+  },
+  offerValidView: {
+    width: (Matrics.screenWidth /2 ) -20
+  },
+  benefitView: {
+    width: (Matrics.screenWidth /2) -20
+  },
+  validityDateView: {
+    marginVertical: 5, 
+    borderRadius: 5
   }
 
 });
@@ -123,30 +154,52 @@ export default class OfferList extends React.PureComponent {
     return null;
   }
 
+  renderTextColorInactive = (IsActive) => {
+    if(!IsActive) {
+      return { color: '#888'}
+    }
+    return null;
+  }
+
   render() {
     const {data} = this.props;
-    const {IsActive} = data;
-    console.log(data,'data')
+   const {IsActive} = data;
     return (
       <View style={[styles.offerView, this.renderStyle(IsActive)]}>
-        <Text style={{fontSize: 16, color: Color.black30, fontWeight: 'bold'}}>
+        <Text style={[styles.titleText, this.renderTextColorInactive(IsActive)]}>
          {data.Title}
         </Text>
-        <View style={styles.flxRow}>
-        <View>
-          <View>
-            <Text style={styles.offerAvailablePrice}>Offer Available for upto</Text>
-            <Text style={styles.offerPrice}>{data.OfferPrice}</Text>
-          </View>
-        
-          <View style={[styles.promocodeView, this.renderPromoCodeViewStyle(IsActive)]}>
-            <Text style={styles.promocodeText}>Promocode: {data.PromoCode}</Text>
-          </View>
+        <Text style={[styles.descriptionText,this.renderTextColorInactive(IsActive)]}>
+         {data.Description}
+        </Text>
+        <View style={styles.viewDotted}>
+          <Text style={styles.dotted}>- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</Text>
         </View>
-        <View style={styles.fromEndDate}>
-          {/* <Text style={styles.dateText}>{data.FromDate1}</Text> */}
-          <Text style={styles.expDateText}>Expiration Date</Text>
-          <Text style={styles.dateText}>{data.EndDate1}</Text>
+        <View>
+        <View>
+          <View style={styles.flxRow}>
+            <View style={styles.offerValidView}>
+              <Text style={[styles.offerAvailablePrice,this.renderTextColorInactive(IsActive)]}>Offer Valid on: <Text style={styles.fontWeight}>Gold</Text></Text>
+            </View>
+            <View style={styles.benefitView}>
+            <Text style={[styles.offerAvailablePrice,this.renderTextColorInactive(IsActive)]}>Benefit: <Text style={styles.fontWeight}>{data.BenefitTypeName}</Text></Text>
+            </View>
+            {/* <Text style={styles.offerAvailablePrice}>Offer Available for upto</Text>
+            <Text style={styles.offerPrice}>{data.OfferPrice}</Text> */}
+          </View>
+          <View>
+            <Text style={[styles.offerAvailablePrice,this.renderTextColorInactive(IsActive)]}>Valid on Purchase: <Text style={styles.fontWeight}>{data.OfferPrice}</Text></Text>
+          </View>
+          
+          <View style={styles.flxRow}>
+            <View style={styles.validityDateView}>
+              <Text style={[styles.offerAvailablePrice,this.renderTextColorInactive(IsActive)]}>Validity: <Text style={styles.fontWeight}>{data.FromDate1} - {data.EndDate1}</Text></Text>
+            </View>
+            <View style={[styles.promocodeView, this.renderPromoCodeViewStyle(IsActive)]}>
+              <Ionicons name="copy" color={Color.black30} size={14} />
+              <Text style={styles.promocodeText}> Promo: {data.PromoCode}</Text>
+            </View>
+          </View>
         </View>
         </View>
       </View>
