@@ -26,6 +26,7 @@ import Events from '../../utils/events';
 import styles from './styles';
 import ToastComponent from '../../common/components/toast';
 import _ from 'lodash';
+import ComplaintPickerModal from '../../components/complaint-picker-modal';
 
 let self;
 const italyCenterLatitude = 41.8962667,
@@ -36,6 +37,7 @@ class ServicePackage extends Component {
     loadingData: false,
     pins: [],
     toastVisible: false,
+    complaintId: null
   };
 
   componentDidMount() {
@@ -46,10 +48,38 @@ class ServicePackage extends Component {
     setInterval(() => {
       this.getMarkerPoint();
     }, 90000);
+    this.getUserInfo();
   }
 
   componentWillUnmount() {
     clearInterval();
+  }
+
+  async getUserInfo() {
+    const userInfo = await Helper.getLocalStorageItem('userInfo');
+    if(userInfo) {
+      await this.setState({
+        userInfo
+      });
+      const {LoginType} = userInfo;
+      this.getUser(LoginType);
+    }
+  }
+
+  async getUser(LoginType) {
+    if(LoginType) {
+      const endPoint = `GetUsers?UserType=${LoginType}`;
+      const method = 'GET';
+      APICaller(`${endPoint}`, method).then(json => {
+        if (json.data.Success === '1') {
+          this.setState({
+            userList: json.data.Response,
+          });
+        } else {
+          Alert.alert('Alert', json.data.Message);
+        }
+      });
+    }
   }
 
   async getCompalintMarkerPoint() {
@@ -66,7 +96,6 @@ class ServicePackage extends Component {
     APICaller(getComplaintMarkerEndpoint(userName), 'GET', JSON.stringify(body)).then(
       json => {
         const data = json.data.Response;
-        console.log(data,'dataaa')
         let markerPin = [];
         data &&
           data.map(res => {
@@ -104,7 +133,6 @@ class ServicePackage extends Component {
       json => {
         const data = json.data.Response;
         let markerPin = [];
-        console.log(data,'data..')
         data &&
           data.map(res => {
             markerPin.push({
@@ -151,7 +179,12 @@ class ServicePackage extends Component {
         // description="by pressing on transparent area of custom callout"
       >
         { pin.type == 'person' ? 
-        <MIcon name="person-pin-circle" size={30} color={'green'} />
+        <View>
+          <View style={styles.engineerPinPoint}>
+            <Text style={styles.personName}>{pin.name}</Text>
+          </View>
+          <MIcon name="person-pin-circle" size={30} color={'green'} />
+        </View>
         :
         <MIcon name="pin-drop" size={30} color={'red'} />
         }
@@ -163,7 +196,7 @@ class ServicePackage extends Component {
           style={{width: 30, height: 30}}
         /> */}
         
-        <Callout>
+        <Callout onPress={()=> this.openEngineerList(pin.id, pin.type)} tooltip={true} alphaHitTest={true}>
         {pin.type == 'person' ?
           <View style={styles.personCalloutView}>
             <Text style={styles.pinNameText}>{pin.name}</Text>
@@ -194,6 +227,15 @@ class ServicePackage extends Component {
     this.setState({pins: this.state.pins.concat(pins)});
   };
 
+  async openEngineerList(id, type) {
+    if(type != 'person') {
+      await this.setState({
+        complaintId: id
+      });
+      Events.trigger('complaintPickerUserEvent',true);
+    }
+  }
+
   render() {
     const INIT_REGION = {
       latitude: 21.2266,
@@ -201,8 +243,7 @@ class ServicePackage extends Component {
       latitudeDelta: 12,
       longitudeDelta: 12,
     };
-    const {toastVisible,pins} = this.state;
-    console.log(pins,'pinsss')
+    const {toastVisible,pins, userList, complaintId, userInfo} = this.state;
     return (
       <SafeAreaView style={{flex: 1}}>
         <Header left="menu" title="Location" />
@@ -231,9 +272,10 @@ class ServicePackage extends Component {
             style={styles.button}
             onPress={() => this.loadMore()}>
             <Text style={styles.text}>Load more</Text>
-          </TouchableOpacity> */}
+          </TouchableOpacity> */}        
         </View>
         <ToastComponent />
+        <ComplaintPickerModal userList={userList} userInfo={userInfo} complaintId={complaintId} />
       </SafeAreaView>
     );
   }

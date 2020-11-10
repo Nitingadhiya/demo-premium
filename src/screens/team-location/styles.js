@@ -83,7 +83,19 @@ export default styles = {
   complaintCalloutView: {
     width: 260, 
     padding: 5, 
+    borderRadius: 10,
+    backgroundColor: Color.white,
+    elevation: 2,
+  },
+  engineerPinPoint: {
+    backgroundColor: Color.white,
     borderRadius: 5,
-    backgroundColor: Color.white
+    padding: 5,
+    elevation: 2,
+  },
+  personName: {
+    color: Color.primary,
+    fontWeight: 'bold',
+    fontSize: 14
   }
 };
