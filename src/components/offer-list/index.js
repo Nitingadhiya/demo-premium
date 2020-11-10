@@ -179,7 +179,7 @@ export default class OfferList extends React.PureComponent {
         <View>
           <View style={styles.flxRow}>
             <View style={styles.offerValidView}>
-              <Text style={[styles.offerAvailablePrice,this.renderTextColorInactive(IsActive)]}>Offer Valid on: <Text style={styles.fontWeight}>Gold</Text></Text>
+              <Text style={[styles.offerAvailablePrice,this.renderTextColorInactive(IsActive)]}>Offer Valid on: <Text style={styles.fontWeight}>{data.OnServiceName}</Text></Text>
             </View>
             <View style={styles.benefitView}>
             <Text style={[styles.offerAvailablePrice,this.renderTextColorInactive(IsActive)]}>Benefit: <Text style={styles.fontWeight}>{data.BenefitTypeName}</Text></Text>
