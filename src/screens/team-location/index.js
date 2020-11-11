@@ -121,6 +121,7 @@ class ServicePackage extends Component {
   }
 
   async getMarkerPoint() {
+    await this.setState({pins:[]});
     const userInfo = await Helper.getLocalStorageItem('userInfo');
     if (!userInfo) return;
     const body = {

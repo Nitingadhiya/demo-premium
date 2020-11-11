@@ -131,16 +131,16 @@ class OrderComponentRequestWithQRCode extends Component {
                       ) : (
                         <View />
                       )}
-                      <TouchableOpacity
-                        style={styles.finishTouchButton}
-                        onPress={() => this.setState({qrCode: false})}>
-                        <Text style={styles.finishText}>Finish</Text>
-                      </TouchableOpacity>
                     </View>
                   </View>
                 }
               />
             </View>
+            <TouchableOpacity
+              style={styles.finishTouchButton}
+              onPress={() => this.setState({qrCode: false})}>
+              <Text style={styles.finishText}>Finish</Text>
+            </TouchableOpacity>
           </View>
         </Modal>
       </View>

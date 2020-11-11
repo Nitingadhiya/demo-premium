@@ -41,16 +41,16 @@ const Helper = {
             json.data.Response.LoginStatus === '0'
           ) {
             AsyncStorage.removeItem('userInfo');
-            NavigationHelper.navigate(navigation, 'Login');
+            NavigationHelper.reset(navigation, 'Splash');
           }
         } else if (json.data.Success === '2') {
           AsyncStorage.removeItem('userInfo');
-          NavigationHelper.navigate(navigation, 'Login');
+          NavigationHelper.reset(navigation, 'Splash');
         }
       });
     } else {
       AsyncStorage.removeItem('userInfo');
-      NavigationHelper.navigate(navigation, 'Login');
+      NavigationHelper.reset(navigation, 'Splash');
     }
   },
   appUpdateAlert(cancelled) {

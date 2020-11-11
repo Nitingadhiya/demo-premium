@@ -34,7 +34,7 @@ export default styles = {
     width: '100%',
     backgroundColor: Color.primary,
     position: 'absolute',
-    zIndex: 1,
+    zIndex: 10001,
     bottom: 20,
     left: 0,
     justifyContent: 'center',
