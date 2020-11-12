@@ -127,8 +127,9 @@ export default class Dashboard extends Component {
               </Text>
             </View>
             <View style={{height: 10}} />
-            <TeamComplaintOverview text="Today Team Complaints Overview" />
-            <TeamTasksOverview text="Today Work Task Overview" />
+            {!refreshing ?
+            <TeamComplaintOverview text="Today Team Complaints Overview" /> : null}
+            {!refreshing ?<TeamTasksOverview text="Today Work Task Overview" /> : null }
           </View>
           <View style={{flex: 1, alignItems: 'center'}}>
             <TouchableOpacity style={styles.TouchBTN}>

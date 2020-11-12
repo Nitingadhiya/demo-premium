@@ -11,7 +11,8 @@ import {
   TextInput,
   KeyboardAvoidingView,
   SafeAreaView,
-  ScrollView
+  ScrollView,
+  RefreshControl
 } from 'react-native';
 import {_} from "../../package"
 import {Color, Matrics} from '../../common/styles';
@@ -61,7 +62,7 @@ class Offer extends Component {
           message: json.data.Message,
         });
       }
-      this.setState({loadingData: false});
+      this.setState({loadingData: false,    refreshing: false});
     });
   }
 
@@ -130,7 +131,6 @@ class Offer extends Component {
                       resizeMode="center"
                       style={{justifyContent: 'flex-end'}}
                     />
-                    />
                   </View>
                 </TouchableOpacity>
               </View>
@@ -148,6 +148,13 @@ class Offer extends Component {
     );
   };
 
+  _onRefresh = () => {
+    const {userInfo} = this.state;
+    this.setState({refreshing: true, offers: []});
+    const userName = _.get(userInfo,'UserName','')
+    this.getOffers(userName)
+  };
+
   // ----------->>>Render Method-------------->>>
 
   render() {
@@ -155,7 +162,12 @@ class Offer extends Component {
     return (
       <SafeAreaView style={{flex: 1}}>
         <Header title="Offer" left="menu" />
-        <ScrollView style={{ flexGrow: 1}}>
+        <ScrollView style={{ flexGrow: 1}} refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh}
+            />
+          }>
           {offers && offers.map((res, index)=>
             <OfferList data={res} />
           )}

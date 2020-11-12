@@ -23,15 +23,15 @@ export const UserInfoDashboardView = ({userInfo}) => {
       <View style={styles.viewFLXD}>
         <View style={styles.coinView}>
           <Text style={styles.coinCount}>{userInfo.Coins || 0}</Text>
-          <Image source={Images.coinAmount} style={{width: 15, height: 15}} />
+          <Image source={Images.coinAmount} style={{width: 12, height: 12}} />
         </View>
         <View style={styles.coinView}>
           <Text style={styles.coinCount}>{userInfo.Gold || 0}</Text>
-          <Image source={Images.goldCoin} style={{width: 15, height: 15}} />
+          <Image source={Images.goldCoin} style={{width: 12, height: 12}} />
         </View>
         <View style={styles.coinView}>
           <Text style={styles.coinCount}>{userInfo.Silver || 0}</Text>
-          <Image source={Images.silverCoin} style={{width: 15, height: 15}} />
+          <Image source={Images.silverCoin} style={{width: 12, height: 12}} />
         </View>
       </View>
     );

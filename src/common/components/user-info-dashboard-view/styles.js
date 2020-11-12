@@ -9,7 +9,7 @@ export default (Styles = {
     flexDirection: 'row',
   },
   imageView: {
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
   UserImage: {
     height: Matrics.ScaleValue(40),
@@ -22,6 +22,7 @@ export default (Styles = {
     flex: 3,
     justifyContent: 'center',
     paddingLeft: Matrics.ScaleValue(10),
+    marginTop: 4
   },
   textStyle: {
     fontSize: Matrics.ScaleValue(14),
@@ -63,7 +64,7 @@ export default (Styles = {
     fontWeight: 'bold',
   },
   viewFLXD: {
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
     alignItems: 'flex-end',
   },
 });
