@@ -23,6 +23,7 @@ import {
   DebugInstructions,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import CodePush from 'react-native-code-push';
 import {NavigationContainer} from '@react-navigation/native';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {DefaultTheme, DarkTheme} from '@react-navigation/native';
@@ -32,10 +33,11 @@ import {Provider as PaperProvider} from 'react-native-paper';
 import {StackNavigator} from '../src/screens/stack';
 import {DrawerContent} from '../src/screens/drawerContent';
 import Events from './utils/events';
+import CodePushComponent from './components/code-push-component';
 
 const Drawer = createDrawerNavigator();
 
-export default class App extends React.Component {
+export default class AppVar extends React.Component {
   state = {
     gesture: false,
   };
@@ -70,6 +72,7 @@ export default class App extends React.Component {
             />
           </Drawer.Navigator>
         </NavigationContainer>
+        <CodePushComponent />
       </PaperProvider>
     );
   }
@@ -131,4 +134,10 @@ const styles = StyleSheet.create({
   },
 });
 
+let codePushOptions = {checkFrequency: CodePush.CheckFrequency.ON_APP_START};
+
+let App = CodePush(codePushOptions)(AppVar);
+
 export default App;
+
+// export default App;

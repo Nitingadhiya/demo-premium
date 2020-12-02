@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Premium</string>
+    <string moduleConfig="true" name="CodePushDeploymentKey">y87QgBaqwdJXc_3XFBcdGZfPlkWJtz8IX-YxL</string>
 </resources>
