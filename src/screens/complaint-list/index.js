@@ -423,7 +423,15 @@ class ComplainList extends Component {
   }
 
   onRefresh = () => {
-    this.getComplainList(statusC,'');
+    const {params} = this.props.route;
+    console.log(this.props,'parrra');
+    const tag = _.get(params,'tag','');
+    if(_.get(params,'title','') === 'Services' || tag){
+        this.getComplainList(statusC,tag);
+      } else {
+        this.getComplainList(statusC,'');
+      }
+    
   };
 
   dateSplit(date) {
@@ -881,9 +889,11 @@ class ComplainList extends Component {
   renderFlatListItem = (item, index) => {
     const {params} = this.props.route;
     let bgcolor = item.Color;
-    if(_.get(params,'filter','') && _.get(item,'ComplaintStatus','') !== 'Assigned') {
+    //_.get(params,'filter','') && 
+    if(_.get(item,'ComplaintStatus','') !== 'Assigned') {
       bgcolor = '#ccc';
     }
+    console.log(item,'itemm')
     return (
       <TouchableOpacity
         onPress={() => this.complaintDetail(item, true, index)}
