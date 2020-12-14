@@ -18,6 +18,8 @@ import Events from '../../utils/events';
 import Helper from '../../utils/helper';
 import NavigationHelper from '../../utils/navigation-helper';
 import {SpinnerView, TextInputView, Header} from '../../common/components';
+import { Color, Matrics } from '../../common/styles';
+import {MIcon} from "../../common/assets/vector-icon"
 
 class AddSystem extends Component {
   state = {
@@ -97,10 +99,15 @@ class AddSystem extends Component {
       this.setState({
         loadingData: false,
       });
-
       if (json.data.Success === '1') {
         Events.trigger('systemAdded', 'refresh');
-        NavigationHelper.navigate(this.props.navigation, 'Dashboard');
+        const systemTag = json.data.SystemTag
+        let tmpSys = {
+          sysName: systemName,
+          sysTag: systemTag,
+        };
+        this.props.addSystemSuccess(tmpSys)
+        //NavigationHelper.navigate(this.props.navigation, 'Dashboard');
       } else {
         Alert.alert(
           `Error code - ${json.status}`,
@@ -146,6 +153,33 @@ class AddSystem extends Component {
       <SafeAreaView style={styles.flex1}>
         <Header title={'Add System'} left="back" />
         {loadingData ? <SpinnerView /> : null}
+        <View style={{ flexDirection: 'row', padding: 10, justifyContent: 'center'}}>
+          {/* <View style={{ flexDirection: 'row', alignItems: 'center'}}>  
+            <View style={{ backgroundColor: Color.primary, justifyContent: 'center', height: 28, width: 28, borderRadius: 28, alignItems: 'center'}}>
+              <MIcon name="arrow-back" size={Matrics.ScaleValue(20)} color={Color.white} />
+            </View>
+          </View> */}
+          <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+            <View style={{ backgroundColor: Color.primary, width: Matrics.screenWidth / 4.3, height: 2}}></View>
+            <View style={{ backgroundColor: Color.primary, justifyContent: 'center', height: 28, width: 28, borderRadius: 28, alignItems: 'center'}}>
+              <Text style={{color: Color.white, fontSize: 12}}>1</Text>
+            </View>
+          </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ backgroundColor: Color.lightGray, width: Matrics.screenWidth / 4.3, height: 2}}></View>
+            <View style={{ backgroundColor: Color.darkGrey, justifyContent: 'center', height: 28, width: 28, borderRadius: 28, alignItems: 'center'}}>
+              <Text style={{color: Color.white, fontSize: 12}}>2</Text>
+            </View>
+            
+          </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ backgroundColor: Color.lightGray, width: Matrics.screenWidth / 4.3, height: 2}}></View>
+            <View style={{ backgroundColor: Color.darkGrey, justifyContent: 'center', height: 28, width: 28, borderRadius: 28, alignItems: 'center'}}>
+              <Text style={{color: Color.white, fontSize: 12}}>3</Text>
+            </View>
+            
+          </View>
+        </View>
         <View style={styles.container}>
           <View style={styles.viewItemTypeText}>
             <Text>Enter Item Type</Text>
@@ -207,7 +241,7 @@ class AddSystem extends Component {
             <TouchableOpacity
               onPress={() => this.saveSystem()}
               style={styles.saveButton}>
-              <Text style={styles.saveButtonText}>Submit</Text>
+              <Text style={styles.saveButtonText}>Next</Text>
             </TouchableOpacity>
           </View>
         </View>

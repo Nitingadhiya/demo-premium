@@ -297,7 +297,7 @@ class ProductDetails extends Component {
           </View>
         )}
 
-        {userInfo && userInfo.LoginType === '5' ? (
+        {userInfo && (userInfo.LoginType === '5' || userInfo.LoginType === '1') ? (
           <View style={styles.dealerPriceView}>
             <Text style={styles.centerText}>
               Dealer{' '}

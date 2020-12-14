@@ -159,6 +159,42 @@ class ComplaintPriceModal extends Component {
     });
   }
 
+  renderSubmitComplaintStep = () => {
+    return(
+      <View style={{ flexDirection: 'row', padding: 10, justifyContent: 'center'}}>
+          {/* <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+            <View style={{ backgroundColor: Color.green, justifyContent: 'center', height: 28, width: 28, borderRadius: 28, alignItems: 'center'}}>
+              <MIcon name="arrow-back-ios" size={Matrics.ScaleValue(20)} color={Color.white} />
+            </View>
+          </View> */}
+          <View style={styles.flxRow}>
+            <View style={styles.touchViewStep}></View>
+              <TouchableOpacity 
+                onPress={()=> {
+                  this.setState({paymentServiceModal: false}); 
+                  this.props.backStep()}
+                }
+                style={styles.stepDesign}>
+                <Text style={{color: Color.white, fontSize: 12}}>1</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.flxRow}>
+              <View style={styles.touchViewStep}></View>
+              <TouchableOpacity onPress={()=> this.setState({paymentServiceModal: false})} style={styles.stepDesign}>
+                <Text style={{color: Color.white, fontSize: 12}}>2</Text>
+              </TouchableOpacity>
+              
+            </View>
+            <View style={styles.flxRow}>
+              <View style={styles.touchViewStep}></View>
+              <View style={styles.stepDesign}>
+                <Text style={{color: Color.white, fontSize: 12}}>3</Text>
+              </View>
+            </View>
+        </View>
+    )
+  }
+
   render() {
     const {
       compImages,
@@ -193,6 +229,7 @@ class ComplaintPriceModal extends Component {
             style={{
               backgroundColor: '#fff',
             }}>
+               {this.renderSubmitComplaintStep()}
             <View>
               <View style={styles.paymentMethodHeader}>
                 <Text style={styles.SelectPaymentText}>

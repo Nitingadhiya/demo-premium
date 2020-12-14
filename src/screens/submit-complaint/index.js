@@ -19,6 +19,7 @@ import {SpinnerView, Header} from '../../common/components';
 import Helper from '../../utils/helper';
 import Events from '../../utils/events';
 import ComplaintPriceModal from '../../components/complaint-price-modal';
+import AddSystem from "../add-system"
 
 let filterComplainDesc = [];
 //= ===CLASS DECLARATION====//
@@ -47,6 +48,9 @@ export default class submitComplaint extends Component {
     paramsData: null,
     selectedServices: 'Advance',
     userInfo: null,
+    step1: true,
+    step2: false,
+    stpe3: false,
   };
 
   // ------------>>>LifeCycle Methods------------->>>
@@ -272,157 +276,233 @@ export default class submitComplaint extends Component {
     }
   }
 
-  render() {
+  renderWebView = ()=> {
     const {userInfo, complainCharge} = this.state;
     return (
-      <SafeAreaView style={{flex: 1}}>
-        <Header title="Submit Complaint" left="back" />
+      <WebView
+      onLoadStart={() => this.webviewStartLoad()}
+      onLoadEnd={() => this.webviewEndLoad()}
+      source={{
+        uri: `http://premiumitware.com/Home/CreatePaymentMobile?mobilenumber=${
+          userInfo.MobileNo
+        }&email=${userInfo.EmailId}&amount=${
+          this.state.complainCharge
+        }&DocumentNo=${this.state.complaintId}&UserName=${
+          userInfo.UserName
+        }`,
+      }}
+      style={{flex: 1}}
+      onLoad={syntheticEvent => {
+        const {nativeEvent} = syntheticEvent;
+        this.url = nativeEvent.url;
+        const paytmURL = this.url;
+        if (paytmURL) {
+          const splitURL = paytmURL.split('?');
+          const urlQuery = splitURL[0];
+          const splitURLQuery = urlQuery.split('/').pop();
+          if (splitURLQuery === 'PaytmResponseMobileSuccess') {
+            Alert.alert(
+              'Success',
+              'Thank you, your payment was successful and complain successfully submitted',
+              [
+                {
+                  text: 'OK',
+                  onPress: () => this.props.navigation.navigate('Home'),
+                },
+              ],
+              {cancelable: false},
+            );
+          } else if (splitURLQuery === 'PaytmResponseMobileFailure') {
+            Alert.alert(
+              'Failure',
+              'Sorry, we were unable to process your payment',
+              [
+                {
+                  text: 'OK',
+                  onPress: () => this.props.navigation.navigate('Home'),
+                },
+              ],
+              {cancelable: false},
+            );
+          }
+        }
+      }}
+    />
+    )
+  }
 
+  renderComplaintSubmitForm = () => {
+    const {userInfo, complainCharge} = this.state;
+    return(
+      <View style={styles.container}>
+      <View style={styles.viewSystemName}>
+        <Text>Enter Complaint Subject</Text>
+      </View>
+      <View style={styles.borderW1}>
+        <Picker
+          prompt="Enter Complaint Subject"
+          selectedValue={this.state.selectedCompSubject || 0}
+          onValueChange={(itemValue, itemIndex) => {
+            this.subjectChange(itemValue);
+            this.setState({selectedCompSubject: itemValue});
+          }}>
+          {this.state.subject.map((data, index) => {
+            return (
+              <Picker.Item
+                label={data.ParentCodeType}
+                value={data.ParentCodeType}
+                key={`${index}`}
+              />
+            );
+          })}
+        </Picker>
+      </View>
+      <View style={styles.viewSystemName}>
+        <Text>Enter Complaint Subject</Text>
+      </View>
+      <View style={styles.borderW1}>
+        <Picker
+          prompt="What is the problem"
+          selectedValue={this.state.selectedCompDesc || 0}
+          onValueChange={(itemValue, itemIndex) => {
+            this.setState({selectedCompDesc: itemValue});
+          }}>
+          {this.state.filterComplainDesc.map((data, index) => {
+            return (
+              <Picker.Item
+                label={data.CodeDesc}
+                value={data.CodeDesc}
+                key={`${index}`}
+              />
+            );
+          })}
+        </Picker>
+      </View>
+      {this.state.tmpSYS && this.state.tmpSYS.length > 0 && (
+        <View>
+          <View style={styles.viewSystemName}>
+            <Text>Enter System Name</Text>
+          </View>
+          <View style={styles.borderW1}>
+            <Picker
+              prompt="Enter System Name"
+              selectedValue={this.state.systemTag || 0}
+              onValueChange={(itemValue, itemIndex) => {
+                this.setState({systemTag: itemValue});
+              }}>
+              {this.state.tmpSYS.map((data, index) => {
+                return (
+                  <Picker.Item
+                    label={data.sysName}
+                    value={data.sysTag}
+                    key={`${index}`}
+                  />
+                );
+              })}
+            </Picker>
+          </View>
+        </View>
+      )}
+      <View style={styles.nextandSubmitClass}>
+        <TouchableOpacity
+          onPress={() => {
+            complainCharge > 0
+              ? this.nextAndSubmit()
+              : this.submitComplaintMethod();
+          }}
+          style={styles.touchNextButton}>
+          <Text style={styles.font16White}>
+            {complainCharge > 0 ? 'Next' : 'Submit'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+    )
+  }
+
+  getAddSystemTag = (data) =>{
+    this.setState({
+      tmpSYS: _.concat(this.state.tmpSYS,data),
+      step1: false,
+      step2: true
+    })
+  }
+
+  renderSubmitComplaintStep = () => {
+    return(
+      <View style={{ flexDirection: 'row', padding: 10, justifyContent: 'center'}}>
+          {/* <View style={{ flexDirection: 'row', alignItems: 'center'}}>  
+            <View style={{ backgroundColor: Color.green, justifyContent: 'center', height: 28, width: 28, borderRadius: 28, alignItems: 'center'}}>
+            <MIcon name="arrow-back-ios" size={Matrics.ScaleValue(20)} color={Color.white} />
+          </View>
+          </View> */}
+          <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+            <View style={{ backgroundColor: Color.primary, width: Matrics.screenWidth / 4.3, height: 2}}></View>
+            <TouchableOpacity onPress={()=> this.navigagteStep1()} style={{ backgroundColor: Color.primary, justifyContent: 'center', height: 28, width: 28, borderRadius: 28, alignItems: 'center'}}>
+              <Text style={{color: Color.white, fontSize: 12}}>1</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ backgroundColor: Color.primary, width: Matrics.screenWidth / 4.3, height: 2}}></View>
+            <TouchableOpacity onPress={()=> this.navigagteStep2()} style={{ backgroundColor: Color.primary, justifyContent: 'center', height: 28, width: 28, borderRadius: 28, alignItems: 'center'}}>
+              <Text style={{color: Color.white, fontSize: 12}}>2</Text>
+            </TouchableOpacity>
+            
+          </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ backgroundColor: Color.lightGray, width: Matrics.screenWidth / 4.3, height: 2}}></View>
+            <View style={{ backgroundColor: Color.darkGrey, justifyContent: 'center', height: 28, width: 28, borderRadius: 28, alignItems: 'center'}}>
+              <Text style={{color: Color.white, fontSize: 12}}>3</Text>
+            </View>
+            
+          </View>
+        </View>
+    )
+  }
+
+  navigagteStep1() {
+    this.setState({
+      step1: true,
+      step2: false
+    })
+  }
+
+  navigagteStep2() {
+    this.setState({
+      step1: false,
+      step2: true
+    })
+  }
+
+  render() {
+    const {userInfo, step1,step2} = this.state;
+    return (
+      <SafeAreaView style={{flex: 1}}>
+        {step2 ? <Header title="Submit Complaint" left="back" /> : null}
+        {step1 ? 
+        <AddSystem navigation={this.props.navigation} addSystemSuccess={(data)=> this.getAddSystemTag(data)} /> : null}
+        {step2 ? this.renderSubmitComplaintStep() : null}
+      
         {!this.state.webviewLoad && this.state.webviewShow ? (
           <View style={styles.spinnerViewCenter}>
             <SpinnerView />
           </View>
         ) : null}
-
+        {step2 ? 
+        <>
         {userInfo && this.state.webviewShow ? (
-          <WebView
-            onLoadStart={() => this.webviewStartLoad()}
-            onLoadEnd={() => this.webviewEndLoad()}
-            source={{
-              uri: `http://premiumitware.com/Home/CreatePaymentMobile?mobilenumber=${
-                userInfo.MobileNo
-              }&email=${userInfo.EmailId}&amount=${
-                this.state.complainCharge
-              }&DocumentNo=${this.state.complaintId}&UserName=${
-                userInfo.UserName
-              }`,
-            }}
-            style={{flex: 1}}
-            onLoad={syntheticEvent => {
-              const {nativeEvent} = syntheticEvent;
-              this.url = nativeEvent.url;
-              const paytmURL = this.url;
-              if (paytmURL) {
-                const splitURL = paytmURL.split('?');
-                const urlQuery = splitURL[0];
-                const splitURLQuery = urlQuery.split('/').pop();
-                if (splitURLQuery === 'PaytmResponseMobileSuccess') {
-                  Alert.alert(
-                    'Success',
-                    'Thank you, your payment was successful and complain successfully submitted',
-                    [
-                      {
-                        text: 'OK',
-                        onPress: () => this.props.navigation.navigate('Home'),
-                      },
-                    ],
-                    {cancelable: false},
-                  );
-                } else if (splitURLQuery === 'PaytmResponseMobileFailure') {
-                  Alert.alert(
-                    'Failure',
-                    'Sorry, we were unable to process your payment',
-                    [
-                      {
-                        text: 'OK',
-                        onPress: () => this.props.navigation.navigate('Home'),
-                      },
-                    ],
-                    {cancelable: false},
-                  );
-                }
-              }
-            }}
-          />
+         this.renderWebView()
         ) : (
-          <View style={styles.container}>
-            <View style={styles.viewSystemName}>
-              <Text>Enter Complaint Subject</Text>
-            </View>
-            <View style={styles.borderW1}>
-              <Picker
-                prompt="Enter Complaint Subject"
-                selectedValue={this.state.selectedCompSubject || 0}
-                onValueChange={(itemValue, itemIndex) => {
-                  this.subjectChange(itemValue);
-                  this.setState({selectedCompSubject: itemValue});
-                }}>
-                {this.state.subject.map((data, index) => {
-                  return (
-                    <Picker.Item
-                      label={data.ParentCodeType}
-                      value={data.ParentCodeType}
-                      key={`${index}`}
-                    />
-                  );
-                })}
-              </Picker>
-            </View>
-            <View style={styles.viewSystemName}>
-              <Text>Enter Complaint Subject</Text>
-            </View>
-            <View style={styles.borderW1}>
-              <Picker
-                prompt="What is the problem"
-                selectedValue={this.state.selectedCompDesc || 0}
-                onValueChange={(itemValue, itemIndex) => {
-                  this.setState({selectedCompDesc: itemValue});
-                }}>
-                {this.state.filterComplainDesc.map((data, index) => {
-                  return (
-                    <Picker.Item
-                      label={data.CodeDesc}
-                      value={data.CodeDesc}
-                      key={`${index}`}
-                    />
-                  );
-                })}
-              </Picker>
-            </View>
-            {this.state.tmpSYS && this.state.tmpSYS.length > 0 && (
-              <View>
-                <View style={styles.viewSystemName}>
-                  <Text>Enter System Name</Text>
-                </View>
-                <View style={styles.borderW1}>
-                  <Picker
-                    prompt="Enter System Name"
-                    selectedValue={this.state.systemTag || 0}
-                    onValueChange={(itemValue, itemIndex) => {
-                      this.setState({systemTag: itemValue});
-                    }}>
-                    {this.state.tmpSYS.map((data, index) => {
-                      return (
-                        <Picker.Item
-                          label={data.sysName}
-                          value={data.sysTag}
-                          key={`${index}`}
-                        />
-                      );
-                    })}
-                  </Picker>
-                </View>
-              </View>
-            )}
-            <View style={styles.nextandSubmitClass}>
-              <TouchableOpacity
-                onPress={() => {
-                  complainCharge > 0
-                    ? this.nextAndSubmit()
-                    : this.submitComplaintMethod();
-                }}
-                style={styles.touchNextButton}>
-                <Text style={styles.font16White}>
-                  {complainCharge > 0 ? 'Next' : 'Submit'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        )}
+          this.renderComplaintSubmitForm()
+       )}
+       </> : null}
+
         <ComplaintPriceModal
           stateAll={this.state}
           navigation={this.props.navigation}
+          backStep={()=> this.navigagteStep1()}
         />
+       
       </SafeAreaView>
     );
   }

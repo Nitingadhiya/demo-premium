@@ -75,4 +75,21 @@ export default styles = {
     fontSize: Matrics.ScaleValue(16),
     fontWeight: 'bold',
   },
+  stepDesign: { 
+    backgroundColor: Color.primary, 
+    justifyContent: 'center', 
+    height: 28, 
+    width: 28, 
+    borderRadius: 28, 
+    alignItems: 'center'
+  },
+  touchViewStep: { 
+    backgroundColor: Color.primary, 
+    width: Matrics.screenWidth / 4.3, 
+    height: 2
+  },
+  flxRow: { 
+    flexDirection: 'row', 
+    alignItems: 'center'
+  }
 };

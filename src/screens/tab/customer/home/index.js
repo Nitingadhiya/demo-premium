@@ -212,11 +212,11 @@ export default class Dashboard extends Component {
               <Text style={{color: '#fff', fontSize: 14}}>Complaint Book</Text>
             </TouchableOpacity>
           ) : null}
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.actionTouch}
             onPress={() => this.addSystem(navigation)}>
             <Text style={{color: '#fff', fontSize: 14}}>Add System</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
 
         {/* complaint Register options modal */}
