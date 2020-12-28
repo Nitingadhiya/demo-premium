@@ -197,7 +197,7 @@ class DrawerViewComponent extends Component {
           <View style={styles.viewVersion}>
             <Text style={styles.versionText}>
               App Version{' '}
-              {`${VersionNumber.appVersion}(${VersionNumber.buildVersion})`}
+              {`${VersionNumber.appVersion}(${VersionNumber.buildVersion + 1})`}
             </Text>
           </View>
         </Drawer.Section>

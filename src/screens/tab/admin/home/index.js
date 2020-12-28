@@ -104,7 +104,7 @@ export default class Dashboard extends Component {
   };
 
   onSuccess = e => {
-    alert(e.data);
+   // alert(e.data);
     this.setState({
       scanQrCode: false,
     });

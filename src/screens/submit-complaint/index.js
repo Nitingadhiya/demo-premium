@@ -65,6 +65,8 @@ export default class submitComplaint extends Component {
         systemTag: params.systemTag,
         complainCharge: params.complainCharge,
         paramsData: params.data,
+        step2: params.systemTag ? true : false,
+        step1: !params.systemTag ? true : false
       });
       if (params.tmpSystemName && params.tmpSystemName.length > 0) {
         this.setState({
