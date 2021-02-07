@@ -205,13 +205,14 @@ export default class Dashboard extends Component {
           ) : null}
         </ScrollView>
         <View style={styles.bottomButton}>
-          {_.size(systemDescription) > 0 && systemDescription[0].UserName ? (
+          {/* if new user register then complaint close button not show that's why comment
+           {_.size(systemDescription) > 0 && systemDescription[0].UserName ? ( */}
             <TouchableOpacity
               style={styles.actionTouch}
               onPress={() => this.registerComplain()}>
               <Text style={{color: '#fff', fontSize: 14}}>Complaint Book</Text>
             </TouchableOpacity>
-          ) : null}
+          {/* ) : null} */}
           {/* <TouchableOpacity
             style={styles.actionTouch}
             onPress={() => this.addSystem(navigation)}>

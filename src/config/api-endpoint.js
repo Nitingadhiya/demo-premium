@@ -31,8 +31,8 @@ const getServiceEndPoint = tag => `GetService?SystemTag=${tag}`;
 const getBonusEndPoint = tag => `GetBonus?SystemTag=${tag}`;
 const getSystemWarrantyEndPoint = tag => `GetSystem?SystemTag=${tag}`;
 const getDealerImageEndPoint = 'GetDealerImages';
-const fetchProductListEndPoint = userName =>
-  `GetProductList?ProductNo=&Username=${userName}&WishCart=`;
+const fetchProductListEndPoint = (userName,parts,sort, categoryId) =>
+  `GetProductList?ProductNo=&Username=${userName}&WishCart=&Parts=${parts}&Sort=${sort}&Category=${categoryId}`;
 const getProductDetailsEndPoint = (id, userName) =>
   `GetProductList?ProductNo=${id}&Username=${userName}&WishCart=`;
 const getWishlistEndPoint = userName =>
@@ -133,6 +133,8 @@ const getComplaintMarkerEndpoint = (user) => `GetComplaintForMap?ComplainId=&Com
 
 const GetOfferListEndPoint = 'GetOfferList';
 
+const getPartWiseFilterEndPoint = (partArray,Category) =>  `GetPartWiseFilters?PartNo=${partArray}&Category=${Category}`;
+
 module.exports = {
   checkVersionEndPoint,
   sliderImagesEndPoint,
@@ -205,5 +207,6 @@ module.exports = {
   resendOTPEndPoint,
   loginWithOTPEndPoint,
   getComplaintMarkerEndpoint,
-  GetOfferListEndPoint
+  GetOfferListEndPoint,
+  getPartWiseFilterEndPoint
 };

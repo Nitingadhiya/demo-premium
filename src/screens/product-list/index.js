@@ -21,7 +21,7 @@ import {
   insertWishCartEndPoint,
   removeWishCartEndPoint,
 } from '../../config/api-endpoint';
-import {MIcon} from '../../common/assets/vector-icon';
+import {McIcon, MIcon} from '../../common/assets/vector-icon';
 import styles from './styles';
 import {Matrics, Color} from '../../common/styles';
 import Events from '../../utils/events';
@@ -29,6 +29,9 @@ import Helper from '../../utils/helper';
 import NavigationHelper from '../../utils/navigation-helper';
 import {SpinnerView} from '../../common/components';
 import ProductItemList from '../../components/product-list';
+import FilterModal from '../../components/filter-modal'
+import SortModal from '../../components/sorting-modal';
+
 let searchResult = [];
 class ProductList extends Component {
   state = {
@@ -41,6 +44,8 @@ class ProductList extends Component {
     searchText: null,
     message: null,
     categoryFilterValue: '',
+    codeId: '',
+    filterVisible: false
   };
 
   async componentDidMount() {
@@ -48,7 +53,9 @@ class ProductList extends Component {
     if (route.params) {
       await this.setState({
         categoryFilterValue: route.params.category,
+        codeId: route.params.codeId
       });
+      this.categoryId = route.params.codeId;
     }
     this.getUserInfo();
     this._unsubscribe = this.props.navigation.addListener('focus', async () => {
@@ -57,8 +64,11 @@ class ProductList extends Component {
       if (route.params) {
         await this.setState({
           categoryFilterValue: route.params.category,
+          codeId: route.params.codeId
         });
-        this.categoryFilterValidation(route.params.category);
+        this.categoryId = route.params.codeId;
+        this.getUserInfo();
+        //this.categoryFilterValidation(route.params.codeId);
       }
     });
 
@@ -71,6 +81,18 @@ class ProductList extends Component {
         badge: count,
       });
     });
+
+    Events.on('filter-parts', 'filter-apply', parts => {
+      this.parts = parts.toString();
+      this.getUserInfo();
+    });
+
+    Events.on('sorting-filter','filter-sorting', val => {
+      this.sortVal = val;
+      this.getUserInfo();
+    });
+
+    
   }
   componentWillUnmount() {
     this._unsubscribe();
@@ -209,7 +231,11 @@ class ProductList extends Component {
     if (!refreshing) {
       this.setState({loadingData: true});
     }
-    APICaller(fetchProductListEndPoint(userName), 'GET').then(json => {
+
+    let parts = this.parts ? this.parts : '';
+    let sort = this.sortVal ? this.sortVal : '';
+    let categoryId = this.categoryId ? this.categoryId : '';
+    APICaller(fetchProductListEndPoint(userName,parts,sort, categoryId), 'GET').then(json => {
       if (json.data.Success === 1 || json.data.Success === '1') {
         const list = json.data.Response;
         let badgeCount = 0;
@@ -224,7 +250,7 @@ class ProductList extends Component {
           badge: badgeCount,
         });
 
-        setTimeout(() => this.categoryFilterValidation(''));
+        //setTimeout(() => this.categoryFilterValidation(''));
       } else {
         this.setState({
           loadingData: false,
@@ -286,7 +312,8 @@ class ProductList extends Component {
         searchText: '',
         refreshing: true,
       });
-      this.categoryFilterValidation()
+      // this.categoryFilterValidation();
+      this.fetchProductList(UserName);
     } else {
       this.setState({
         categoryFilterValue: '',
@@ -341,6 +368,55 @@ class ProductList extends Component {
         refreshing: false
       });
     }
+  }
+
+  renderFilterAndSorting = () => {
+    return (
+      <View style={styles.filterAndSortView}>
+        <TouchableOpacity style={styles.filterTouchableButton} onPress={()=> this.pressFilter()}>
+          <McIcon name="filter" color={Color.primary} size={Matrics.ScaleValue(20)} />
+          <Text style={styles.filterText}>Filter</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.filterTouchableButton} onPress={()=> this.pressSort()}>
+          <McIcon name="sort" color={Color.primary} size={Matrics.ScaleValue(20)} />
+          <Text style={styles.filterText}>Sort By</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  pressFilter() {
+    this.setState({
+      filterVisible: true
+    });
+    // Events.trigger('filterModal', true);
+  }
+
+  renderFilterModal = () => {
+    const {filterVisible} = this.state;
+    return (
+    <FilterModal visible={filterVisible} 
+    resetFilter={()=> {
+      this.parts ='';
+      this.getUserInfo();
+      this.setState({
+        filterVisible: false
+      });
+    }}
+    closeModal={()=> { 
+      this.setState({
+        filterVisible: false
+      });
+    }} 
+  />);
+  }
+
+  pressSort() {
+    Events.trigger('sortModal', true);
+  }
+
+  renderSortModal = () => {
+    return <SortModal />
   }
 
   // latestProduct() {
@@ -428,6 +504,9 @@ class ProductList extends Component {
               </TouchableOpacity>
             </Animated.View>
           </View>
+          
+          {this.renderFilterAndSorting()}
+
           {categoryFilterValue ? (
             <View style={styles.categoryFilterView}>
               <Text style={styles.categoryTextStyle}>
@@ -503,6 +582,8 @@ class ProductList extends Component {
           }}
           onPress={() => this.latestProduct()}
         /> */}
+        {this.renderFilterModal()}
+        {this.renderSortModal()}
       </SafeAreaView>
     );
   }

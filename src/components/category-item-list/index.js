@@ -33,6 +33,7 @@ class CategoryItemList extends Component {
           //global.categoryFilter = res.CodeDesc;
           NavigationHelper.navigate(this.props.navigation, 'ProductList', {
             category: res.CodeDesc,
+            codeId: res.CodeId
           });
           //Events.trigger('refreshProductList');
         }}

@@ -1,4 +1,6 @@
-import {Color, ApplicationStyles} from '../../common/styles';
+import { color } from 'react-native-reanimated';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+import {Color, ApplicationStyles, Matrics} from '../../common/styles';
 
 export default styles = {
   ...ApplicationStyles,
@@ -46,4 +48,22 @@ export default styles = {
   clearCategory: {
     paddingVertical: 3,
   },
+  filterTouchableButton: {
+    backgroundColor: Color.paleGreyThree,
+    height: 40,
+    width: Matrics.screenWidth / 2,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  filterText: {
+    color: Color.primary,
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginLeft: 10
+  },
+  filterAndSortView: {
+    flexDirection: 'row',
+    width: Matrics.screenWidth
+  }
 };

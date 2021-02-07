@@ -52,7 +52,7 @@ class ComplaintOptionsModal extends Component {
     const {systemDescription} = this.props;
     this.setState({complaintRegisterModal: false});
     tmpSys = [];
-    systemDescription.map(res => {
+    systemDescription && systemDescription.map(res => {
       if (res.SystemTag) {
         const sysTg = res.SystemTag.split('-');
         if (sysTg[0] === 'TMP') {
