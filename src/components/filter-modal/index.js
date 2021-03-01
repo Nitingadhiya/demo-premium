@@ -24,7 +24,7 @@ import {useNavigation} from '@react-navigation/native';
 import _ from 'lodash'
 
 let selectPartArray = [];
-let selectCategoryArray = [];
+let selectCategoryArray = '';
 let self;
 class FilterModal extends Component {
   state = {
@@ -41,6 +41,12 @@ class FilterModal extends Component {
     self = this;
     Events.on('filterModal', 'filter toggle', res => {
       this.setState({filterProductModal: true});
+    });
+
+    Events.on('categorySelected', 'category selected', res => {
+      console.log(res,'tess')
+      selectCategoryArray = '';
+      this.selectParts(res,'Categories');      
     });
     this.fetchPartFilter([]);
   }
@@ -76,7 +82,11 @@ class FilterModal extends Component {
       const textVar = keyVar == 'Categories' ? res.CodeDesc : res.PartName;
       const fnVar = keyVar == 'Categories' ? res.CodeId : res.PartNo;
       return(
-       <TouchableOpacity style={styles.rightTouchButton} key={`${inx}`} onPress={()=> this.selectParts(fnVar,keyVar)}>
+       <TouchableOpacity style={styles.rightTouchButton} key={`${inx}`} onPress={()=> {
+         if(keyVar == 'Categories') {
+           this.categoryName = textVar;
+         }
+         this.selectParts(fnVar,keyVar)}}>
           <Text style={styles.leftBrandText}>{textVar} {'    '}
             <McIcon name={this.checkSelectedCheckbox(fnVar, keyVar)} size={14} color={Color.charcoalGrey} />
           </Text>
@@ -107,13 +117,20 @@ class FilterModal extends Component {
     })
 
     if(keyVar == 'Categories') {
-      if(selectCategoryArray.includes(partNo)) {
-        const index = _.indexOf(selectCategoryArray,partNo);
-        if(index > -1) 
-        selectCategoryArray.splice(index,1);
+      console.log(selectCategoryArray,'sss')
+      // if(selectCategoryArray.includes(partNo)) {
+      //   const index = _.indexOf(selectCategoryArray,partNo);
+      //   if(index > -1) 
+      //   selectCategoryArray.splice(index,1);
+      // } else {
+      //   selectCategoryArray.push(partNo);
+      // }
+      if(selectCategoryArray == partNo) {
+        selectCategoryArray = '';
       } else {
-        selectCategoryArray.push(partNo);
+        selectCategoryArray = partNo;
       }
+      
     } else {
    
       if(selectPartArray.includes(partNo)) {
@@ -148,7 +165,12 @@ class FilterModal extends Component {
 
    applyFilter (){
     this.props.closeModal();
-    Events.trigger('filter-parts', selectPartArray);
+    let obj = {
+      selectPartArray,
+      selectCategoryArray,
+      categoryName: this.categoryName
+    }
+    Events.trigger('filter-parts', obj);
 
   }
 
@@ -156,8 +178,10 @@ class FilterModal extends Component {
     this.fetchPartFilter([]);
     this.props.resetFilter();
     selectPartArray = [];
+    selectCategoryArray = '';
     this.setState({
-      finalSelectedParts:[]
+      finalSelectedParts:[],
+      finalSelectedCategories: []
     });
     
   }
@@ -179,7 +203,9 @@ class FilterModal extends Component {
           ) : null}
             <View style={styles.headerView}>
               <View style={styles.viewFirst}>
-                <TouchableOpacity style={styles.backHeaderTouch} onPress={closeModal}>
+                <TouchableOpacity style={styles.backHeaderTouch} onPress={() => {
+                  selectCategoryArray= '';
+                  this.props.closeModal()}}>
                   <MIcon name="arrow-back" color={Color.white} size={24} />
                 </TouchableOpacity>
                 <Text style={styles.filterText}>Filter</Text>

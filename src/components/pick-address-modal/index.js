@@ -15,6 +15,7 @@ import {Color, Matrics} from '../../common/styles';
 import styles from './styles';
 import Helper from '../../utils/helper';
 import APICaller from '../../utils/api-caller';
+import _ from 'lodash';
 import {
   getCityEndPoint,
   getAreasEndPoint,
@@ -59,7 +60,8 @@ class PickAddressModal extends Component {
 
   changeTextForsearch(text) {
     const {modalType} = this.props;
-    if (modalType === 'Landmark') {
+    const {landmarkList, areaList, roadList, cityList, businessList} = this.state;
+    if (modalType === 'Landmark' && _.size(landmarkList) > 0) {
       const epi = this.state.landmarkList.filter(land =>
         this.replaceCustomExpression(land.Landmark).includes(
           this.replaceCustomExpression(text),
@@ -67,7 +69,7 @@ class PickAddressModal extends Component {
       );
       this.setState({landmarkSearch: text, filterLandmarkList: epi});
     }
-    if (modalType === 'Area') {
+    if (modalType === 'Area' && _.size(areaList) > 0) {
       const epi = this.state.areaList.filter(land =>
         this.replaceCustomExpression(land.Area).includes(
           this.replaceCustomExpression(text),
@@ -75,7 +77,7 @@ class PickAddressModal extends Component {
       );
       this.setState({areaSearch: text, filterAreaList: epi});
     }
-    if (modalType === 'Road') {
+    if (modalType === 'Road' && _.size(roadList) > 0) {
       const epi = this.state.roadList.filter(land =>
         this.replaceCustomExpression(land.Road).includes(
           this.replaceCustomExpression(text),
@@ -84,7 +86,7 @@ class PickAddressModal extends Component {
       this.setState({roadSearch: text, filterRoadList: epi});
     }
 
-    if (modalType === 'City') {
+    if (modalType === 'City' && _.size(cityList) > 0) {
       const epi = this.state.cityList.filter(city =>
         this.replaceCustomExpression(city.CityName).includes(
           this.replaceCustomExpression(text),
@@ -93,7 +95,7 @@ class PickAddressModal extends Component {
       this.setState({citySearch: text, filterCityList: epi});
     }
 
-    if (modalType === 'Business') {
+    if (modalType === 'Business' && _.size(businessList) > 0) {
       const epi = this.state.businessList.filter(business =>
         this.replaceCustomExpression(business.CodeDesc).includes(
           this.replaceCustomExpression(text),

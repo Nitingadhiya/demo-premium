@@ -34,7 +34,7 @@
     "react-native-floating-action-menu": "^1.1.10",
     "react-native-geolocation-service": "^4.0.0",
     "react-native-gesture-handler": "^1.6.1",
-    "react-native-image-crop-picker": "^0.28.0",
+    "react-native-image-crop-picker": "0.29.0",
     "react-native-image-page": "^0.5.0",
     "react-native-image-progress": "^1.1.1",
     "react-native-keyboard-aware-scroll-view": "^0.9.1",

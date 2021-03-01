@@ -28,6 +28,7 @@ import NavigationHelper from '../../utils/navigation-helper';
 import {SpinnerView} from '../../common/components';
 import POrder from '../../components/order';
 import OrderInformationModal from '../../components/order-information-modal';
+import OrderCancelRemarkModal from "../../components/order-cancel-remark";
 
 class Order extends Component {
   state = {
@@ -137,6 +138,15 @@ class Order extends Component {
     });
   }
 
+  async cancelOrder(orderNo) {
+    
+    const userInfo = await Helper.getLocalStorageItem('userInfo');
+    if (!userInfo) return;
+    const userName = userInfo.UserName;
+    Events.trigger('orderCancelRemarkModal', {orderNo, userName});
+   
+  }
+
   render() {
     const {loadingData, refreshing, orderItem, orderNotText} = this.state;
     const {navigation} = this.props;
@@ -157,13 +167,13 @@ class Order extends Component {
           }>
           {orderItem ? (
             orderItem.map((res, index) => {
-              console.log(res, 'res**');
               return (
                 <POrder
                   data={res}
                   key={`${index.toString()}`}
                   onPress={() => this.LeadInfo(res)}
                   plugOnPress={() => this.verifyOrder(res.OrderNo, index)}
+                  cancelOrder={()=> this.cancelOrder(res.OrderNo)}
                 />
               );
             })
@@ -176,6 +186,7 @@ class Order extends Component {
         </ScrollView>
 
         <OrderInformationModal userInfo={userInfo} navigation={navigation} />
+        <OrderCancelRemarkModal />
         {loadingData ? (
           <View style={styles.spinnerView}>
             <SpinnerView />

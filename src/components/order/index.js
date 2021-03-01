@@ -145,7 +145,6 @@ class POrder extends Component {
             ]}
           />
         </View>
-        {console.log(data)}
         <View
           style={{
             marginVertical: 5,
@@ -158,6 +157,11 @@ class POrder extends Component {
           </Text>
 
           <View style={{flexDirection: 'row'}}>
+            <TouchableOpacity
+              style={{borderRadius: 25, width:25, height: 25, backgroundColor: 'red', alignItems: 'center', justifyContent: 'center'}}
+              onPress={() => this.props.cancelOrder()}>
+              <McIcon name="close" size={18} color={'white'} />
+            </TouchableOpacity>
             <TouchableOpacity
               style={{paddingHorizontal: 10}}
               onPress={() => this.props.plugOnPress()}>

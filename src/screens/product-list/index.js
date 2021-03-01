@@ -83,7 +83,21 @@ class ProductList extends Component {
     });
 
     Events.on('filter-parts', 'filter-apply', parts => {
-      this.parts = parts.toString();
+      if(parts && parts.selectPartArray) {
+        let partsArr = parts.selectPartArray;
+        this.parts = partsArr.toString();
+      }
+      if(parts && parts.selectCategoryArray) {
+        let selectCategoryArray = parts.selectCategoryArray;
+        this.categoryId = selectCategoryArray.toString();
+      }
+      console.log(parts,'parts')
+      this.setState({
+        categoryFilterValue: parts && parts.categoryName,
+        codeId: this.categoryId
+      });
+      this.categoryId = this.categoryId;
+
       this.getUserInfo();
     });
 
@@ -236,6 +250,7 @@ class ProductList extends Component {
     let sort = this.sortVal ? this.sortVal : '';
     let categoryId = this.categoryId ? this.categoryId : '';
     APICaller(fetchProductListEndPoint(userName,parts,sort, categoryId), 'GET').then(json => {
+      console.log(json,'json')
       if (json.data.Success === 1 || json.data.Success === '1') {
         const list = json.data.Response;
         let badgeCount = 0;
@@ -243,8 +258,8 @@ class ProductList extends Component {
           if (res.Cart === true) badgeCount++;
         });
         this.setState({
-          productItemList: _.sortBy(list, {IsNew: false}),
-          filterResult: _.sortBy(list, {IsNew: false}),
+          productItemList: list, //_.sortBy(list, {IsNew: false}),
+          filterResult: list, //_.sortBy(list, {IsNew: false}),
           refreshing: false,
           loadingData: false,
           badge: badgeCount,
@@ -385,30 +400,40 @@ class ProductList extends Component {
     )
   }
 
-  pressFilter() {
-    this.setState({
+  async pressFilter() {
+    await this.setState({
       filterVisible: true
     });
+    Events.trigger('categorySelected', this.categoryId);
     // Events.trigger('filterModal', true);
   }
 
   renderFilterModal = () => {
     const {filterVisible} = this.state;
     return (
-    <FilterModal visible={filterVisible} 
-    resetFilter={()=> {
-      this.parts ='';
-      this.getUserInfo();
-      this.setState({
-        filterVisible: false
-      });
-    }}
-    closeModal={()=> { 
-      this.setState({
-        filterVisible: false
-      });
-    }} 
-  />);
+      <FilterModal visible={filterVisible} 
+        resetFilter={()=> {
+          this.resetFilterValue()
+        }}
+        category={this.categoryId}
+        closeModal={()=> { 
+          this.setState({
+            filterVisible: false
+          });
+        }} 
+      />
+    );
+  }
+
+  resetFilterValue = () => {
+    this.parts ='';
+    this.categoryId='';
+    this.getUserInfo();
+    this.props.navigation.dispatch(CommonActions.setParams({category: ''}));
+    this.setState({
+      filterVisible: false,
+      categoryFilterValue: '',
+    });     
   }
 
   pressSort() {
@@ -514,7 +539,7 @@ class ProductList extends Component {
               </Text>
               <TouchableOpacity
                 style={styles.clearCategory}
-                onPress={() => this.clearCategoryFilter()}>
+                onPress={() => this.resetFilterValue()}>
                 <MIcon name="close" size={22} color={Color.primary} />
               </TouchableOpacity>
             </View>
