@@ -5,7 +5,7 @@ import {VersionNumber} from '../../package';
 import styles from './styles';
 import APICaller from '../../utils/api-caller';
 import {userDashboardEndPoint} from '../../config/api-endpoint';
-import {Color} from '../../common/styles';
+import {Color,Images} from '../../common/styles';
 
 let img;
 const ordTrue = 'green';
@@ -54,11 +54,18 @@ class POrder extends Component {
             <Text style={{fontWeight: 'bold'}}>Order No {'    '}: </Text>
             {data.OrderNo}
           </Text>
-
-          <Text style={{fontSize: 16}}>
-            <Text style={{fontWeight: 'bold'}}>Amount ₹ : </Text>
-            {data.Amount}
-          </Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Text style={{fontSize: 16}}>
+              <Text style={{fontWeight: 'bold'}}>Amount ₹ : </Text>
+              {data.Amount}
+            </Text>
+            {data.IsSilver ? 
+            <Image source={Images.silverCoin} style={{width: 18, height: 18}} /> : null}
+            {data.IsGold ? 
+            <Image source={Images.goldCoin} style={{width: 18, height: 18}} /> : null}
+            {data.IsPlatinum ? 
+            <Image source={Images.coinAmount} style={{width: 18, height: 18}} /> : null}
+          </View>
 
           {/* <Text>Approx Delivery Date: {data.InvoiceNo}|</Text> */}
         </View>
@@ -157,11 +164,12 @@ class POrder extends Component {
           </Text>
 
           <View style={{flexDirection: 'row'}}>
+            {this.props.loginType && this.props.loginType == '1' ? 
             <TouchableOpacity
               style={{borderRadius: 25, width:25, height: 25, backgroundColor: 'red', alignItems: 'center', justifyContent: 'center'}}
               onPress={() => this.props.cancelOrder()}>
               <McIcon name="close" size={18} color={'white'} />
-            </TouchableOpacity>
+            </TouchableOpacity> : null}
             <TouchableOpacity
               style={{paddingHorizontal: 10}}
               onPress={() => this.props.plugOnPress()}>

@@ -123,6 +123,10 @@ export default class UserNavigation extends React.Component {
   }
 
   navigationProductDetail(notif) {
+    console.log(notif);
+    if (notif.type && notif.type === "Offer") {
+      NavigationHelper.navigate(this.props.navigation, 'Offer');
+    }
     if (notif.type && notif.type === 'ProductDetail') {
       const data = {
         Product: '',

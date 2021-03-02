@@ -165,7 +165,7 @@ class Order extends Component {
               onRefresh={this.onRefresh}
             />
           }>
-          {orderItem ? (
+          {userInfo && orderItem ? (
             orderItem.map((res, index) => {
               return (
                 <POrder
@@ -174,6 +174,7 @@ class Order extends Component {
                   onPress={() => this.LeadInfo(res)}
                   plugOnPress={() => this.verifyOrder(res.OrderNo, index)}
                   cancelOrder={()=> this.cancelOrder(res.OrderNo)}
+                  loginType={userInfo.LoginType}
                 />
               );
             })
