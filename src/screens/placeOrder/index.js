@@ -97,6 +97,7 @@ class PlaceOrder extends Component {
     const endPoint = `GetProductList?ProductNo=&Username=${UserName}&WishCart=Cart`;
     const method = 'GET';
     APICaller(`${endPoint}`, method).then(json => {
+      console.log(json,'jsonn');
       if (json.data.Success === 1 || json.data.Success === '1') {
         const productList = {product: json.data.Response};
 

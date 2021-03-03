@@ -6,6 +6,7 @@ import styles from './styles';
 import APICaller from '../../utils/api-caller';
 import {userDashboardEndPoint} from '../../config/api-endpoint';
 import {Color,Images} from '../../common/styles';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 let img;
 const ordTrue = 'green';
@@ -50,22 +51,26 @@ class POrder extends Component {
             <Text style={{fontWeight: 'bold'}}>Order Date : </Text>
             {data.OrderDate}
           </Text>
-          <Text style={{fontSize: 16}}>
-            <Text style={{fontWeight: 'bold'}}>Order No {'    '}: </Text>
-            {data.OrderNo}
-          </Text>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between'}}>
+          <View style={{ flexDirection: 'row',}}>
             <Text style={{fontSize: 16}}>
-              <Text style={{fontWeight: 'bold'}}>Amount ₹ : </Text>
-              {data.Amount}
+              <Text style={{fontWeight: 'bold'}}>Order No {'    '}: </Text>
+              {data.OrderNo}
             </Text>
+            <Text style={{fontWeight: 'bold', color: Color.primary, fontSize: 16}}> | </Text>
+            
             {data.IsSilver ? 
-            <Image source={Images.silverCoin} style={{width: 18, height: 18}} /> : null}
+             <Text style={{fontWeight: 'bold'}}> Silver</Text>: null}
             {data.IsGold ? 
-            <Image source={Images.goldCoin} style={{width: 18, height: 18}} /> : null}
+             <Text style={{fontWeight: 'bold'}}> Gold</Text>: null} 
             {data.IsPlatinum ? 
-            <Image source={Images.coinAmount} style={{width: 18, height: 18}} /> : null}
+            <Text style={{fontWeight: 'bold'}}> Platinum</Text>: null} 
           </View>
+
+          <Text style={{fontSize: 16}}>
+            <Text style={{fontWeight: 'bold'}}>Amount ₹ : </Text>
+              {data.Amount}
+          </Text>
+          
 
           {/* <Text>Approx Delivery Date: {data.InvoiceNo}|</Text> */}
         </View>

@@ -135,7 +135,10 @@ class ComplaintPriceModal extends Component {
               Alert.alert(
                 'Complaint',
                 'Complaint successfully submitted.',
-                [{text: 'OK', onPress: () => this.props.navigation.goBack()}],
+                [{text: 'OK', onPress: () => { 
+                  Events.trigger('systemAdded','refresh');
+                  this.props.navigation.goBack();
+                }}],
                 {cancelable: false},
               );
             }
