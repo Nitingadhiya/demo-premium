@@ -53,7 +53,7 @@ class OrderCancelRemarkModal extends Component {
       });
 
       if (json.data.Success === '1') {
-        this.setState({orderCancelModal: false});
+        this.setState({orderCancelModal: false, orderCancelRemarkText: ''});
         Events.trigger('order-refresh','refresh');
         Alert.alert(`Success`, json.data.Message);
         
