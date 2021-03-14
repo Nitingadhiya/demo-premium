@@ -70,6 +70,10 @@ class POrder extends Component {
             <Text style={{fontWeight: 'bold'}}>Amount ₹ : </Text>
               {data.Amount}
           </Text>
+          <Text style={{fontSize: 16}}>
+            <Text style={{fontWeight: 'bold'}}>Order Assign: </Text>
+              {data.OrderForName}
+          </Text>
           
 
           {/* <Text>Approx Delivery Date: {data.InvoiceNo}|</Text> */}
