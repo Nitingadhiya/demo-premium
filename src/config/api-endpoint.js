@@ -31,8 +31,8 @@ const getServiceEndPoint = tag => `GetService?SystemTag=${tag}`;
 const getBonusEndPoint = tag => `GetBonus?SystemTag=${tag}`;
 const getSystemWarrantyEndPoint = tag => `GetSystem?SystemTag=${tag}`;
 const getDealerImageEndPoint = 'GetDealerImages';
-const fetchProductListEndPoint = (userName,parts,sort, categoryId) =>
-  `GetProductList?ProductNo=&Username=${userName}&WishCart=&Parts=${parts}&Sort=${sort}&Category=${categoryId}`;
+const fetchProductListEndPoint = (userName,parts,sort, categoryId, fromPrice, toPrice) =>
+  `GetProductList?ProductNo=&Username=${userName}&WishCart=&Parts=${parts}&Sort=${sort}&Category=${categoryId}&FromPrice=${fromPrice}&ToPrice=${toPrice}`;
 const getProductDetailsEndPoint = (id, userName) =>
   `GetProductList?ProductNo=${id}&Username=${userName}&WishCart=`;
 const getWishlistEndPoint = userName =>

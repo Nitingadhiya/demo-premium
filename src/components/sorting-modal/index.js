@@ -8,21 +8,17 @@ import {
   TextInput,
   ScrollView
 } from 'react-native';
-import {CommonActions} from '@react-navigation/native';
-import {TextInputView, SpinnerView} from '../../common/components';
-import {MIcon, Ionicons, McIcon} from '../../common/assets/vector-icon';
+import {MIcon, McIcon} from '../../common/assets/vector-icon';
 import {Color, Matrics} from '../../common/styles';
 import styles from './styles';
-import Helper from '../../utils/helper';
 import APICaller from '../../utils/api-caller';
 import {
   getPartWiseFilterEndPoint,
-  getComplaintChargeEndPoint,
 } from '../../config/api-endpoint';
-import NavigationHelper from '../../utils/navigation-helper';
 import Events from '../../utils/events';
-import {useNavigation} from '@react-navigation/native';
-import _ from 'lodash'
+import _ from 'lodash';
+import MultiSlider from '@ptomasroos/react-native-multi-slider';
+
 
 let selectPartArray = [];
 let self;
@@ -37,27 +33,36 @@ class SortModal extends Component {
     filterType:[],
     selectedFilter: null,
     finalSelectedParts: [],
-    selectSorting: null
+    selectSorting: null,
+    minVal: 0,
+    maxVal: 70000,
+    fixedMinVal: 0,
+    fixedMaxVal: 70000
   };
   componentDidMount() {
     self = this;
     Events.on('sortModal', 'sort toggle', res => {
       this.setState({complaintRegisterModal: true});
     });
+
+    const {fromPrice, toPrice} = this.props;
+    if(fromPrice) {
+      this.setState({
+        minVal: fromPrice,
+        maxVal: toPrice || 70000
+      })
+    }
   //  this.fetchPartFilter();
   }
 
   fetchPartFilter() {
     APICaller(getPartWiseFilterEndPoint, 'GET').then(json => {
-      console.log(json,'json')
       this.setState({
         loadingData: false,
       });
       if (json.data) {
         const data = json.data;
-        console.log(data,'data')
         const keys = Object.keys(data);
-        console.log(keys);
         this.setState({
           filterType: keys,
           filterKeyValue: data,
@@ -78,16 +83,35 @@ class SortModal extends Component {
   }
 
   async pressSelectedCheckbox(key) {
-    console.log(key,'key')
     await this.setState({
       selectSorting: key,
-      complaintRegisterModal: false
+      complaintRegisterModal: false,
     });
-    Events.trigger('sorting-filter',key);
+
+    let obj = {
+      key: key,
+      fromPrice: this.state.minVal,
+      toPrice: this.state.maxVal 
+    }
+
+    Events.trigger('sorting-filter',obj);
+  }
+
+  changeSliderValue(val) {
+    this.setState({minVal: val[0], maxVal: val[1]});
+  }
+
+  sliderOneValuesChangeFinish(val) {
+    let obj = {
+      key: this.state.selectSorting,
+      fromPrice: val[0],
+      toPrice: val[1]
+    }
+    Events.trigger('sorting-filter',obj);
   }
 
   render() {
-    const {filterType, complaintRegisterModal, filterKeyValue} = this.state;
+    const {filterType, complaintRegisterModal, filterKeyValue, minVal, maxVal,fixedMinVal, fixedMaxVal} = this.state;
 
     return (
       <View>
@@ -107,6 +131,27 @@ class SortModal extends Component {
                   <MIcon name="close" size={20} color={Color.black} />
                 </TouchableOpacity>
               </View>
+              <View style={{ marginLeft: 10}}>
+              <MultiSlider
+                values={[minVal, maxVal]}
+                allowOverlap={false}
+                snapped
+                minMarkerOverlapDistance={20}
+                onValuesChange={(val)=> this.changeSliderValue(val)}
+                min={fixedMinVal}
+                max={fixedMaxVal}
+                step={1000} 
+                onValuesChangeFinish={(val) => this.sliderOneValuesChangeFinish(val)}
+              />
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 5}}>
+        <View>
+          <Text style={{ color: Color.black30, fontSize: 14}}>Rs.{minVal}</Text>
+        </View>
+        <View>
+          <Text style={{ color: Color.black30, fontSize: 14}}>Rs.{maxVal}</Text>
+        </View>
+      </View>
+      </View>
               {listArray.map((res, index) =>
               <TouchableOpacity style={styles.listView} key={index} onPress={()=> this.pressSelectedCheckbox(res.key)}>
                 <Text style={styles.listViewText}>{res.label}</Text>

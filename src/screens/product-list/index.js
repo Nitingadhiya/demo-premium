@@ -49,6 +49,10 @@ class ProductList extends Component {
   };
 
   async componentDidMount() {
+    
+    this.FromPrice = '';
+    this.ToPrice = '';
+
     const {route} = this.props;
     if (route.params) {
       await this.setState({
@@ -91,7 +95,7 @@ class ProductList extends Component {
         let selectCategoryArray = parts.selectCategoryArray;
         this.categoryId = selectCategoryArray.toString();
       }
-      console.log(parts,'parts')
+
       this.setState({
         categoryFilterValue: parts && parts.categoryName,
         codeId: this.categoryId
@@ -101,8 +105,11 @@ class ProductList extends Component {
       this.getUserInfo();
     });
 
-    Events.on('sorting-filter','filter-sorting', val => {
-      this.sortVal = val;
+    Events.on('sorting-filter','filter-sorting', obj => {
+      this.sortVal = obj.key;
+      this.FromPrice = obj.fromPrice;
+      this.ToPrice = obj.toPrice;
+
       this.getUserInfo();
     });
 
@@ -249,8 +256,7 @@ class ProductList extends Component {
     let parts = this.parts ? this.parts : '';
     let sort = this.sortVal ? this.sortVal : '';
     let categoryId = this.categoryId ? this.categoryId : '';
-    APICaller(fetchProductListEndPoint(userName,parts,sort, categoryId), 'GET').then(json => {
-      console.log(json,'json')
+    APICaller(fetchProductListEndPoint(userName,parts,sort, categoryId, this.FromPrice, this.ToPrice), 'GET').then(json => {
       if (json.data.Success === 1 || json.data.Success === '1') {
         const list = json.data.Response;
         let badgeCount = 0;
@@ -441,7 +447,7 @@ class ProductList extends Component {
   }
 
   renderSortModal = () => {
-    return <SortModal />
+    return <SortModal fromPrice={this.FromPrice} toPrice={this.ToPrice} />
   }
 
   // latestProduct() {
