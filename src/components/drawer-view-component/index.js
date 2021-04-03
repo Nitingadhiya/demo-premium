@@ -182,15 +182,16 @@ class DrawerViewComponent extends Component {
               }
             />
           ) : null}
-          {/* <DrawerItem
+          <DrawerItem
             icon={({color, size}) => (
+              <McIcon name="bookmark-outline" color={color} size={size} />
             )}
             label="Greetings"
             onPress={async () => {
               navigation.closeDrawer();
               NavigationHelper.navigate(navigation, 'Greetings')
             }}
-          /> */}
+          />
           <DrawerItem
             icon={({color, size}) => (
               <McIcon name="bookmark-outline" color={color} size={size} />
