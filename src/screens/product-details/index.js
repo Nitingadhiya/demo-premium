@@ -12,6 +12,7 @@ import {
   LayoutAnimation,
   Image,
   Alert,
+  Share
 } from 'react-native';
 import _ from 'lodash';
 import Carousel from 'react-native-looped-carousel';
@@ -190,6 +191,26 @@ class ProductDetails extends Component {
         </View>
       </View>
     );
+
+    const onShare = async () => {
+      try {
+        const result = await Share.share({
+          message: productDetails.ShareUrl,
+        });
+        if (result.action === Share.sharedAction) {
+          if (result.activityType) {
+            // shared with activity type of result.activityType
+          } else {
+            // shared
+          }
+        } else if (result.action === Share.dismissedAction) {
+          // dismissed
+        }
+      } catch (error) {
+        alert(error.message);
+      }
+    };
+
     const segments = [
       {
         title: 'Specification',
@@ -214,6 +235,11 @@ class ProductDetails extends Component {
         <Appbar.Header style={styles.headerBg}>
           <Appbar.BackAction onPress={() => navigation.goBack()} />
           <Appbar.Content title={'Product Details'} />
+        
+            <Appbar.Action
+              icon="share"
+              onPress={() => onShare()}
+            />
           {userInfo ? (
             <Appbar.Action
               icon={
@@ -236,6 +262,7 @@ class ProductDetails extends Component {
               onPress={() => this.navigateCartList(navigation)}
             />
           ) : null}
+         
         </Appbar.Header>
         <ScrollView style={styles.flex1}>
           <View style={styles.productTitle}>

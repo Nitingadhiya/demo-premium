@@ -331,7 +331,7 @@ class LoginComponent extends Component {
               style={styles.touchDontAccount}
               onPress={() => NavigationHelper.navigate(navigation, 'Register')}>
               <Text style={styles.dontAccText}>Don't have an Account?</Text>
-              <Text style={styles.createAccText}> Create Account</Text>
+              <Text style={[styles.forgotPasswordTouch, styles.createAccText]}> Create Account</Text>
             </TouchableOpacity>
           </View>
 

@@ -675,7 +675,7 @@ class ComplainList extends Component {
           {this.state.userList.map((data, index) => {
             return (
               <Picker.Item
-                label={data.FirstName + ' ' + data.LastName}
+                label={data.UserWithLoginType || data.FirstName + ' ' + data.LastName}
                 value={data.UserName}
                 key={`${index.toString()}`}
               />
