@@ -1,10 +1,10 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, AppState} from 'react-native';
-import {RouteProp} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
-import {Appbar, Avatar, useTheme} from 'react-native-paper';
+import { View, Text, TouchableOpacity, AppState } from 'react-native';
+import { RouteProp } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { Appbar, Avatar, useTheme } from 'react-native-paper';
 import Login from './login';
-import {StackNavigatorParamlist} from './types';
+import { StackNavigatorParamlist } from './types';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Helper from '../utils/helper';
 import enableFontPatch from '../utils/enableFontPatch';
@@ -19,7 +19,7 @@ import MyProfile from './my-profile';
 import Parts from './parts';
 import PlaceOrder from './placeOrder';
 import TeamLocation from './team-location';
-import {SystemVerify} from './system-verify';
+import { SystemVerify } from './system-verify';
 import ChangePassword from './change-password';
 import ServicePackage from './select-serivce-pack';
 import ComplaintList from './complaint-list';
@@ -59,9 +59,9 @@ export default class Splash extends React.Component {
     const data = await Helper.getLocalStorageItem('userInfo');
     if (data) {
       global.userInfo = data;
-      this.setState({userInfo: data, loading: false});
+      this.setState({ userInfo: data, loading: false });
     } else {
-      this.setState({loading: false});
+      this.setState({ loading: false });
     }
     setTimeout(() => {
       ContactsServiceHelper.contactPermission();
@@ -78,11 +78,11 @@ export default class Splash extends React.Component {
     ) {
       Helper.checkAppVersion();
     }
-    this.setState({appState: nextAppState});
+    this.setState({ appState: nextAppState });
   };
 
   render() {
-    const {loading, userInfo} = this.state;
+    const { loading, userInfo } = this.state;
     if (loading) {
       return (
         <View>
@@ -94,14 +94,14 @@ export default class Splash extends React.Component {
       <Stack.Navigator
         headerMode="none"
         screenOptions={{
-          header: ({scene, previous, navigation}) => {
-            const {options} = scene.descriptor;
+          header: ({ scene, previous, navigation }) => {
+            const { options } = scene.descriptor;
             const title =
               options.headerTitle !== undefined
                 ? options.headerTitle
                 : options.title !== undefined
-                ? options.title
-                : scene.route.name;
+                  ? options.title
+                  : scene.route.name;
             if (!options.headerTitle) {
               return null;
             }
@@ -110,7 +110,7 @@ export default class Splash extends React.Component {
               return null;
             }
             return (
-              <Appbar.Header theme={{colors: primary}}>
+              <Appbar.Header theme={{ colors: primary }}>
                 {previous ? (
                   <Appbar.BackAction
                     onPress={navigation.goBack}
@@ -118,7 +118,7 @@ export default class Splash extends React.Component {
                   />
                 ) : (
                   <TouchableOpacity
-                    style={{marginLeft: 10}}
+                    style={{ marginLeft: 10 }}
                     onPress={() => {
                       // ((navigation as any) as DrawerNavigationProp<{}>).openDrawer();
                     }}>
@@ -135,7 +135,7 @@ export default class Splash extends React.Component {
                   title={
                     title === 'Feed' ? (
                       <MaterialCommunityIcons
-                        style={{marginRight: 10}}
+                        style={{ marginRight: 10 }}
                         name="twitter"
                         size={40}
                         color={primary}
@@ -154,116 +154,117 @@ export default class Splash extends React.Component {
             );
           },
         }}>
+
         {!userInfo ? <Stack.Screen name="Login" component={Login} /> : null}
 
         <Stack.Screen name="UserNavigation" component={UserNavigation} />
         <Stack.Screen
           name="ProductListScreen"
           component={ProductList}
-          options={{headerTitle: 'Tweet'}}
+          options={{ headerTitle: 'Tweet' }}
         />
 
         <Stack.Screen
           name="Register"
           component={Register}
-          options={{headerTitle: 'Register'}}
+          options={{ headerTitle: 'Register' }}
         />
         <Stack.Screen
           name="ForgotPassword"
           component={ForgotPassword}
-          options={{headerTitle: 'Forgot Password'}}
+          options={{ headerTitle: 'Forgot Password' }}
         />
         <Stack.Screen
           name="OTPScreen"
           component={OTPScreen}
-          options={{headerTitle: 'Verify OTP'}}
+          options={{ headerTitle: 'Verify OTP' }}
         />
         <Stack.Screen
           name="SubmitComplaint"
           component={SubmitComplaint}
-          options={{headerTitle: 'Submit Complaint'}}
+          options={{ headerTitle: 'Submit Complaint' }}
         />
         <Stack.Screen
           name="AddSystem"
           component={AddSystem}
-          options={{headerTitle: 'Add System'}}
+          options={{ headerTitle: 'Add System' }}
         />
         <Stack.Screen
           name="ProductDetails"
           component={ProductDetails}
-          options={{headerTitle: 'Product Details'}}
+          options={{ headerTitle: 'Product Details' }}
           headerMode="none"
         />
         <Stack.Screen
           name="MyProfile"
           component={MyProfile}
-          options={{headerTitle: 'Profile'}}
+          options={{ headerTitle: 'Profile' }}
           headerMode="none"
         />
         <Stack.Screen
           name="Parts"
           component={Parts}
-          options={{headerTitle: 'System Parts'}}
+          options={{ headerTitle: 'System Parts' }}
         />
         <Stack.Screen
           name="PlaceOrder"
           component={PlaceOrder}
-          options={{headerTitle: 'Place Order'}}
+          options={{ headerTitle: 'Place Order' }}
         />
         <Stack.Screen
           name="TeamLocation"
           component={TeamLocation}
-          options={{headerTitle: 'Location'}}
+          options={{ headerTitle: 'Location' }}
         />
         <Stack.Screen
           name="SystemVerify"
           component={SystemVerify}
-          options={{headerTitle: 'System Verify'}}
+          options={{ headerTitle: 'System Verify' }}
         />
         <Stack.Screen
           name="ChangePassword"
           component={ChangePassword}
-          options={{headerTitle: 'Change Password'}}
+          options={{ headerTitle: 'Change Password' }}
         />
         <Stack.Screen
           name="ServicePackage"
           component={ServicePackage}
-          options={{headerTitle: 'Select Service Pack'}}
+          options={{ headerTitle: 'Select Service Pack' }}
         />
         <Stack.Screen
           name="ComplaintList"
           component={ComplaintList}
-          options={{headerTitle: 'Complaint list'}}
+          options={{ headerTitle: 'Complaint list' }}
         />
         <Stack.Screen
           name="EditProfile"
           component={EditProfile}
-          options={{headerTitle: 'Edit Profile'}}
+          options={{ headerTitle: 'Edit Profile' }}
         />
         <Stack.Screen
           name="OrderReady"
           component={OrderReady}
-          options={{headerTitle: 'Order Ready'}}
+          options={{ headerTitle: 'Order Ready' }}
         />
         <Stack.Screen
           name="UpdateAddress"
           component={UpdateAddress}
-          options={{headerTitle: 'Update address'}}
+          options={{ headerTitle: 'Update address' }}
         />
         <Stack.Screen
           name="SignatureCapture"
           component={SignCapture}
-          options={{headerTitle: 'Signature Capture'}}
+          options={{ headerTitle: 'Signature Capture' }}
         />
         <Stack.Screen
           name="ComponentRequest"
           component={ComponentRequest}
-          options={{headerTitle: 'Component Request'}}
+          options={{ headerTitle: 'Component Request' }}
         />
         <Stack.Screen
           name="TeamComponentStock"
           component={TeamComponentStock}
-          options={{headerTitle: 'Team Component Stock'}}
+          options={{ headerTitle: 'Team Component Stock' }}
         />
         <Stack.Screen
           name="OTPListInhandInventory"

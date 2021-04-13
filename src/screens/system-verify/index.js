@@ -1,5 +1,5 @@
 // LIBRARIES
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Text,
   View,
@@ -21,11 +21,11 @@ import QRCodeScanner from 'react-native-qrcode-scanner';
 import _ from 'lodash';
 // ASSETS
 import CodeInput from 'react-native-confirmation-code-input';
-import {Color, Matrics} from '../../common/styles';
+import { Color, Matrics } from '../../common/styles';
 import APICaller from '../../utils/api-caller';
 import Events from '../../utils/events';
 import Helper from '../../utils/helper';
-import {Header, SpinnerView} from '../../common/components';
+import { Header, SpinnerView } from '../../common/components';
 import SystemVerifyWithQRCode from '../../components/system-verify-qr-code';
 import NavigationHelper from '../../utils/navigation-helper';
 
@@ -71,14 +71,14 @@ export class SystemVerify extends Component {
     });
   }
 
-  onSuccess(e) {
-    if (e.data) {
-      const url = e.data;
-      this.setState({qrCode: false});
-      const result = url.replace(/(^\w+:|^)\/\//, '');
-      this.qrcodeVerify(result);
-    }
-  }
+  // onSuccess(e) {
+  //   if (e.data) {
+  //     const url = e.data;
+  //     this.setState({ qrCode: false });
+  //     const result = url.replace(/(^\w+:|^)\/\//, '');
+  //     this.qrcodeVerify(result);
+  //   }
+  // }
 
   makeSlideOutTranslation(translationType, fromValue) {
     return {
@@ -92,6 +92,7 @@ export class SystemVerify extends Component {
   }
 
   qrcodeVerify(result) {
+    //console.log(result);
     this.setState({
       loadingData: true,
     });
@@ -146,7 +147,7 @@ export class SystemVerify extends Component {
   }
 
   onFinishCheckingCode(valid) {
-    this.setState({loadingData: true});
+    this.setState({ loadingData: true });
     const endPoint = `UploadVerifyImage`;
     const formData = {
       FileContents: this.media.data,
@@ -155,7 +156,7 @@ export class SystemVerify extends Component {
     };
 
     APICaller(`${endPoint}`, 'POST', JSON.stringify(formData)).then(json => {
-      this.setState({loadingData: false});
+      this.setState({ loadingData: false });
       if (json.data.Success === 1 || json.data.Success === '1') {
         NavigationHelper.navigate(this.props.navigation, 'Dashboard');
       } else {
@@ -165,9 +166,9 @@ export class SystemVerify extends Component {
   }
 
   render() {
-    const {loadingData, cameraOpen, validateError} = this.state;
+    const { loadingData, cameraOpen, validateError } = this.state;
     return (
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <Header title="System Verify" left="menu" />
         {loadingData ? (
           <View style={styles.spinnerView}>
@@ -195,7 +196,7 @@ export class SystemVerify extends Component {
             </TouchableOpacity>
           </View>
         ) : null} */}
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           {this.state.systemOTP && !loadingData ? (
             <View
               style={{
@@ -205,8 +206,8 @@ export class SystemVerify extends Component {
                 marginTop: 10,
               }}>
               <Image
-                source={{uri: this.state.imageData}}
-                style={{height: 150, width: 150}}
+                source={{ uri: this.state.imageData }}
+                style={{ height: 150, width: 150 }}
               />
               <CodeInput
                 ref="codeInputRef2"
@@ -222,14 +223,14 @@ export class SystemVerify extends Component {
                 containerStyle={{
                   marginTop: 10,
                 }}
-                codeInputStyle={{borderWidth: 1.5}}
+                codeInputStyle={{ borderWidth: 1.5 }}
               />
             </View>
           ) : null}
         </View>
         <SystemVerifyWithQRCode userInfo={userInfo} />
 
-        <Text style={{marginBottom: 10, fontSize: 14, fontWeight: 'bold'}}>
+        <Text style={{ marginBottom: 10, fontSize: 14, fontWeight: 'bold' }}>
           {validateError}
         </Text>
         <TouchableOpacity
@@ -241,7 +242,7 @@ export class SystemVerify extends Component {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <Text style={{color: '#fff', fontSize: 14}}>Retry, Scan QR-Code</Text>
+          <Text style={{ color: '#fff', fontSize: 14 }}>Retry, Scan QR-Code</Text>
         </TouchableOpacity>
       </SafeAreaView>
     );
@@ -282,7 +283,7 @@ const styles = StyleSheet.create({
     height: Matrics.ScaleValue(50),
     justifyContent: 'space-between',
     shadowColor: 'red',
-    shadowOffset: {width: 0, height: 0},
+    shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.75,
     shadowRadius: 15,
     elevation: 1,
@@ -336,7 +337,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 
-  centerText: {fontSize: 18, textAlign: 'center', color: '#fff'},
+  centerText: { fontSize: 18, textAlign: 'center', color: '#fff' },
   rectangleContainer: {
     flex: 1,
     alignItems: 'center',

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   SafeAreaView,
   View,
@@ -14,15 +14,17 @@ import {
   validateOtpEndPoint,
   resendOTPEndPoint,
 } from '../../config/api-endpoint';
-import {Header, SpinnerView} from '../../common/components';
+import { Header, SpinnerView } from '../../common/components';
 import styles from './styles';
-import {Color, Matrics} from '../../common/styles';
+import { Color, Matrics } from '../../common/styles';
 import Events from '../../utils/events';
 import Helper from '../../utils/helper';
 import NavigationHelper from '../../utils/navigation-helper';
-import {TouchableOpacity} from 'react-native';
-import {MIcon} from '../../common/assets/vector-icon';
+import { TouchableOpacity } from 'react-native';
+import { MIcon } from '../../common/assets/vector-icon';
 import Spinner from 'react-native-spinkit';
+import { color } from 'react-native-reanimated';
+import { Linking } from 'react-native';
 
 class OTPScreen extends Component {
   state = {
@@ -30,7 +32,7 @@ class OTPScreen extends Component {
     loading: false,
   };
   componentDidMount() {
-    const {params} = this.props.route;
+    const { params } = this.props.route;
     if (params && params.mobileNo) {
       this.setState({
         mobileNo: params.mobileNo,
@@ -59,7 +61,7 @@ class OTPScreen extends Component {
   otpHandler = message => {
     console.log('OTP handler');
     const otp = /(\d{6})/g.exec(message)[1];
-    this.setState({otpText: otp});
+    this.setState({ otpText: otp });
     this.onFinishCheckingCode(otp);
     // RNOtpVerify.removeListener();
     Keyboard.dismiss();
@@ -70,10 +72,10 @@ class OTPScreen extends Component {
   }
 
   onFinishCheckingCode(valid) {
-    this.setState({loadingData: true});
+    this.setState({ loadingData: true });
     APICaller(validateOtpEndPoint(this.state.mobileNo, valid), 'GET').then(
       json => {
-        this.setState({loadingData: false});
+        this.setState({ loadingData: false });
         if (json.data.Success === 1 || json.data.Success === '1') {
           const userInfo = json.data.Response;
           Helper.setLocalStorageItem('userInfo', userInfo);
@@ -92,12 +94,12 @@ class OTPScreen extends Component {
   }
 
   loadingView(loading) {
-    this.setState({loading});
+    this.setState({ loading });
   }
 
   resendOTP = () => {
     this.loadingView(true);
-    const {mobileNo} = this.state;
+    const { mobileNo } = this.state;
     APICaller(resendOTPEndPoint(mobileNo), 'GET').then(json => {
       this.loadingView(false);
       if (Helper.responseSuccess(json)) {
@@ -127,14 +129,14 @@ class OTPScreen extends Component {
   };
 
   renderSpinner = () => {
-    const {loading} = this.state;
+    const { loading } = this.state;
     if (!loading) return;
     return <SpinnerView color={Color.primary} />;
   };
 
   render() {
     return (
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <Header title="Verify otp" left="back" />
         {this.renderSpinner()}
         <View
@@ -144,20 +146,28 @@ class OTPScreen extends Component {
             alignItems: 'center',
             flex: 1,
           }}>
-          <CodeInput
-            ref="codeInputRef2"
-            keyboardType="numeric"
-            codeLength={6}
-            activeColor="rgba(57,49,132, 1)"
-            inactiveColor="rgba(57,49,132, 0.5)"
-            autoFocus
-            ignoreCase
-            inputPosition="center"
-            size={Matrics.screenWidth / 8}
-            onFulfill={isValid => this.onFinishCheckingCode(isValid)}
-            containerStyle={{marginTop: -50, alignItems: 'center'}}
-            codeInputStyle={{borderWidth: 1.5}}
-          />
+
+
+          <View style={{ height: 80 }}>
+            <CodeInput
+              ref="codeInputRef2"
+              keyboardType="numeric"
+              codeLength={6}
+              activeColor="rgba(57,49,132, 1)"
+              inactiveColor="rgba(57,49,132, 0.5)"
+              autoFocus
+              ignoreCase
+              inputPosition="center"
+              size={Matrics.screenWidth / 8}
+              onFulfill={isValid => this.onFinishCheckingCode(isValid)}
+              containerStyle={{ marginTop: -50, alignItems: 'center' }}
+              codeInputStyle={{ borderWidth: 1.5 }}
+            />
+            <Text style={{ color: Color.primary, fontSize: 14, fontWeight: 'bold', textAlign: 'center' }} onPress={() => {
+              Linking.openURL('tel:+919033685001');
+            }}>Call :- +919033685001</Text>
+            <Text style={{ color: Color.black30, fontSize: 14, textAlign: 'center' }}>Account activate or verification </Text>
+          </View>
         </View>
         {this.renderResendOTP()}
         <View style={styles.lastLineScreen}>

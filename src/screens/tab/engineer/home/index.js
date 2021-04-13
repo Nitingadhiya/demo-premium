@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   View,
   Text,
@@ -7,9 +7,9 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
-import {VersionNumber} from '../../../../package';
+import { VersionNumber } from '../../../../package';
 import APICaller from '../../../../utils/api-caller';
-import {userDashboardEndPoint} from '../../../../config/api-endpoint';
+import { userDashboardEndPoint, getUserProfileEndPoint } from '../../../../config/api-endpoint';
 import Helper from '../../../../utils/helper';
 import Events from '../../../../utils/events';
 import LocationServiceHelper from '../../../../utils/geo-location';
@@ -54,6 +54,27 @@ export default class Dashboard extends Component {
     this.userDashboard(userInfo.UserName);
   }
 
+  getUserDetails() {
+    if (!global.userInfo.UserName) {
+      Alert.alert('Invalid username');
+      return;
+    }
+    APICaller(getUserProfileEndPoint(global.userInfo.UserName), 'GET').then(json => {
+      // console.log(json);
+      if (json.data.Success === '1') {
+        var userInfo = json.data.Response;
+        this.setState({
+          userInfo: userInfo,
+        });
+        Helper.setLocalStorageItem('userInfo', userInfo);
+      } else {
+        this.setState({
+          loginError: json.data.Message,
+        });
+      }
+    });
+  }
+
   userDashboard(userName) {
     this.setState({
       loadingData: true,
@@ -78,6 +99,7 @@ export default class Dashboard extends Component {
           if (key === 'length' || !systmDescription.hasOwnProperty(key))
             continue;
           var value = systmDescription[key];
+          console.log(systmDescription);
           arrSystem.push({
             key: key,
             amount: value[0].Amount,
@@ -92,12 +114,13 @@ export default class Dashboard extends Component {
     });
   }
   _onRefresh = () => {
-    this.setState({refreshing: true});
+    this.setState({ refreshing: true });
+    this.getUserDetails();
     this.userDashboard(this.state.userInfo.UserName);
   };
 
   render() {
-    const {navigation} = this.props;
+    const { navigation } = this.props;
     const {
       userInfo,
       refreshing,
@@ -120,7 +143,7 @@ export default class Dashboard extends Component {
           <Text>Schedule everRunning job</Text>
         </TouchableOpacity> */}
         <ScrollView
-          style={{flex: 1}}
+          style={{ flex: 1 }}
           refreshControl={
             <RefreshControl
               refreshing={this.state.refreshing}
@@ -141,13 +164,13 @@ export default class Dashboard extends Component {
                 Suggestion: (Gujarati Suggestion)
               </Text>
             </View>
-            <View style={{height: 10}} />
+            <View style={{ height: 10 }} />
             {!refreshing ?
-            <TeamComplaintOverview text="Your Complaint Overview" /> :null }
+              <TeamComplaintOverview text="Your Complaint Overview" /> : null}
             {!refreshing ?
-            <TeamTasksOverview text="Your Work Task Overview" />: null}
+              <TeamTasksOverview text="Your Work Task Overview" /> : null}
           </View>
-          <View style={{flex: 1, alignItems: 'center', marginBottom: 10}}>
+          <View style={{ flex: 1, alignItems: 'center', marginBottom: 10 }}>
             <TouchableOpacity style={styles.TouchBTN}>
               <Text style={styles.dashBtnText}>Complaint Close</Text>
             </TouchableOpacity>

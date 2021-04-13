@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   View,
   Text,
@@ -7,10 +7,10 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
-import {VersionNumber} from '../../../../package';
+import { VersionNumber } from '../../../../package';
 
 import APICaller from '../../../../utils/api-caller';
-import {userDashboardEndPoint} from '../../../../config/api-endpoint';
+import { userDashboardEndPoint, getUserProfileEndPoint } from '../../../../config/api-endpoint';
 import Helper from '../../../../utils/helper';
 import Events from '../../../../utils/events';
 
@@ -54,7 +54,29 @@ export default class Dashboard extends Component {
     this.setState({
       userInfo,
     });
+    global.userInfo = userInfo;
     this.userDashboard(userInfo.UserName);
+  }
+
+  getUserDetails() {
+    if (!global.userInfo.UserName) {
+      Alert.alert('Invalid username');
+      return;
+    }
+    APICaller(getUserProfileEndPoint(global.userInfo.UserName), 'GET').then(json => {
+      // console.log(json);
+      if (json.data.Success === '1') {
+        var userInfo = json.data.Response;
+        this.setState({
+          userInfo: userInfo,
+        });
+        Helper.setLocalStorageItem('userInfo', userInfo);
+      } else {
+        this.setState({
+          loginError: json.data.Message,
+        });
+      }
+    });
   }
 
   userDashboard(userName) {
@@ -88,12 +110,13 @@ export default class Dashboard extends Component {
   }
 
   _onRefresh = () => {
-    this.setState({refreshing: true});
+    this.setState({ refreshing: true });
     this.userDashboard(this.state.userInfo.UserName);
+    this.getUserDetails();
   };
 
   render() {
-    const {navigation} = this.props;
+    const { navigation } = this.props;
     const {
       userInfo,
       refreshing,
@@ -111,7 +134,7 @@ export default class Dashboard extends Component {
         ) : null}
         {updateAvailable ? <UpdateAvailableView /> : null}
         <ScrollView
-          style={{flex: 1}}
+          style={{ flex: 1 }}
           refreshControl={
             <RefreshControl
               refreshing={this.state.refreshing}
@@ -126,12 +149,12 @@ export default class Dashboard extends Component {
                 Star
               </Text>
             </View>
-            <View style={{height: 10}} />
+            <View style={{ height: 10 }} />
             {!refreshing ?
-            <TeamComplaintOverview text="Today Team Complaints Overview" /> : null}
-            {!refreshing ?<TeamTasksOverview text="Today Work Task Overview" /> : null }
+              <TeamComplaintOverview text="Today Team Complaints Overview" /> : null}
+            {!refreshing ? <TeamTasksOverview text="Today Work Task Overview" /> : null}
           </View>
-          <View style={{flex: 1, alignItems: 'center'}}>
+          <View style={{ flex: 1, alignItems: 'center' }}>
             <TouchableOpacity style={styles.TouchBTN}>
               <Text style={styles.dashBtnText}>Ready Orders</Text>
             </TouchableOpacity>
