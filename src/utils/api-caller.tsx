@@ -1,7 +1,19 @@
 import axios from 'axios';
 import BasicURL from '../config';
+import Helper from './helper';
 
-const APICaller = (endPoint, method, body) => {
+const APICaller = async (endPoint, method, body) => {
+  let apiEnd = endPoint;
+  let splitQue = endPoint.split('?');
+  const userInfo = await Helper.getLocalStorageItem('userInfo');
+  if(userInfo) {
+    if(splitQue.length > 0) { 
+      endPoint = apiEnd+'&LoginUserId='+userInfo.UserName;
+    } else {
+      endPoint = apiEnd+'?LoginUserId='+userInfo.UserName;
+    }
+  }
+
   return axios({
     method: method || 'get',
     url: `${BasicURL.path}/${endPoint}`,
