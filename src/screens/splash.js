@@ -38,6 +38,8 @@ import ContactList from './contact-list';
 import ContactsServiceHelper from '../utils/contacts';
 import ComplaintBooking from './complaint-booking';
 import Greetings from './greetings';
+import Events from '../utils/events';
+import NavigationHelper from '../utils/navigation-helper';
 
 type Props = {
   route: RouteProp<StackNavigatorParamlist, 'Splash'>,
@@ -66,6 +68,14 @@ export default class Splash extends React.Component {
     setTimeout(() => {
       ContactsServiceHelper.contactPermission();
     }, 2000);
+
+    Events.on('unAuthorize','logout-action',()=>{
+      global.logoutAction = false;
+      Events.trigger('gesture-manage');
+      Helper.removeLocalStorage('userInfo');
+      NavigationHelper.reset(this.props.navigation, 'Splash');
+    })
+
   }
   componentWillUnmount() {
     AppState.removeEventListener('change', this.handleAppStateChange);

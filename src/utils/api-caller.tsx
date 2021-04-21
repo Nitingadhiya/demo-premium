@@ -1,13 +1,18 @@
 import axios from 'axios';
 import BasicURL from '../config';
 import Helper from './helper';
+import _ from 'lodash';
+import Events from './events';
 
 const APICaller = async (endPoint, method, body) => {
+  // const navigation = useNavigation();
+
   let apiEnd = endPoint;
   let splitQue = endPoint.split('?');
   const userInfo = await Helper.getLocalStorageItem('userInfo');
   if(userInfo) {
-    if(splitQue.length > 0) { 
+   
+    if(splitQue.length > 1) { 
       endPoint = apiEnd+'&LoginUserId='+userInfo.UserName;
     } else {
       endPoint = apiEnd+'?LoginUserId='+userInfo.UserName;
@@ -24,8 +29,21 @@ const APICaller = async (endPoint, method, body) => {
     responseType: 'json',
   })
     .then(response => {
-      console.log(response);
-      return response;
+      const dataSuccess = _.get(response,'data.Success','');
+      if(dataSuccess == 401 || dataSuccess == '401') {
+       
+        if(!global.logoutAction || global.logoutAction == null || global.logoutAction == false) {
+          global.logoutAction = true;
+          setTimeout(()=>{
+              Events.trigger('unAuthorize');
+          },4000);
+        }
+       
+        return response;
+      } else {
+        return response;
+      }
+      
     })
     .catch(error => {
       //console.log(error.response);
