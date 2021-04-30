@@ -12,7 +12,7 @@ import {Message} from '../message';
 import {StackNavigatorParamlist} from '../types';
 import Offer from '../offer';
 import ComplainList from '../complaint-list';
-import WishList from '../wish-list';
+import ProductList from '../product-list';
 import Order from '../order';
 import ChatList from '../chat-list';
 
@@ -72,17 +72,17 @@ export const AdminBottomTabs = (props: Props) => {
           name="ComplaintList"
           component={ComplainList}
           options={{
-            tabBarIcon: 'format-list-bulleted',
+            tabBarIcon: 'ticket-outline',
             tabBarLabel: 'Complaint',
             tabBarColor,
           }}
         />
         <Tab.Screen
-          name="WishList"
-          component={WishList}
+          name="ProductList"
+          component={ProductList}
           options={{
-            tabBarIcon: 'binoculars',
-            tabBarLabel: 'Wishlist',
+            tabBarIcon: 'format-list-bulleted',
+            tabBarLabel: 'Product List',
             tabBarColor,
           }}
         />

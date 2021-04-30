@@ -27,6 +27,8 @@ import EditProfile from './edit-profile';
 import OrderReady from './order-ready';
 import UpdateAddress from './update-address';
 import ProductList from '../screens/product-list';
+import WishList from '../screens/wish-list';
+
 import SignCapture from './signature-capture';
 import ComponentRequest from './component-request';
 import TeamComponentStock from './team-component-stock';
@@ -294,6 +296,11 @@ export default class Splash extends React.Component {
 
         <Stack.Screen name="ComplaintBooking" component={ComplaintBooking} />
         <Stack.Screen name="Greetings" component={Greetings} />
+        <Stack.Screen
+          name="WishList"
+          component={WishList}
+          options={{ headerTitle: 'WishList' }}
+        />
         {/* <Stack.Screen
           name="Details"
           component={Details}

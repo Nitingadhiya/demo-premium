@@ -68,6 +68,7 @@ class ProductDetails extends Component {
         // console.log(json, 'json');
         if (json.data.Success === 1 || json.data.Success === '1') {
           const res = json.data.Response[0];
+          console.log('res',res);
           this.setState({
             productDetails: res,
             loadingData: false,
@@ -113,6 +114,7 @@ class ProductDetails extends Component {
       insertWishCartEndPoint(item.ProductNo, userInfo.UserName, type),
       'GET',
     ).then(json => {
+      console.log(json,'json');
       if (json.data.Success === 1 || json.data.Success === '1') {
         let productDetails = this.state.productDetails;
         productDetails.Wish = true;

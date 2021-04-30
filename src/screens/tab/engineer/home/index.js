@@ -23,6 +23,7 @@ import {
 import TeamComplaintOverview from '../../../../components/team-complaints-overview';
 import TeamTasksOverview from '../../../../components/team-tasks-overview';
 import NavigationHelper from '../../../../utils/navigation-helper';
+import LocationApprovedModal from '../../../../components/location-approved-modal';
 
 export default class Dashboard extends Component {
   state = {
@@ -43,6 +44,7 @@ export default class Dashboard extends Component {
     });
     Helper.checkUpdateAvailable();
     setTimeout(() => LocationServiceHelper.getLocation(), 1000);
+    Events.trigger('location-modal');
   }
 
   async getUserInfo() {
@@ -207,6 +209,7 @@ export default class Dashboard extends Component {
               }>
               <Text style={styles.dashBtnText}>Components Re-stocks</Text>
             </TouchableOpacity>
+            <LocationApprovedModal />
           </View>
         </ScrollView>
       </SafeAreaView>

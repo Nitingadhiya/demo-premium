@@ -258,6 +258,7 @@ class ProductList extends Component {
     let categoryId = this.categoryId ? this.categoryId : '';
     APICaller(fetchProductListEndPoint(userName,parts,sort, categoryId, this.FromPrice, this.ToPrice), 'GET').then(json => {
       if (json.data.Success === 1 || json.data.Success === '1') {
+        console.log(json,'json');
         const list = json.data.Response;
         let badgeCount = 0;
         list.some(res => {
@@ -295,6 +296,7 @@ class ProductList extends Component {
       insertWishCartEndPoint(item.ProductNo, userInfo.UserName, type),
       'GET',
     ).then(json => {
+      console.log(json);
       if (json.data.Success === 1 || json.data.Success === '1') {
         //const cartCount = json.data.Response.length;
         this.fetchProductList(userInfo.UserName);
