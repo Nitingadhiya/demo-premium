@@ -97,7 +97,7 @@ class LoginComponent extends Component {
 
     // User Login API
     APICaller(userLoginEndPoint(email, password), 'GET').then(async json => {
-      console.log(json, 'json');
+      console.log(json, 'json ************');
       this.setState({loadingData: false});
       if (json.data.Success === '1') {
         const userInfo = json.data.Response;

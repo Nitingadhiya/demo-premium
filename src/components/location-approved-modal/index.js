@@ -4,25 +4,38 @@ import {
   View,
   TouchableOpacity,
   Modal,
-  ScrollView,
-  Alert,
 } from 'react-native';
-import {MIcon} from '../../common/assets/vector-icon';
 import styles from './styles';
-import APICaller from '../../utils/api-caller';
-import {getBonusEndPoint} from '../../config/api-endpoint';
 import Events from '../../utils/events';
+import GPSState from 'react-native-gps-state';
+import { Image } from 'react-native';
+import { Images } from '../../common/styles';
 
+let modalOpen = false;
 class LocationApprovedModal extends Component {
   state = {
-    bonusModal: false,
+    visible: false,
     bonusList: null,
+    type:''
   };
   componentDidMount() {
-    Events.on('location-modal', 'location', res => {
+    Events.on('location-modal-toggle', 'location', res => {
+     if( modalOpen ==  false && res.visible){
       this.setState({
-        bonusModal: true,
+        visible: true,
+        type: res.type
       });
+      modalOpen = true;
+      } 
+      else if(modalOpen ==  true && !res.visible) {
+      this.setState({
+        visible: false,
+        type: res.type
+      });
+
+      modalOpen = false;
+     }
+     
     });
   }
 
@@ -30,24 +43,46 @@ class LocationApprovedModal extends Component {
     this.setState({bonusModal: bool});
   }
 
+  openSettingMenu () {
+    
+    const {type} = this.state;
+    if(type == 'open_setting' || type == 'ask_permission')
+    GPSState.openLocationSettings();
+    if(type == 'denied') {
+      GPSState.openAppDetails();
+    }
+    GPSState.openLocationSettings();
+  }
+
+  renderText () {
+    const {type} = this.state;
+    if(type == 'open_setting')
+    return 'OPEN SETTINGS';
+    if(type == 'denied') return "ALLOW LOCATION";
+    return "ALLOW LOCATION";
+   }
+
   render() {
-    const {bonusModal, bonusList} = this.state;
+    const {visible, bonusList} = this.state;
   
     return (
       <View>
         <Modal
           animationType="slide"
           transparent={false}
-          visible={true}
+          visible={visible}
           onRequestClose={() => this.modalShowHide(false)}>
           <View style={styles.container}>
             <View style={styles.flexView}>
               <View style={styles.viewFlex}>
                 <View style={styles.locationFlex}>
-                  <Text>Allow Location</Text>
+                    <Image source={Images.AppIcon} style={{width: 60, height: 60}} />
+                  <Text style={styles.locationPermissionText}>Location Permission Required</Text>
+                  <Text style={styles.descriptionText}>Allow Premium Sales Corportation to automatically detect your current location to show you near by complaints</Text>
+                  <Text>To enable, go to Settings and turn on Location / Allow location permission.</Text>
                 </View>
-                <TouchableOpacity style={styles.locationAllow}>
-                  <Text style={styles.locationAllowText}>ALLOW</Text>
+                <TouchableOpacity style={styles.locationAllow} onPress={()=> this.openSettingMenu()}>
+                  <Text style={styles.locationAllowText}>{this.renderText()}</Text>
                 </TouchableOpacity>
               </View>
             </View>

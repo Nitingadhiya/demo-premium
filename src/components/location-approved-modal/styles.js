@@ -40,7 +40,7 @@ export default styles = {
     justifyContent: 'flex-end'
   },
   locationAllow: {
-    height: Matrics.ScaleValue(50),
+    height: Matrics.ScaleValue(60),
     backgroundColor: Color.primary,
     width: Matrics.screenWidth,
     justifyContent: 'center',
@@ -55,6 +55,22 @@ export default styles = {
   locationFlex:{
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    padding: 40
+  },
+  locationPermissionText: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: 'black',
+    marginBottom: 20
+  },
+  descriptionText: {
+    marginBottom: 40,
+    color: Color.black70,
+    fontSize: 14
+  },
+  settingText: {
+    color: Color.black,
+    fontSize: 16
   }
 };

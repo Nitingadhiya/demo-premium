@@ -24,6 +24,7 @@ import TeamComplaintOverview from '../../../../components/team-complaints-overvi
 import TeamTasksOverview from '../../../../components/team-tasks-overview';
 import NavigationHelper from '../../../../utils/navigation-helper';
 import LocationApprovedModal from '../../../../components/location-approved-modal';
+import LocationChecker from '../../../../utils/location-checker';
 
 export default class Dashboard extends Component {
   state = {
@@ -43,8 +44,13 @@ export default class Dashboard extends Component {
       });
     });
     Helper.checkUpdateAvailable();
-    setTimeout(() => LocationServiceHelper.getLocation(), 1000);
-    Events.trigger('location-modal');
+    console.log("TWW")
+    //  setTimeout(() =>{alert("ASd"); LocationServiceHelper.getLocation();}, 1000);
+     LocationServiceHelper.getLocation();
+     LocationChecker.checkParticualrLocation();
+  //  setTimeout(() => {
+  //    LocationChecker.checkLocationPermission(),1000
+  //   });
   }
 
   async getUserInfo() {

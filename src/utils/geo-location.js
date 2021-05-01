@@ -1,5 +1,6 @@
 import {Platform, PermissionsAndroid, ToastAndroid} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
+import LocationChecker from './location-checker';
 
 const LocationServiceHelper = {
   async hasLocationPermissionMethod() {
@@ -28,6 +29,7 @@ const LocationServiceHelper = {
         ToastAndroid.LONG,
       );
     }
+    LocationChecker.checkLocationPermission();
     return false;
   },
   async getLocation() {

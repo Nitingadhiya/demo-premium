@@ -42,6 +42,7 @@ import ComplaintBooking from './complaint-booking';
 import Greetings from './greetings';
 import Events from '../utils/events';
 import NavigationHelper from '../utils/navigation-helper';
+import LocationChecker from '../utils/location-checker';
 
 type Props = {
   route: RouteProp<StackNavigatorParamlist, 'Splash'>,
@@ -83,12 +84,18 @@ export default class Splash extends React.Component {
     AppState.removeEventListener('change', this.handleAppStateChange);
   }
 
-  handleAppStateChange = nextAppState => {
+  handleAppStateChange = async nextAppState => {
     if (
       this.state.appState.match(/inactive|background/) &&
       nextAppState === 'active'
     ) {
-      Helper.checkAppVersion();
+       Helper.checkAppVersion();
+       const userinfo = await Helper.getLocalStorageItem('userInfo');
+       console.log(userinfo,'userinfo');
+       if(userInfo.LoginType == "Engineer" || userInfo.LoginType == "3" || userInfo.LoginType == 3) {
+        console.log('userinfo))))))))))))))))))))))');
+          LocationChecker.checkLocationPermission();
+       }
     }
     this.setState({ appState: nextAppState });
   };
