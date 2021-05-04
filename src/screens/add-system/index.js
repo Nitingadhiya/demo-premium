@@ -20,6 +20,7 @@ import NavigationHelper from '../../utils/navigation-helper';
 import {SpinnerView, TextInputView, Header} from '../../common/components';
 import { Color, Matrics } from '../../common/styles';
 import {MIcon} from "../../common/assets/vector-icon"
+import { ScrollView } from 'react-native-gesture-handler';
 
 class AddSystem extends Component {
   state = {
@@ -180,7 +181,8 @@ class AddSystem extends Component {
             
           </View>
         </View>
-        <View style={styles.container}>
+        <ScrollView style={{ flex: 1}} keyboardShouldPersistTaps={'handled'}>
+          <View style={styles.container}>
           <View style={styles.viewItemTypeText}>
             <Text>Enter Item Type</Text>
           </View>
@@ -245,6 +247,7 @@ class AddSystem extends Component {
             </TouchableOpacity>
           </View>
         </View>
+        </ScrollView>
       </SafeAreaView>
     );
   }

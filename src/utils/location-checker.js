@@ -13,6 +13,8 @@ const LocationChecker = {
         Events.trigger('location-modal-toggle', {visible: true, type:'open_setting'});
       } else if(status == 2) {
         Events.trigger('location-modal-toggle', {visible: true, type:'denied'});
+      } else {
+        Events.trigger('location-modal-toggle', {visible: false, type:'denied'});
       }
     })
   },

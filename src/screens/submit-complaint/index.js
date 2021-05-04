@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   Picker,
   Modal,
+  ScrollView
 } from 'react-native';
 import _ from 'lodash';
 import {WebView} from 'react-native-webview';
@@ -20,6 +21,7 @@ import Helper from '../../utils/helper';
 import Events from '../../utils/events';
 import ComplaintPriceModal from '../../components/complaint-price-modal';
 import AddSystem from "../add-system"
+import BasicURL from '../../config';
 
 let filterComplainDesc = [];
 //= ===CLASS DECLARATION====//
@@ -285,7 +287,7 @@ export default class submitComplaint extends Component {
       onLoadStart={() => this.webviewStartLoad()}
       onLoadEnd={() => this.webviewEndLoad()}
       source={{
-        uri: `http://premiumitware.com/Home/CreatePaymentMobile?mobilenumber=${
+        uri: `${BasicURL.baseURL}/Home/CreatePaymentMobile?mobilenumber=${
           userInfo.MobileNo
         }&email=${userInfo.EmailId}&amount=${
           this.state.complainCharge
@@ -479,12 +481,13 @@ export default class submitComplaint extends Component {
   render() {
     const {userInfo, step1,step2} = this.state;
     return (
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{flex: 1, backgroundColor: Color.white}}>
+       
         {step2 ? <Header title="Submit Complaint" left="back" /> : null}
         {step1 ? 
         <AddSystem navigation={this.props.navigation} addSystemSuccess={(data)=> this.getAddSystemTag(data)} /> : null}
         {step2 ? this.renderSubmitComplaintStep() : null}
-      
+        
         {!this.state.webviewLoad && this.state.webviewShow ? (
           <View style={styles.spinnerViewCenter}>
             <SpinnerView />
@@ -498,7 +501,6 @@ export default class submitComplaint extends Component {
           this.renderComplaintSubmitForm()
        )}
        </> : null}
-
         <ComplaintPriceModal
           stateAll={this.state}
           navigation={this.props.navigation}

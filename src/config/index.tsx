@@ -7,6 +7,7 @@ const BasicURL = {
   socketURL: 'http://premiumsales.in:1315',
   //socketURL: 'http://219.91.133.39:1315',
   //path: 'http://test.premiumitware.com/PSC_APP/AndroidService.svc', //staging
+  baseURL: 'http://premiumsales.in',
 };
 
 export default BasicURL;

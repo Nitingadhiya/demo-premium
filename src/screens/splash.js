@@ -94,7 +94,7 @@ export default class Splash extends React.Component {
        console.log(userinfo,'userinfo');
        if(userInfo.LoginType == "Engineer" || userInfo.LoginType == "3" || userInfo.LoginType == 3) {
         console.log('userinfo))))))))))))))))))))))');
-          LocationChecker.checkLocationPermission();
+          LocationChecker.checkParticualrLocation();
        }
     }
     this.setState({ appState: nextAppState });
