@@ -43,6 +43,9 @@ import Greetings from './greetings';
 import Events from '../utils/events';
 import NavigationHelper from '../utils/navigation-helper';
 import LocationChecker from '../utils/location-checker';
+import ActiveDeactiveUser from './active-deactive-user';
+import GreetingsFolder from './list-of-greetings-folder';
+import GreetingsFestival from './list-of-greetings-festival';
 
 type Props = {
   route: RouteProp<StackNavigatorParamlist, 'Splash'>,
@@ -91,9 +94,7 @@ export default class Splash extends React.Component {
     ) {
        Helper.checkAppVersion();
        const userinfo = await Helper.getLocalStorageItem('userInfo');
-       console.log(userinfo,'userinfo');
        if(userInfo.LoginType == "Engineer" || userInfo.LoginType == "3" || userInfo.LoginType == 3) {
-        console.log('userinfo))))))))))))))))))))))');
           LocationChecker.checkParticualrLocation();
        }
     }
@@ -176,7 +177,7 @@ export default class Splash extends React.Component {
 
         {!userInfo ? <Stack.Screen name="Login" component={Login} /> : null}
 
-        <Stack.Screen name="UserNavigation" component={UserNavigation} />
+        {/* <Stack.Screen name="UserNavigation" component={UserNavigation} />
         <Stack.Screen
           name="ProductListScreen"
           component={ProductList}
@@ -301,13 +302,17 @@ export default class Splash extends React.Component {
 
         <Stack.Screen name="ContactList" component={ContactList} />
 
-        <Stack.Screen name="ComplaintBooking" component={ComplaintBooking} />
+        <Stack.Screen name="ComplaintBooking" component={ComplaintBooking} /> */}
+        <Stack.Screen name="GreetingsFolder" component={GreetingsFolder} />
+        <Stack.Screen name="GreetingsFestival" component={GreetingsFestival} />
+        
         <Stack.Screen name="Greetings" component={Greetings} />
         <Stack.Screen
           name="WishList"
           component={WishList}
           options={{ headerTitle: 'WishList' }}
         />
+        <Stack.Screen name="ActiveDeactiveUser" component={ActiveDeactiveUser} />
         {/* <Stack.Screen
           name="Details"
           component={Details}

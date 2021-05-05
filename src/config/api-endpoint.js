@@ -135,6 +135,12 @@ const GetOfferListEndPoint = 'GetOfferList';
 
 const getPartWiseFilterEndPoint = (partArray,Category) =>  `GetPartWiseFilters?PartNo=${partArray}&Category=${Category}`;
 
+const activeDeactiveUserEndPoint = (username) =>  `UserEnableDisable?Username=${username}`;
+
+const getGreetingsFolderEndpoint = 'GetFestivalList';
+
+const getGreetingsFestivalEndpoint = (FolderName) =>`GetFestivalImages?FolderName=${FolderName}`;
+
 module.exports = {
   checkVersionEndPoint,
   sliderImagesEndPoint,
@@ -208,5 +214,8 @@ module.exports = {
   loginWithOTPEndPoint,
   getComplaintMarkerEndpoint,
   GetOfferListEndPoint,
-  getPartWiseFilterEndPoint
+  getPartWiseFilterEndPoint,
+  activeDeactiveUserEndPoint,
+  getGreetingsFolderEndpoint,
+  getGreetingsFestivalEndpoint
 };

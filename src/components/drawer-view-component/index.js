@@ -192,6 +192,18 @@ class DrawerViewComponent extends Component {
               NavigationHelper.navigate(navigation, 'Greetings')
             }}
           />
+          {userInfo &&
+          userInfo.LoginType === '1' ? (
+          <DrawerItem
+            icon={({color, size}) => (
+              <McIcon name="bookmark-outline" color={color} size={size} />
+            )}
+            label="Active / Deactive User"
+            onPress={async () => {
+              navigation.closeDrawer();
+              NavigationHelper.navigate(navigation, 'ActiveDeactiveUser')
+            }}
+          /> ) : null}
           <DrawerItem
             icon={({color, size}) => (
               <McIcon name="bookmark-outline" color={color} size={size} />
