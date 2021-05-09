@@ -189,7 +189,7 @@ class DrawerViewComponent extends Component {
             label="Greetings"
             onPress={async () => {
               navigation.closeDrawer();
-              NavigationHelper.navigate(navigation, 'Greetings')
+              NavigationHelper.navigate(navigation, 'GreetingsFolder')
             }}
           />
           {userInfo &&

@@ -33,11 +33,6 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 export class Greetings extends Component {
-  state = {
-    loadingData: false,
-    media: null
-  };
-
   constructor(props) {
     super(props);
 
@@ -96,10 +91,30 @@ export class Greetings extends Component {
         return true;
       },
     });
-
     this.state = {
+      loadingData: false,
+      media: null,
+      greetingImage: null,
       spinning: false,
     };
+
+    
+  }
+
+  componentDidMount() {
+    this.getUserInfo();
+    console.log(this.props,'props');
+    const {params} = this.props.route;
+    console.log(this.props);
+    if(params && params.image) {
+      this.setState({
+        greetingImage: params.image
+      })
+    } else {
+      this.setState({
+        greetingImage: 'https://i.pinimg.com/originals/b4/11/4b/b4114bc3f83f34dc7503348a6f5b2e14.jpg'
+      })
+    }
   }
 
   savePhoto() {
@@ -161,12 +176,6 @@ export class Greetings extends Component {
     });
     return { rotate };
   };
-  // ------------>>>LifeCycle Methods------------->>>
-
-  componentDidMount() {
-    this.getUserInfo();
-   
-  }
 
   async getUserInfo() {
     const userInfo = await Helper.getLocalStorageItem('userInfo');
@@ -192,6 +201,7 @@ export class Greetings extends Component {
       mediaType: 'photo',
       //cropperCircleOverlay: true,
     }).then(image => {
+      console.log(image.path)
       this.setState({media: image.path});
     });
   }
@@ -205,15 +215,13 @@ export class Greetings extends Component {
     return (
       <SafeAreaView style={{flex: 1}}>
         <Appbar.Header style={{backgroundColor: Color.primary}}>
-          <Appbar.Action icon="menu" onPress={() => navigation.openDrawer()} />
+          <Appbar.Action icon="keyboard-backspace" onPress={() => navigation.goBack()} />
           <Appbar.Content title={'Greetings'} />
           <Appbar.Action
             icon="image"
             onPress={() => this.galleryOpen()}
           />
-       
         </Appbar.Header>
-
      
         {loadingData ? (
           <View style={styles.spinnerView}>
@@ -221,20 +229,23 @@ export class Greetings extends Component {
           </View>
         ) : null}
 
-      
+       
          <ViewShot ref="viewShot">
-          <ImageBackground source={{uri: 'https://i.pinimg.com/originals/b4/11/4b/b4114bc3f83f34dc7503348a6f5b2e14.jpg'}} style={{ height: '100%'}}>
+          <ImageBackground source={{uri: this.state.greetingImage}} style={{ height: '100%'}}>
            {this.state.media ?
             <Animated.Image
               source={{uri:this.state.media}}
+              resizeMode={'center'}
+              aspectRatio={1}
               style={{
-                width: 50,
-                height: 50,
+              
+                maxWidth: Matrics.screenWidth - Matrics.ScaleValue(100),
+                maxHeight: Matrics.screenHeight - Matrics.ScaleValue(300),
                 transform: [
                   this.getRotationAnimation(),
                   { translateX: this._gestureValue.x },
                   { translateY: this._gestureValue.y },
-                  {scale: 2}
+                  {scale: 1}
                 ],
               }}
               {...this._panResponder.panHandlers}

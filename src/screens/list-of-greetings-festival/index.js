@@ -4,12 +4,13 @@ import {
   SafeAreaView,
   Text,
   FlatList,
-  RefreshControl
+  RefreshControl,
+  Image
 } from 'react-native';
 import _ from 'lodash';
 import {Color} from '../../common/styles';
 import APICaller from '../../utils/api-caller';
-import {SpinnerView, TextInputView, EmptyComponent,LoadMoreComponent} from '../../common/components';
+import {SpinnerView, TextInputView, EmptyComponent,LoadMoreComponent, Header} from '../../common/components';
 import { McIcon } from '../../common/assets/vector-icon';
 import { Appbar } from 'react-native-paper';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -21,62 +22,31 @@ export default class GreetingsFolder extends Component {
   state = {
     loadingData: false,
     item: [],
-    isRefreshing: false
+    isRefreshing: false,
+    imageList: []
   };
 
   componentDidMount() {
-    this.getGreetingsFolder();
-  }
-
-  getGreetingsFolder() {
-    const {userInfo, isRefreshing, loadMore} = this.state;
-    if (!isRefreshing) {
+    const {params} = this.props.route;
+    if(params) {
       this.setState({
-        loading: true,
-      });
+        imageList: params.imageList || []
+      })
     }
-    
-
-    APICaller(
-      getGreetingsFestivalEndpoint('HanumanJayanti'),
-      'GET',
-    ).then(json => {
-      console.log(json, 'json');
-      if (json.data.Success === '1') {
-        this.setState({
-          loading: false,
-          item: _.get(json,'data.Response',[]),
-          isRefreshing: false,
-          loadMore: false,
-        });
-       
-      } else {
-        // if (from == 1) {
-        //   this.setState({
-        //     threadList: [],
-        //   });
-        // }
-        this.setState({
-          threadList: [],
-          errorMessage: json.data.Message,
-          loading: false,
-          isRefreshing: false,
-          loadMore: false,
-        });
-      }
-    });
+    console.log(this.props);
+   
   }
-
 
   renderItem = ({item}) => {
+    if(!item.Image) return;
     return (
-    <TouchableOpacity style={styles.itemView} onPress={()=> this.navigateListOfSpecificImage()}>
-      <Text style={styles.greetingText}>{item.Festival}</Text>
+    <TouchableOpacity style={styles.itemView} onPress={()=> this.navigateListOfSpecificImage(item.Image)}>
+      <Image source={{uri: item.Image}} style={{ height: 250, width: '100%'}} resizeMode={'cover'} />
     </TouchableOpacity>
   )};
 
-  navigateListOfSpecificImage() {
-    NavigationHelper.navigate(this.props,'greetingfestivalList');
+  navigateListOfSpecificImage(image) {
+    NavigationHelper.navigate(this.props.navigation,'Greetings', {image: image});
   }
 
   async onRefresh() {
@@ -114,21 +84,19 @@ export default class GreetingsFolder extends Component {
   };
 
   render() {
-    const {loadingData, item,isRefreshing, loading, loadMore} = this.state;
+    const {loadingData, isRefreshing, loading, loadMore, imageList} = this.state;
     const {navigation} = this.props;
     return (
       <SafeAreaView style={{flex: 1}}>
-        <Appbar.Header style={{backgroundColor: Color.primary}}>
-          <Appbar.Action icon="menu" onPress={() => navigation.openDrawer()} />
-          <Appbar.Content title={'Greetings Festivals'} />
-        </Appbar.Header>     
+        <Header title={'Greetings Festivals'} left="back"  backPress={()=>navigation.goBack()} />
+       
         {loadingData ? (
           <View style={styles.spinnerView}>
             <SpinnerView />
           </View>
         ) : null}
           <FlatList
-            data={item}
+            data={imageList}
             extraData={this.state}
             contentContainerStyle={styles.containerStyles}
             renderItem={this.renderItem}

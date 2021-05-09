@@ -16,21 +16,38 @@ export default styles = {
     top: '45%',
   },
   itemView: {
-    height: 100,
-    width: '100%',
+    height: 150,
+    width: Matrics.screenWidth / 2.5,
     backgroundColor: Color.paleGrey,
     borderWidth:1,
     borderColor: Color.paleGreyTwo,
-    borderRadius: 10,
+    borderRadius: 15,
     marginBottom: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 2
+    //elevation: 2,
+    margin: 15,
   },
+  iconImage:{ width: '100%', height: '100%',  position: 'absolute', borderRadius: 15},
   containerStyles :{
-    padding: 20
+    padding: 20,
+    justifyContent: 'space-between',
+    width: '100%',
   },
   greetingText: {
-    fontSize: 20
+    fontSize: 20,
+    textAlign: 'center',
+    color: Color.white,
+    zIndex: 2,
+  },
+  overlayBg: {
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    height: '100%',
+    width: '100%',
+    position: 'absolute',
+    zIndex: 1,
+    left: 0,
+    top: 0,
+    borderRadius: 15,
   }
 };

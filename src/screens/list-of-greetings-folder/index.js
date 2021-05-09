@@ -4,7 +4,8 @@ import {
   SafeAreaView,
   Text,
   FlatList,
-  RefreshControl
+  RefreshControl,
+  Image
 } from 'react-native';
 import _ from 'lodash';
 import {Color} from '../../common/styles';
@@ -68,14 +69,19 @@ export default class GreetingsFestival extends Component {
 
 
   renderItem = ({item}) => {
+    if(!item.FestivalName) return null;
     return (
-    <TouchableOpacity style={styles.itemView} onPress={()=> this.navigateListOfSpecificImage()}>
-      <Text style={styles.greetingText}>{item.Festival}</Text>
+    <TouchableOpacity style={styles.itemView} onPress={()=> this.navigateListOfSpecificImage(item)}>
+      <View style={styles.overlayBg} /> 
+      <Image source={{uri: item.Icon}} style={styles.iconImage} resizeMode={'cover'} />
+      
+      <Text style={styles.greetingText}>{item.FestivalName}</Text>
+     
     </TouchableOpacity>
   )};
 
-  navigateListOfSpecificImage() {
-    NavigationHelper.navigate(this.props,'greetingfestivalList');
+  navigateListOfSpecificImage(item) {
+    NavigationHelper.navigate(this.props.navigation,'GreetingsFestival',{imageList:item.ImageList});
   }
 
   async onRefresh() {
@@ -137,6 +143,7 @@ export default class GreetingsFestival extends Component {
                 onRefresh={this.onRefresh.bind(this)}
               />
             }
+            numColumns={2}
             keyExtractor={(item, index) => index.toString()}
             ListEmptyComponent={() => this.listEmptyComponent(loading)}
             ListFooterComponent={() => this.listFooterComponent(loadMore)}
