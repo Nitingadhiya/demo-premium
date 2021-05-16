@@ -8,7 +8,7 @@ import {
   Image
 } from 'react-native';
 import _ from 'lodash';
-import {Color} from '../../common/styles';
+import {Color, Matrics} from '../../common/styles';
 import APICaller from '../../utils/api-caller';
 import {SpinnerView, TextInputView, EmptyComponent,LoadMoreComponent, Header} from '../../common/components';
 import { McIcon } from '../../common/assets/vector-icon';
@@ -17,6 +17,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import styles from './styles'
 import { getGreetingsFestivalEndpoint, getGreetingsFolderEndpoint } from '../../config/api-endpoint';
 import NavigationHelper from '../../utils/navigation-helper';
+import AutoHeightImage from 'react-native-auto-height-image';
 
 export default class GreetingsFolder extends Component {
   state = {
@@ -40,9 +41,15 @@ export default class GreetingsFolder extends Component {
   renderItem = ({item}) => {
     if(!item.Image) return;
     return (
+      <View style={{ width: (Matrics.screenWidth / 2) - 30, marginHorizontal: 10}}>
     <TouchableOpacity style={styles.itemView} onPress={()=> this.navigateListOfSpecificImage(item.Image)}>
-      <Image source={{uri: item.Image}} style={{ height: 250, width: '100%'}} resizeMode={'cover'} />
+       <AutoHeightImage
+          width={(Matrics.screenWidth / 2 ) - 30}
+          source={{uri: item.Image}}
+        ></AutoHeightImage>
+      {/* <Image source={{uri: item.Image}} style={{ height: 250, width: '100%', borderRadius: 15, aspectRatio:1}} resizeMode={'contain'} /> */}
     </TouchableOpacity>
+    </View>
   )};
 
   navigateListOfSpecificImage(image) {
@@ -111,6 +118,7 @@ export default class GreetingsFolder extends Component {
             ListFooterComponent={() => this.listFooterComponent(loadMore)}
             onEndReachedThreshold={0.8}
             onEndReached={this.handleLoadMore.bind(this)}
+            numColumns={2}
           />
       </SafeAreaView>
     );

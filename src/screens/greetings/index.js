@@ -10,12 +10,13 @@ import {
   PanResponder,
   Button,
   Image,
-  Text
+  Text,
+  TouchableOpacity
 } from 'react-native';
+import AutoHeightImage from 'react-native-auto-height-image';
+
 import ImagePicker from 'react-native-image-crop-picker';
 import Share from 'react-native-share';
-
-
 import _ from 'lodash';
 import {Color, Images, Matrics} from '../../common/styles';
 import APICaller from '../../utils/api-caller';
@@ -28,11 +29,13 @@ import jake from './jake.png';
 import RNFetchBlob from 'rn-fetch-blob'
 import { MIcon } from '../../common/assets/vector-icon';
 import { Appbar } from 'react-native-paper';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { PinchGestureHandler, State } from 'react-native-gesture-handler'
 
-
-
+let _baseScale = new Animated.Value(1);
+let _pinchScale = new Animated.Value(1);
+let _lastScale = 0.5;
 export class Greetings extends Component {
+  scale = new Animated.Value(1)
   constructor(props) {
     super(props);
 
@@ -61,18 +64,25 @@ export class Greetings extends Component {
         const touches = evt.nativeEvent.touches;
 
         if (touches.length >= 2) {
-          console.log('Touch');
-          console.log(evt.nativeEvent);
+          // console.log('Touch');
+          // console.log(evt.nativeEvent);
             // We have a pinch-to-zoom movement
             // Track locationX/locationY to know by how much the user moved their fingers
         } else {
             // We have a regular scroll movement
         }
-
-        this._gestureValue.setValue({
-          x: this._gestureOffset.x + gestureState.dx,
-          y: this._gestureOffset.y + gestureState.dy
-        });
+        console.log(gestureState.dy);
+        if(gestureState.dy < 0) {
+          this._gestureValue.setValue({
+            x: this._gestureOffset.x + gestureState.dx,
+            y: this._gestureOffset.y + gestureState.dy
+          });
+        } else {
+          this._gestureValue.setValue({
+            x: this._gestureOffset.x + gestureState.dx,
+            y: this._gestureOffset.y + gestureState.dy
+          });
+        }
       },
       onPanResponderTerminationRequest: (evt, gestureState) => true,
       onPanResponderRelease: (evt, gestureState) => {
@@ -95,23 +105,23 @@ export class Greetings extends Component {
       loadingData: false,
       media: null,
       greetingImage: null,
-      spinning: false,
+      height: Matrics.screenWidth,
+      width: Matrics.screenWidth
     };
 
     
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.getUserInfo();
-    console.log(this.props,'props');
+   
     const {params} = this.props.route;
-    console.log(this.props);
     if(params && params.image) {
-      this.setState({
+      await this.setState({
         greetingImage: params.image
       })
     } else {
-      this.setState({
+      await this.setState({
         greetingImage: 'https://i.pinimg.com/originals/b4/11/4b/b4114bc3f83f34dc7503348a6f5b2e14.jpg'
       })
     }
@@ -130,14 +140,13 @@ export class Greetings extends Component {
     // });
 
     captureRef(this.refs.viewShot,{
-      format: "jpg",
+      format: "png",
       quality: 0.8,
       result: 'base64'
     }).then(
       async(base64Data) => { 
-        var base64Data = `data:image/png;base64,` + base64Data;
-      console.log(base64Data);  
-      await Share.open({ url: base64Data });
+        var base64Data1 = `data:image/png;base64,` + base64Data;
+      await Share.open({ url: base64Data1 });
     },
       error => console.error("Oops, snapshot failed", error)
     );
@@ -155,42 +164,12 @@ export class Greetings extends Component {
     ).start();
   };
 
-  stopLoopAnimation = () => {
-    this._rotationAnimation.stopAnimation(currentValue => {
-      this._rotationOffset = currentValue;
-    });
-  };
-
-  toggleSpinning = () => {
-    this.setState({ spinning: !this.state.spinning }, () => {
-      this.state.spinning
-        ? this.startLoopAnimation()
-        : this.stopLoopAnimation();
-    });
-  };
-
-  getRotationAnimation = () => {
-    const rotate = this._rotationAnimation.interpolate({
-      inputRange: [0, 1],
-      outputRange: ['0deg', '360deg'],
-    });
-    return { rotate };
-  };
-
   async getUserInfo() {
     const userInfo = await Helper.getLocalStorageItem('userInfo');
     this.setState({
       userInfo,
     });
   }
-
-  getRotationAnimation = () => {
-    const rotate = this._rotationAnimation.interpolate({
-      inputRange: [0, 1],
-      outputRange: ['0deg', '360deg'],
-    });
-    return { rotate };
-  };
 
   galleryOpen() {
     ImagePicker.openPicker({
@@ -206,13 +185,49 @@ export class Greetings extends Component {
     });
   }
 
+  onPinchEvent = Animated.event(
+    [
+      {
+        nativeEvent: { scale: this.scale }
+      }
+    ],
+    {
+      useNativeDriver: true
+    }
+  )
 
-
+  onPinchStateChange = event => {
+    console.log(event);
+    if (event.nativeEvent.oldState === State.ACTIVE) {
+      console.log(this.scale,'Scallell')
+      Animated.spring(this.scale, {
+        toValue: 1,
+        useNativeDriver: true
+      }).start()
+    }
+  }
 
   render() {
     const {loadingData, cameraOpen, validateError} = this.state;
     const {navigation} = this.props;
-    return (
+
+
+    let _scale = Animated.multiply(_baseScale, _pinchScale);
+  
+    const _onPinchGestureEvent = Animated.event(
+      [{ nativeEvent: { scale: _pinchScale } }],
+      { useNativeDriver: true }
+    );
+  
+    const _onPinchHandlerStateChange = (event) => {
+      if (event.nativeEvent.oldState === State.ACTIVE) {
+        _lastScale *= event.nativeEvent.scale;
+        _baseScale.setValue(_lastScale);
+        _pinchScale.setValue(1);
+      }
+    }; 
+  
+  return (
       <SafeAreaView style={{flex: 1}}>
         <Appbar.Header style={{backgroundColor: Color.primary}}>
           <Appbar.Action icon="keyboard-backspace" onPress={() => navigation.goBack()} />
@@ -220,6 +235,10 @@ export class Greetings extends Component {
           <Appbar.Action
             icon="image"
             onPress={() => this.galleryOpen()}
+          />
+           <Appbar.Action
+            icon={this.state.moving ? 'arrow-all' : "gesture-pinch"}
+            onPress={() => this.setState({ moving: !this.state.moving})}
           />
         </Appbar.Header>
      
@@ -229,38 +248,46 @@ export class Greetings extends Component {
           </View>
         ) : null}
 
-       
-         <ViewShot ref="viewShot">
-          <ImageBackground source={{uri: this.state.greetingImage}} style={{ height: '100%'}}>
+         <View style={{flex: 1, justifyContent: 'center'}}>
+         <ViewShot ref="viewShot" style={{ width: Matrics.screenWidth, justifyContent: 'center', overflow: 'hidden', alignSelf: 'center'}}>
+         <AutoHeightImage
+          width={Matrics.screenWidth}
+          source={{uri: this.state.greetingImage}}
+        >
+          {/* <ImageBackground source={{uri: this.state.greetingImage}} style={{ height: Matrics.screenWidth, width: Matrics.screenWidth, overflow:'hidden', borderWidth: 0.5, borderColor: Color.paleGreyThree}}> */}
            {this.state.media ?
+             <PinchGestureHandler
+             onGestureEvent={_onPinchGestureEvent}
+             onHandlerStateChange={_onPinchHandlerStateChange}>
+          
             <Animated.Image
               source={{uri:this.state.media}}
               resizeMode={'center'}
               aspectRatio={1}
               style={{
-              
                 maxWidth: Matrics.screenWidth - Matrics.ScaleValue(100),
-                maxHeight: Matrics.screenHeight - Matrics.ScaleValue(300),
+                maxHeight: 100,
                 transform: [
-                  this.getRotationAnimation(),
                   { translateX: this._gestureValue.x },
                   { translateY: this._gestureValue.y },
-                  {scale: 1}
+                  { scale: _scale }
                 ],
               }}
-              {...this._panResponder.panHandlers}
-            /> : null}
-          </ImageBackground>
+              {...!this.state.moving ? this._panResponder.panHandlers : null}
+            /></PinchGestureHandler> : null}
+          {/* </ImageBackground> */}
+          </AutoHeightImage>
         </ViewShot>
+        </View>
 
-        <View style={{ position: 'absolute', zIndex:1, height: 40, bottom: 0, width: '100%'}}>
+        <View style={{ height: 50, width: '100%'}}>
           <TouchableOpacity
-            style={{width: '100%', height: 40, backgroundColor: Color.primary, justifyContent: 'center'}}
+            style={{width: '100%', height: 50, backgroundColor: Color.primary, justifyContent: 'center'}}
             title={
               'Save photo'
             }
             onPress={() => this.savePhoto()}
-          ><Text style={{ color: Color.white, fontSize: 18, textAlign: 'center'}}>Save photo</Text></TouchableOpacity>
+          ><Text style={{ color: Color.white, fontSize: 18, textAlign: 'center'}}>Share photo</Text></TouchableOpacity>
         </View>
        
       </SafeAreaView>

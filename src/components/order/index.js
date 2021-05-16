@@ -181,13 +181,15 @@ class POrder extends Component {
             </TouchableOpacity> : null}
             <TouchableOpacity
               style={{paddingHorizontal: 10}}
-              onPress={() => this.props.plugOnPress()}>
+              disabled={this.props.loginType && (this.props.loginType == '4' || this.props.loginType == '5')}
+             onPress={() => this.props.plugOnPress()}
+             >
               <McIcon
                 name="power-plug"
                 size={24}
-                color={this.renderVerification(
-                  data.IsAdvanceVerificationRequired,
-                )}
+                color={
+                  this.renderVerification(data.IsAdvanceVerificationRequired)
+                }
               />
             </TouchableOpacity>
 

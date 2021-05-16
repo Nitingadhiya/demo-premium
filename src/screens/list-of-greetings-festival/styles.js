@@ -16,7 +16,7 @@ export default styles = {
     top: '45%',
   },
   itemView: {
-    height: 250,
+  //  height: 250,
     width: '100%',
     backgroundColor: Color.paleGrey,
     borderWidth:1,
@@ -25,10 +25,11 @@ export default styles = {
     marginBottom: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 2
+    elevation: 2,
+    overflow: 'hidden'
   },
   containerStyles :{
-    padding: 20
+    padding: 10,
   },
   greetingText: {
     fontSize: 20

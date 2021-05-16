@@ -17,7 +17,7 @@ export default styles = {
   },
   itemView: {
     height: 150,
-    width: Matrics.screenWidth / 2.5,
+    width: (Matrics.screenWidth / 2)  - 40,
     backgroundColor: Color.paleGrey,
     borderWidth:1,
     borderColor: Color.paleGreyTwo,
@@ -25,14 +25,12 @@ export default styles = {
     marginBottom: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    //elevation: 2,
-    margin: 15,
+    margin: 10,
   },
   iconImage:{ width: '100%', height: '100%',  position: 'absolute', borderRadius: 15},
   containerStyles :{
-    padding: 20,
     justifyContent: 'space-between',
-    width: '100%',
+    padding: 20,
   },
   greetingText: {
     fontSize: 20,

@@ -177,7 +177,7 @@ export default class Splash extends React.Component {
 
         {!userInfo ? <Stack.Screen name="Login" component={Login} /> : null}
 
-        {/* <Stack.Screen name="UserNavigation" component={UserNavigation} />
+        <Stack.Screen name="UserNavigation" component={UserNavigation} />
         <Stack.Screen
           name="ProductListScreen"
           component={ProductList}
@@ -302,7 +302,7 @@ export default class Splash extends React.Component {
 
         <Stack.Screen name="ContactList" component={ContactList} />
 
-        <Stack.Screen name="ComplaintBooking" component={ComplaintBooking} /> */}
+        <Stack.Screen name="ComplaintBooking" component={ComplaintBooking} />
         <Stack.Screen name="GreetingsFolder" component={GreetingsFolder} />
         <Stack.Screen name="GreetingsFestival" component={GreetingsFestival} />
         
