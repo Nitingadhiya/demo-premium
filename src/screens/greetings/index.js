@@ -33,7 +33,7 @@ import { PinchGestureHandler, State } from 'react-native-gesture-handler'
 
 let _baseScale = new Animated.Value(1);
 let _pinchScale = new Animated.Value(1);
-let _lastScale = 0.5;
+let _lastScale = 0.8;
 export class Greetings extends Component {
   scale = new Animated.Value(1)
   constructor(props) {
