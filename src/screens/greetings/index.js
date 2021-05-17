@@ -59,37 +59,19 @@ export class Greetings extends Component {
       onPanResponderMove: (evt, gestureState) => {
         // The most recent move distance is gestureState.move{X,Y}
         // The accumulated gesture distance since becoming responder is
-        // gestureState.d{x,y}
-
-        const touches = evt.nativeEvent.touches;
-
-        if (touches.length >= 2) {
-          // console.log('Touch');
-          // console.log(evt.nativeEvent);
-            // We have a pinch-to-zoom movement
-            // Track locationX/locationY to know by how much the user moved their fingers
-        } else {
-            // We have a regular scroll movement
-        }
-        console.log(gestureState.dy);
-        if(gestureState.dy < 0) {
+        // gestureState.d{x,y}        
           this._gestureValue.setValue({
             x: this._gestureOffset.x + gestureState.dx,
             y: this._gestureOffset.y + gestureState.dy
           });
-        } else {
-          this._gestureValue.setValue({
-            x: this._gestureOffset.x + gestureState.dx,
-            y: this._gestureOffset.y + gestureState.dy
-          });
-        }
+        
       },
       onPanResponderTerminationRequest: (evt, gestureState) => true,
       onPanResponderRelease: (evt, gestureState) => {
         // The user has released all touches while this view is the
         // responder. This typically means a gesture has succeeded
         this._gestureOffset.x += gestureState.dx;
-        this._gestureOffset.y += gestureState.dy;
+        this._gestureOffset.y += gestureState.dy;        
       },
       onPanResponderTerminate: (evt, gestureState) => {
         // Another component has become the responder, so this gesture
@@ -106,7 +88,8 @@ export class Greetings extends Component {
       media: null,
       greetingImage: null,
       height: Matrics.screenWidth,
-      width: Matrics.screenWidth
+      width: Matrics.screenWidth,
+      dyBottom: Matrics.screenWidth
     };
 
     
@@ -197,9 +180,7 @@ export class Greetings extends Component {
   )
 
   onPinchStateChange = event => {
-    console.log(event);
     if (event.nativeEvent.oldState === State.ACTIVE) {
-      console.log(this.scale,'Scallell')
       Animated.spring(this.scale, {
         toValue: 1,
         useNativeDriver: true
@@ -240,6 +221,17 @@ export class Greetings extends Component {
             icon={this.state.moving ? 'arrow-all' : "gesture-pinch"}
             onPress={() => this.setState({ moving: !this.state.moving})}
           />
+          <Appbar.Action
+            icon={'axis-arrow'}
+            onPress={() => { 
+              this._gestureOffset.x = 0;
+              this._gestureOffset.y = 0;
+              this._gestureValue.setValue({
+              x: 0,
+              y: 0
+            });
+          }}
+          />
         </Appbar.Header>
      
         {loadingData ? (
@@ -253,10 +245,18 @@ export class Greetings extends Component {
          <AutoHeightImage
           width={Matrics.screenWidth}
           source={{uri: this.state.greetingImage}}
+          onHeightChange={(data) => {
+            setTimeout(()=>{
+              this.setState({
+                dyBottom: data
+              });
+            },1500)
+            }}
         >
           {/* <ImageBackground source={{uri: this.state.greetingImage}} style={{ height: Matrics.screenWidth, width: Matrics.screenWidth, overflow:'hidden', borderWidth: 0.5, borderColor: Color.paleGreyThree}}> */}
            {this.state.media ?
              <PinchGestureHandler
+             style={{height: 100}}
              onGestureEvent={_onPinchGestureEvent}
              onHandlerStateChange={_onPinchHandlerStateChange}>
           
