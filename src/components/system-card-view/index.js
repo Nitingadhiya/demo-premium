@@ -17,6 +17,7 @@ import APICaller from '../../utils/api-caller';
 import {userDashboardEndPoint} from '../../config/api-endpoint';
 import Events from '../../utils/events';
 import NavigationHelper from '../../utils/navigation-helper';
+import { color } from 'react-native-reanimated';
 
 let self;
 class SystemCardView extends Component {
@@ -211,7 +212,7 @@ class SystemCardView extends Component {
           </TouchableOpacity>
         ) : null}
         <TouchableOpacity
-          style={styles.addressShowView}
+          style={[styles.addressShowView, {backgroundColor: !item.Home && 'yellow'} ]}
           onPress={() => self.editAddress(item)}>
           <Text style={styles.addressText}>
             {item.Home ? item.Home + ' ' : 'No Address Found'}

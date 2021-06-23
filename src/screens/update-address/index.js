@@ -462,14 +462,18 @@ class UpdateAddress extends Component {
           <ScrollView>
             <View style={styles.flex1}>
               <View style={styles.formGroup}>
-                <View style={styles.subTextBoxView}>
+                <View style={styles.labelClass}>
+                  <View style={styles.width120}>
+                    <Text style={styles.font14_999}>Address</Text>
+                  </View>
                   <TextInputView
                     placeholder="Address"
                     value={this.state.Address}
                     autoCorrect={false}
                     onChangeText={value => this.setState({Address: value})}
                     blurOnSubmit={false}
-                    customStyle={styles.plml0}
+                    customStyle={[styles.plml0, {marginLeft: -5}]}
+                    placeholderTextColor={'#aaa'}
                   />
                 </View>
                 <TouchableOpacity
@@ -562,26 +566,34 @@ class UpdateAddress extends Component {
                     )}
                   </View>
                 </TouchableOpacity>
-                <View style={styles.subTextBoxView}>
+                <View style={styles.labelClass}>
+                  <View style={styles.width120}>
+                    <Text style={styles.font14_999}>Pincode</Text>
+                  </View>
                   <TextInputView
                     placeholder="Pincode"
                     value={this.state.Pincode}
                     autoCorrect={false}
                     onChangeText={value => this.pincodeChange(value)}
                     blurOnSubmit={false}
-                    customStyle={styles.plml0}
+                    customStyle={[styles.plml0, {marginLeft: -5}]}
                     editable={!getRoadValue}
+                    placeholderTextColor={'#aaa'}
                   />
                 </View>
-                <View style={styles.subTextBoxView}>
+                <View style={styles.labelClass}>
+                  <View style={styles.width120}>
+                    <Text style={styles.font14_999}>State</Text>
+                  </View>
                   <TextInputView
                     placeholder="State"
                     value={this.state.Divison}
                     autoCorrect={false}
                     onChangeText={value => this.setState({Divison: value})}
                     blurOnSubmit={false}
-                    customStyle={styles.plml0}
+                    customStyle={[styles.plml0, {marginLeft: -5}]}
                     editable={this.editableState()}
+                    placeholderTextColor={'#aaa'}
                   />
                 </View>
                 <View style={styles.errorView}>

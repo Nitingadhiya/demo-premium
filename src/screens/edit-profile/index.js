@@ -633,7 +633,10 @@ export default class EditProfile extends Component {
               </View>
             </View>
             <View style={styles.formGroup}>
-              <View style={styles.subTextBoxView}>
+              <View style={styles.labelClass}>
+                <View style={styles.width120}>
+                  <Text style={styles.font14_999}>First Name</Text>
+                </View>
                 <TextInputView
                   placeholder="First Name"
                   value={this.state.FirstName}
@@ -641,9 +644,13 @@ export default class EditProfile extends Component {
                   onChangeText={value => this.setState({FirstName: value})}
                   blurOnSubmit={false}
                   customStyle={styles.customStyle}
+                  placeholderTextColor={'#aaa'}
                 />
               </View>
-              <View style={styles.subTextBoxView}>
+              <View style={styles.labelClass}>
+                <View style={styles.width120}>
+                  <Text style={styles.font14_999}>Last Name</Text>
+                </View>
                 <TextInputView
                   placeholder="Last Name"
                   value={this.state.LastName}
@@ -651,9 +658,13 @@ export default class EditProfile extends Component {
                   onChangeText={value => this.setState({LastName: value})}
                   blurOnSubmit={false}
                   customStyle={styles.customStyle}
+                  placeholderTextColor={'#aaa'}
                 />
               </View>
-              <View style={styles.subTextBoxView}>
+              <View style={styles.labelClass}>
+                <View style={styles.width120}>
+                  <Text style={styles.font14_999}>Email</Text>
+                </View>
                 <TextInputView
                   placeholder="Email"
                   value={this.state.EmailId}
@@ -661,9 +672,13 @@ export default class EditProfile extends Component {
                   onChangeText={value => this.setState({EmailId: value})}
                   blurOnSubmit={false}
                   customStyle={styles.customStyle}
+                  placeholderTextColor={'#aaa'}
                 />
               </View>
-              <View style={styles.subTextBoxView}>
+              <View style={styles.labelClass}>
+                <View style={styles.width120}>
+                  <Text style={styles.font14_999}>Phone No</Text>
+                </View>
                 <TextInputView
                   placeholder="Phone No"
                   editable={false}
@@ -672,6 +687,7 @@ export default class EditProfile extends Component {
                   onChangeText={value => this.setState({MobileNo: value})}
                   blurOnSubmit={false}
                   customStyle={styles.customStyle}
+                  placeholderTextColor={'#aaa'}
                 />
               </View>
               <View style={styles.birthdayForm}>
@@ -731,34 +747,46 @@ export default class EditProfile extends Component {
                   </Picker>
                 </View>
               </View>
-              <View style={styles.subTextBoxView}>
+              <View style={styles.labelClass}>
+                <View style={styles.width120}>
+                  <Text style={styles.font14_999}>Company Name</Text>
+                </View>
                 <TextInputView
-                  placeholder="Company Name"
+                  placeholder="Enter Company Name"
                   value={this.state.CompanyName}
                   autoCorrect={false}
                   onChangeText={value => this.setState({CompanyName: value})}
                   blurOnSubmit={false}
                   customStyle={styles.customStyle}
+                  placeholderTextColor={'#aaa'}
                 />
               </View>
-              <View style={styles.subTextBoxView}>
+              <View style={styles.labelClass}>
+                <View style={styles.width120}>
+                  <Text style={styles.font14_999}>GST No.</Text>
+                </View>
                 <TextInputView
-                  placeholder="GST No."
+                  placeholder="Enter GST No."
                   value={this.state.GSTNo}
                   autoCorrect={false}
                   onChangeText={value => this.setState({GSTNo: value})}
                   blurOnSubmit={false}
                   customStyle={styles.customStyle}
+                  placeholderTextColor={'#aaa'}
                 />
               </View>
-              <View style={styles.subTextBoxView}>
+              <View style={styles.labelClass}>
+                <View style={styles.width120}>
+                  <Text style={styles.font14_999}>Address</Text>
+                </View>
                 <TextInputView
-                  placeholder="Address"
+                  placeholder="Enter Address"
                   value={this.state.Address}
                   autoCorrect={false}
                   onChangeText={value => this.setState({Address: value})}
                   blurOnSubmit={false}
                   customStyle={styles.customStyle}
+                  placeholderTextColor={'#aaa'}
                 />
               </View>
               <TouchableOpacity
@@ -855,26 +883,34 @@ export default class EditProfile extends Component {
                 </View>
               </TouchableOpacity>
 
-              <View style={styles.subTextBoxView}>
+              <View style={styles.labelClass}>
+                <View style={styles.width120}>
+                  <Text style={styles.font14_999}>Pincode</Text>
+                </View>
                 <TextInputView
-                  placeholder="Pincode"
+                  placeholder="Enter Pincode"
                   value={this.state.Pincode}
                   autoCorrect={false}
                   onChangeText={value => this.pincodeChange(value)}
                   blurOnSubmit={false}
-                  customStyle={styles.customStyle}
+                  customStyle={[styles.customStyle,{marginLeft: -5}]}
                   editable={!getRoadValue}
+                  placeholderTextColor={'#aaa'}
                 />
               </View>
-              <View style={styles.subTextBoxView}>
+              <View style={styles.labelClass}>
+                <View style={styles.width120}>
+                  <Text style={styles.font14_999}>State</Text>
+                </View>
                 <TextInputView
-                  placeholder="State"
+                  placeholder="Enter State"
                   value={this.state.Divison}
                   autoCorrect={false}
                   onChangeText={value => this.setState({Divison: value})}
                   blurOnSubmit={false}
-                  customStyle={styles.customStyle}
+                  customStyle={[styles.customStyle,{marginLeft: -5}]}
                   editable={this.editableState()}
+                  placeholderTextColor={'#aaa'}
                 />
               </View>
               <View style={styles.genderForm}>

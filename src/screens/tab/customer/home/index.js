@@ -44,6 +44,7 @@ export default class Dashboard extends Component {
     complaintRegisterModal: true,
     cartCount: 0,
     isVisibleConfirm: false,
+    profileUpdated: true
   };
 
   async componentDidMount() {
@@ -133,10 +134,21 @@ export default class Dashboard extends Component {
     }
 
     APICaller(getUserProfileEndPoint(userName), 'GET').then(json => {
+      console.log(json,'jsonnn*********')
       if (json.data.Success === '1') {
         global.profileInfo = json.data.Response;
-        if (this.profileInfo) {
-          Helper.setLocalStorageItem('userInfo', this.profileInfo);
+        if (global.profileInfo) {
+          Helper.setLocalStorageItem('userInfo', global.profileInfo);
+        }
+
+        if(global.profileInfo.Home != '' && global.profileInfo.Landmark != '' && global.profileInfo.Road != '' && global.profileInfo.Pincode != '' && global.profileInfo.Area != '') {
+          this.setState({
+            profileUpdated: true
+          });
+        } else {
+          this.setState({
+            profileUpdated: false
+          })
         }
       }
     });
@@ -168,6 +180,7 @@ export default class Dashboard extends Component {
       refreshing,
       cartCount,
       isVisibleConfirm,
+      profileUpdated
     } = this.state;
     return (
       <View style={styles.mainContainer}>
@@ -204,9 +217,15 @@ export default class Dashboard extends Component {
             />
           ) : null}
         </ScrollView>
+        {!profileUpdated ? <TouchableOpacity
+              style={{padding: 10, alignSelf: 'center'}}
+              onPress={() => NavigationHelper.navigate(navigation, 'MyProfile')}>
+              <Text style={{color: Color.primary, fontSize: 14, textDecorationLine: 'underline'}}>Please Update Your Profile</Text>
+            </TouchableOpacity> : null }
         <View style={styles.bottomButton}>
           {/* if new user register then complaint close button not show that's why comment
            {_.size(systemDescription) > 0 && systemDescription[0].UserName ? ( */}
+           
             <TouchableOpacity
               style={styles.actionTouch}
               onPress={() => this.registerComplain()}>

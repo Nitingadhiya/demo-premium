@@ -6,6 +6,7 @@ import {
   Modal,
   Image,
   TextInput,
+  Alert,
 } from 'react-native';
 import {CommonActions} from '@react-navigation/native';
 import {TextInputView, SpinnerView} from '../../common/components';
@@ -21,6 +22,7 @@ import {
 import NavigationHelper from '../../utils/navigation-helper';
 import Events from '../../utils/events';
 import {useNavigation} from '@react-navigation/native';
+import _ from 'lodash';
 
 let tmpSys = [];
 let self;
@@ -49,6 +51,12 @@ class ComplaintOptionsModal extends Component {
   }
 
   withoutQRCode = () => {
+    if(!_.get(global.profileInfo,'Home','')) {
+      alert('Please Enter Profile Address.');
+      this.setState({complaintRegisterModal: false});
+      return;
+    }
+
     const {systemDescription} = this.props;
     this.setState({complaintRegisterModal: false});
     tmpSys = [];
