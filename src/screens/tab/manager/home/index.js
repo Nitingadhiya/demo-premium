@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
-import { VersionNumber } from '../../../../package';
+import { VersionNumber,_ } from '../../../../package';
 
 import APICaller from '../../../../utils/api-caller';
 import { userDashboardEndPoint, getUserProfileEndPoint } from '../../../../config/api-endpoint';
@@ -145,8 +145,9 @@ export default class Dashboard extends Component {
           <View style={styles.bodyView}>
             <View style={styles.subBodyView}>
               <Text style={styles.textDate}>
-                Dt. 18-04-2019 is Your "Positive" Day Performance Ratio is "4.5"
-                Star
+              {this.state.systemDescription ?  _.get(this.state.systemDescription[0],'RatingMessage','') : null}
+                {/* Dt. 18-04-2019 is Your "Positive" Day Performance Ratio is "4.5"
+                Star */}
               </Text>
             </View>
             <View style={{ height: 10 }} />

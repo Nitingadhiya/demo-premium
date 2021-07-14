@@ -212,10 +212,14 @@ class SystemCardView extends Component {
           </TouchableOpacity>
         ) : null}
         <TouchableOpacity
-          style={[styles.addressShowView, {backgroundColor: !item.Home && 'yellow'} ]}
+          style={[styles.addressShowView]}
           onPress={() => self.editAddress(item)}>
+            {!item.Home &&
+            <View style={{backgroundColor: 'yellow', paddingHorizontal: 5}}>
+              <Text style={styles.addressText}>No Address Found, Please Update Address.</Text>
+            </View> }
           <Text style={styles.addressText}>
-            {item.Home ? item.Home + ' ' : 'No Address Found'}
+            {item.Home && item.Home }
             {item.Landmark && item.Landmark + ' '}
             {item.Area && item.Area + ' '}
             {item.Road && item.Road + ' '}

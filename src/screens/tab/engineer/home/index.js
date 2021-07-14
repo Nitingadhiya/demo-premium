@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
-import { VersionNumber } from '../../../../package';
+import { VersionNumber,_ } from '../../../../package';
 import APICaller from '../../../../utils/api-caller';
 import { userDashboardEndPoint, getUserProfileEndPoint } from '../../../../config/api-endpoint';
 import Helper from '../../../../utils/helper';
@@ -95,19 +95,20 @@ export default class Dashboard extends Component {
       userDashboardEndPoint(userName, VersionNumber.buildVersion),
       'GET',
     ).then(json => {
-      console.log(json, 'jsonnn************');
       this.setState({
         loadingData: false,
         refreshing: false,
       });
       if (json.data.Success === '1') {
         const systmDescription = json.data.Response;
+        this.setState({
+          screenResp: systmDescription
+        })
         let arrSystem = [];
         for (var key in systmDescription) {
           if (key === 'length' || !systmDescription.hasOwnProperty(key))
             continue;
           var value = systmDescription[key];
-          console.log(systmDescription);
           arrSystem.push({
             key: key,
             amount: value[0].Amount,
@@ -162,15 +163,16 @@ export default class Dashboard extends Component {
           <View style={styles.bodyView}>
             <View style={styles.subBodyView}>
               <Text style={styles.textDate}>
-                Dt. 18-04-2019 is Your "Positive" Day Performance Ratio is "4.5"
-                Star
+              {this.state.screenResp ?  _.get(this.state.screenResp[0],'RatingMessage','') : null}
+                {/* Dt. 18-04-2019 is Your "Positive" Day Performance Ratio is "4.5"
+                Star */}
               </Text>
-              <Text style={styles.textDate}>
+              {/* <Text style={styles.textDate}>
                 You Earned: 0.5-Silver, 0.0-Gold
               </Text>
               <Text style={styles.textDate}>
                 Suggestion: (Gujarati Suggestion)
-              </Text>
+              </Text> */}
             </View>
             <View style={{ height: 10 }} />
             {!refreshing ?
