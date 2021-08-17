@@ -137,6 +137,9 @@ export default class Dashboard extends Component {
       updateAvailable,
       systemDescription,
     } = this.state;
+    let string =  this.state.screenResp ? `${_.get(this.state.screenResp[0],'RatingMessage','')}`: null;//'Dt. 29 Jul 2021 is Excellent \n Ratio: 5.0 /100% / Total Ratio: 338.5 \n Special Note: N/A';
+    let split = string ? string.split(/\n/g) : null;
+    let dplit = split ? string.split('\\n') : null;
     return (
       <SafeAreaView style={styles.safeView}>
         <Header title="Dashboard" left="menu" />
@@ -163,9 +166,9 @@ export default class Dashboard extends Component {
           <View style={styles.bodyView}>
             <View style={styles.subBodyView}>
               <Text style={styles.textDate}>
-              {this.state.screenResp ?  _.get(this.state.screenResp[0],'RatingMessage','') : null}
-                {/* Dt. 18-04-2019 is Your "Positive" Day Performance Ratio is "4.5"
-                Star */}
+                {/* {string} */}
+                {_.map(dplit,(res)=> res+'\n')}
+              {/* {this.state.screenResp ?  `${_.get(this.state.screenResp[0],'RatingMessage','')}` : null} */}
               </Text>
               {/* <Text style={styles.textDate}>
                 You Earned: 0.5-Silver, 0.0-Gold

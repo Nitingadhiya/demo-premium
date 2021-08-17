@@ -30,6 +30,9 @@ import RNFetchBlob from 'rn-fetch-blob'
 import { MIcon } from '../../common/assets/vector-icon';
 import { Appbar } from 'react-native-paper';
 import { PinchGestureHandler, State } from 'react-native-gesture-handler'
+import {
+  DragResizeBlock,
+} from 'react-native-drag-resize';
 
 let _baseScale = new Animated.Value(1);
 let _pinchScale = new Animated.Value(1);
@@ -110,7 +113,22 @@ export class Greetings extends Component {
     }
   }
 
-  savePhoto() {
+  async savePhoto() {
+    await this.setState({
+      isDisabled: true
+    },()=>{
+      captureRef(this.refs.viewShot,{
+        format: "png",
+        quality: 0.8,
+        result: 'base64'
+      }).then(
+        async(base64Data) => { 
+          var base64Data1 = `data:image/png;base64,` + base64Data;
+        await Share.open({ url: base64Data1 });
+      },
+        error => console.error("Oops, snapshot failed", error)
+      );
+    })
     // this.refs.viewShot.capture({format: "jpg",
     // quality: 0.8,
     // result: 'base64'}).then(async (base64Data) => {
@@ -122,17 +140,7 @@ export class Greetings extends Component {
     //   await Share.open({ url: base64Data });
     // });
 
-    captureRef(this.refs.viewShot,{
-      format: "png",
-      quality: 0.8,
-      result: 'base64'
-    }).then(
-      async(base64Data) => { 
-        var base64Data1 = `data:image/png;base64,` + base64Data;
-      await Share.open({ url: base64Data1 });
-    },
-      error => console.error("Oops, snapshot failed", error)
-    );
+    
     
   }
 
@@ -253,12 +261,27 @@ export class Greetings extends Component {
             },1500)
             }}
         >
+           <DragResizeBlock
+            x={50}
+            y={100}
+            isDisabled={this.state.isDisabled}
+            onPress={()=> this.setState({isDisabled: false})}
+            connectors={['tl',  'tr',  'br', 'bl', 'c']}
+          >
+            <Image
+              source={{uri:this.state.media}}
+              style={{
+                width: '100%',
+                height: '100%'
+              }}
+            />
+        </DragResizeBlock>
           {/* <ImageBackground source={{uri: this.state.greetingImage}} style={{ height: Matrics.screenWidth, width: Matrics.screenWidth, overflow:'hidden', borderWidth: 0.5, borderColor: Color.paleGreyThree}}> */}
-           {this.state.media ?
-             <PinchGestureHandler
-             style={{height: 100}}
-             onGestureEvent={_onPinchGestureEvent}
-             onHandlerStateChange={_onPinchHandlerStateChange}>
+           {/* {this.state.media ?
+            //  <PinchGestureHandler
+            //  style={{height: 100}}
+            //  onGestureEvent={_onPinchGestureEvent}
+            //  onHandlerStateChange={_onPinchHandlerStateChange}>
           
             <Animated.Image
               source={{uri:this.state.media}}
@@ -273,8 +296,10 @@ export class Greetings extends Component {
                   { scale: _scale }
                 ],
               }}
-              {...!this.state.moving ? this._panResponder.panHandlers : null}
-            /></PinchGestureHandler> : null}
+              // {...!this.state.moving ? this._panResponder.panHandlers : null}
+            />
+            // </PinchGestureHandler> 
+            : null} */}
           {/* </ImageBackground> */}
           </AutoHeightImage>
         </ViewShot>

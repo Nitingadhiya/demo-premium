@@ -149,6 +149,7 @@ class OrderInformationModal extends Component {
                     <MIcon name="close" size={22} color={Color.black} />
                   </TouchableOpacity>
                 </View>
+               
                 <View style={styles.displayItemView}>
                   <Text style={styles.textNoDisplay}>
                     <Text style={styles.fontWeightBold}>
@@ -156,14 +157,14 @@ class OrderInformationModal extends Component {
                     </Text>{' '}
                   </Text>
                   {item &&
-                    item.SystemConfig &&
+                    item.SystemConfig ?
                     item.SystemConfig.split(',').map((res, index) => {
                       return (
                         <Text key={`${index}_info`} style={styles.infoText}>
                           {res.replace(/^\s+/g, '')}
                         </Text>
                       );
-                    })}
+                    }) : null}
                   {userInfo &&
                   (userInfo.LoginType == '1' ||
                     userInfo.LoginType == '2' ||
@@ -214,6 +215,7 @@ class OrderInformationModal extends Component {
                     </View>
                   ) : null}
                 </View>
+              
               </View>
             </View>
           ) : null}
