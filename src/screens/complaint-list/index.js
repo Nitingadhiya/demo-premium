@@ -43,6 +43,7 @@ import ComplaintRemarkModal from '../../components/complaint-remark-modal';
 import ComplaintHoldRemarkModal from '../../components/complaint-hold-remark';
 import ComplaintRevisedModal from '../../components/complaint-revised-modal';
 import {complaintConfirmEndPoint,getServiceEndPoint} from '../../config/api-endpoint';
+import axios from'axios';
 
 
 let self;
@@ -161,6 +162,7 @@ class ComplainList extends Component {
   getServiceDayFn(tag) {
     //this.setState({loading: true});
     APICaller(getServiceEndPoint(tag), 'GET').then(json => {
+      console.log(json);
       if (json.data.Success === '1') {
         this.setState({
           // serviceList: json.data.Response,
@@ -325,6 +327,7 @@ class ComplainList extends Component {
     }&Antivirus=${this.state.selectAntivirus}&AntivirusKey=${
       this.state.antivirusKey
     }`;
+
     const method = 'GET';
     APICaller(`${endPoint}`, method).then(json => {
       this.setState({loadingData: false, refreshing: false});
@@ -622,7 +625,19 @@ class ComplainList extends Component {
     return (
       <TouchableOpacity
         onPress={() => {
-          Linking.openURL(`tel:${item.MobileNo}`);
+          const url = `http://43.251.73.83:6751/call.php?src=${userInfo.MobileNo}&dst=${item.MobileNo}`;
+          axios({
+            method: 'get',
+            url: url,
+          }).then((response) => {
+            if(response.status == '200') {
+              alert("Success");
+            }
+            
+            console.log(response);
+          });
+          //Linking.openURL("http://43.251.73.83:6751/call.php?src=8141925856&dst=9033685001");
+          //Linking.openURL(`tel:${item.MobileNo}`);
         }}
         style={{
           justifyContent: 'center',
@@ -764,6 +779,7 @@ class ComplainList extends Component {
                   flexDirection: 'row',
                   marginVertical: 5,
                 }}>
+                  {this.renderCallIcon(item)}
                 {this.renderCloseCompliantIcon(item)}
                 {this.renderLocationNavigate(item, index)}
               </View>
@@ -876,9 +892,9 @@ class ComplainList extends Component {
 
   checkPaymentIsDone = item => {
     let paymentDone = false;
-    if (_.get(item, 'PaymentDone', false)) {
+    if (_.get(item, 'PaymentDone', false) || _.get(item, 'IsOnSite', false)) {
       paymentDone = true;
-    }
+    } 
     return (
       <Text style={{color: paymentDone ? 'green' : 'red'}}>
         {'₹' + item.Charges}
@@ -893,7 +909,6 @@ class ComplainList extends Component {
     if(_.get(item,'ComplaintStatus','') !== 'Assigned') {
       bgcolor = '#ccc';
     }
-    console.log(item,'itemm')
     return (
       <TouchableOpacity
         onPress={() => this.complaintDetail(item, true, index)}
@@ -952,7 +967,7 @@ class ComplainList extends Component {
           </View>
           <View style={{alignItems: 'flex-end'}}>
             <Text style={styles.areaType}>
-              {item.IsFromWeb ? 'Office' : item.Area}
+              {item.IsFromWeb && !item.IsOnSite ? 'Office' : item.Area}
             </Text>
           </View>
 
@@ -1220,7 +1235,17 @@ class ComplainList extends Component {
                       margingTop: 5,
                     }}
                     onPress={() => {
-                      Linking.openURL(`tel:${this.state.compDetails.MobileNo}`);
+                      const url = `http://43.251.73.83:6751/call.php?src=${userInfo.MobileNo}&dst=${item.MobileNo}`;
+                      axios({
+                        method: 'get',
+                        url: url,
+                      }).then((response) => {
+                        if(response.status == '200') {
+                          alert("Success");
+                        }
+                        console.log(response);
+                      });
+                      //Linking.openURL(`tel:${this.state.compDetails.MobileNo}`);
                     }}>
                     <Text style={{fontSize: 14, color: Color.primary}}>
                       Call

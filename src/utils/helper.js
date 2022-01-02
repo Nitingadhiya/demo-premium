@@ -150,6 +150,8 @@ const Helper = {
               });
             }
             //}
+          } else {
+            Alert.alert('Alert', 'Something went to wrong');
           }
         },
       );
