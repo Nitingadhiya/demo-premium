@@ -81,8 +81,8 @@ export const AdminBottomTabs = (props: Props) => {
           name="ProductList"
           component={ProductList}
           options={{
-            tabBarIcon: 'format-list-bulleted',
-            tabBarLabel: 'Product List',
+            tabBarIcon: 'view-grid-outline',
+            tabBarLabel: 'Products',
             tabBarColor,
           }}
         />

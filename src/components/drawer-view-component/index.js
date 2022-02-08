@@ -81,7 +81,7 @@ class DrawerViewComponent extends Component {
           />
           <DrawerItem
             icon={({color, size}) => (
-              <McIcon name="format-list-bulleted" color={color} size={size} />
+              <McIcon name="view-grid-outline" color={color} size={size} />
             )}
             label="Product List"
             onPress={() => NavigationHelper.navigate(navigation, 'ProductList')}

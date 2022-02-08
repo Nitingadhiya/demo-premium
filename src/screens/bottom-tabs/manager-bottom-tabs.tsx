@@ -15,6 +15,7 @@ import WishList from '../wish-list';
 import Order from '../order';
 import Offer from '../offer';
 import ChatList from '../chat-list';
+import ProductList from '../product-list';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -77,12 +78,21 @@ export const ManagerBottomTabs = (props: Props) => {
             tabBarColor,
           }}
         />
-        <Tab.Screen
+        {/* <Tab.Screen
           name="WishList"
           component={WishList}
           options={{
             tabBarIcon: 'binoculars',
             tabBarLabel: 'Wishlist',
+            tabBarColor,
+          }}
+        /> */}
+         <Tab.Screen
+          name="ProductList"
+          component={ProductList}
+          options={{
+            tabBarIcon: 'view-grid-outline',
+            tabBarLabel: 'Products',
             tabBarColor,
           }}
         />

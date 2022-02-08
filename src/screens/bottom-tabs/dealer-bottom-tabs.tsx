@@ -73,8 +73,8 @@ export const DealerBottomTabs = (props: Props) => {
           name="ProductList"
           component={ProductList}
           options={{
-            tabBarIcon: 'format-list-bulleted',
-            tabBarLabel: 'Product',
+            tabBarIcon: 'view-grid-outline',
+            tabBarLabel: 'Products',
             tabBarColor,
           }}
         />

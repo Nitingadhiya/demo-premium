@@ -7,6 +7,7 @@ import APICaller from '../../utils/api-caller';
 import {userDashboardEndPoint} from '../../config/api-endpoint';
 import {Color,Images} from '../../common/styles';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import Helper from '../../utils/helper';
 
 let img;
 const ordTrue = 'green';
@@ -171,6 +172,14 @@ class POrder extends Component {
             <Text style={{fontWeight: 'bold'}}>OrderStatus :</Text>{' '}
             {data.OrderStatus}
           </Text>
+          <View style={{ flex:1}}>
+          {this.props.loginType && (this.props.loginType == '2' || this.props.loginType == '3' || his.props.loginType == '1') ? 
+            <TouchableOpacity
+              style={{borderRadius: 25, width:25, height: 25, backgroundColor: 'green', alignItems: 'center', justifyContent: 'center', marginLeft: 10}}
+              onPress={() => Helper.phoneNumber(data.MobileNo, data.OrderForMobile)}>
+              <McIcon name="phone" size={18} color={'white'} />
+            </TouchableOpacity> : null}
+          </View>
 
           <View style={{flexDirection: 'row'}}>
             {this.props.loginType && this.props.loginType == '1' ? 

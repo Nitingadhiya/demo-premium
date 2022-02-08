@@ -196,6 +196,28 @@ const Helper = {
     }
     return false;
   },
+  phoneNumber(source, destination){
+    if(!source) {
+      Alert.alert('Alert','Source Mobile Not not found');
+      return;
+    }
+
+    if(!destination) {
+      Alert.alert('Alert','Destination Mobile Not not found');
+      return;
+    }
+    const url = `http://43.251.73.83:6751/call.php?src=${source}&dst=${destination}`;
+    console.log(url);
+    axios({
+      method: 'get',
+      url: url,
+    }).then((response) => {
+      if(response.status == '200') {
+        alert("Success");
+      }
+      console.log(response);
+    });
+  }
 };
 
 export default Helper;

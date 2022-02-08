@@ -625,17 +625,7 @@ class ComplainList extends Component {
     return (
       <TouchableOpacity
         onPress={() => {
-          const url = `http://43.251.73.83:6751/call.php?src=${userInfo.MobileNo}&dst=${item.MobileNo}`;
-          axios({
-            method: 'get',
-            url: url,
-          }).then((response) => {
-            if(response.status == '200') {
-              alert("Success");
-            }
-            
-            console.log(response);
-          });
+          Helper.phoneNumber(item.AssignedToMobile, item.MobileNo);
           //Linking.openURL("http://43.251.73.83:6751/call.php?src=8141925856&dst=9033685001");
           //Linking.openURL(`tel:${item.MobileNo}`);
         }}
@@ -1235,16 +1225,7 @@ class ComplainList extends Component {
                       margingTop: 5,
                     }}
                     onPress={() => {
-                      const url = `http://43.251.73.83:6751/call.php?src=${userInfo.MobileNo}&dst=${item.MobileNo}`;
-                      axios({
-                        method: 'get',
-                        url: url,
-                      }).then((response) => {
-                        if(response.status == '200') {
-                          alert("Success");
-                        }
-                        console.log(response);
-                      });
+                      Helper.phoneNumber(item.AssignedToMobile,item.MobileNo);
                       //Linking.openURL(`tel:${this.state.compDetails.MobileNo}`);
                     }}>
                     <Text style={{fontSize: 14, color: Color.primary}}>
