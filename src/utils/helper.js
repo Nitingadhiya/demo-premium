@@ -16,6 +16,7 @@ import Events from './events';
 import NavigationHelper from './navigation-helper';
 import {Matrics} from '../common/styles';
 import {isIphoneX} from 'react-native-iphone-x-helper';
+import axios from 'axios';
 
 const Helper = {
   getLocalStorageItem(key) {
@@ -208,12 +209,15 @@ const Helper = {
     }
     const url = `http://43.251.73.83:6751/call.php?src=${source}&dst=${destination}`;
     console.log(url);
+  
     axios({
       method: 'get',
       url: url,
     }).then((response) => {
       if(response.status == '200') {
         alert("Success");
+      } else {
+        alert("failed");
       }
       console.log(response);
     });
