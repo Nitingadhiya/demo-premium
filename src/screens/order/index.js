@@ -38,6 +38,7 @@ class Order extends Component {
     systemConfig: [],
     systemName: '',
     loadingData: false,
+    localGlobal: false
   };
 
   componentDidMount() {
@@ -147,6 +148,62 @@ class Order extends Component {
    
   }
 
+  renderModal = () => {
+    return ( 
+      <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.localGlobal}
+          onRequestClose={() => {
+            this.setState({
+              localGlobal: false
+            })
+          }}
+        >
+          <View style={{alignSelf: 'center', justifyContent: 'center', alignItems: 'center', width: 500, height: Matrics.screenHeight}}>
+            <View style={{ height: 100, borderWidth: 1, borderColor: Color.paleGrey, width: 200,backgroundColor: 'white', borderRadius: 10,  alignItems: 'center', alignSelf: 'center', flexDirection: 'row', justifyContent: 'space-evenly', paddingTop: 30  }}>
+                <TouchableOpacity style={{ height: 40, width: 40, position: 'absolute', zIndex: 1, right: 0, top: 0, alignItems: 'center', justifyContent: 'center'}} onPress={()=> this.setState({
+                  localGlobal: false
+                }) }>
+                <MIcon name="close" size={20} color={Color.black30} />
+              </TouchableOpacity>
+              <TouchableOpacity
+               style={{ height: 40, width: 80, backgroundColor: Color.primary, justifyContent: 'center', alignItems: 'center', borderRadius: 10}}
+                onPress={() => this.inOutCall('in')}
+              >
+                <Text style={{ color: 'white', fontSize: 18}}>In</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+               style={{ height: 40, width: 80, backgroundColor: Color.primary, justifyContent: 'center', alignItems: 'center', borderRadius: 10}}
+                 onPress={() => this.inOutCall('out')}
+              >
+                <Text style={{ color: 'white', fontSize: 18}}>Out</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal> 
+        );
+  }
+
+  inOutCall(type) {
+    if(type == 'in') {
+      Helper.phoneNumber(this.source, this.destination, type);
+    } else {
+      Helper.phoneNumber(this.source, this.destination, type);
+    }
+    this.setState({
+      localGlobal: false
+    })
+  }
+
+  openOrderOpenModal(source, destination) {
+    this.source = source;
+    this.destination = destination;
+    this.setState({
+      localGlobal: true
+    });
+  }
+
   render() {
     const {loadingData, refreshing, orderItem, orderNotText} = this.state;
     const {navigation} = this.props;
@@ -175,6 +232,7 @@ class Order extends Component {
                   plugOnPress={() => this.verifyOrder(res.OrderNo, index)}
                   cancelOrder={()=> this.cancelOrder(res.OrderNo)}
                   loginType={userInfo.LoginType}
+                  openOrderModal={(source, destination) => this.openOrderOpenModal(source, destination)}
                 />
               );
             })
@@ -193,6 +251,7 @@ class Order extends Component {
             <SpinnerView />
           </View>
         ) : null}
+        {this.renderModal()}
       </SafeAreaView>
     );
   }

@@ -26,7 +26,7 @@ class POrder extends Component {
   };
 
   render() {
-    const {data, onPress} = this.props;
+    const {data, onPress, openOrderModal} = this.props;
     return (
       <TouchableOpacity
         style={{
@@ -176,7 +176,14 @@ class POrder extends Component {
           {this.props.loginType && (this.props.loginType == '2' || this.props.loginType == '3' || this.props.loginType == '1') ? 
             <TouchableOpacity
               style={{borderRadius: 25, width:25, height: 25, backgroundColor: 'green', alignItems: 'center', justifyContent: 'center', marginLeft: 10}}
-              onPress={() => Helper.phoneNumber(data.MobileNo, data.OrderForMobile)}>
+              onPress={async() => {             
+                const userInfo = await Helper.getLocalStorageItem('userInfo');
+                if (!userInfo) {
+                  alert("No User Info found");
+                  return;
+                }
+                this.props.openOrderModal(userInfo.MobileNo, data.MobileNo);
+                }}>
               <McIcon name="phone" size={18} color={'white'} />
             </TouchableOpacity> : null}
           </View>

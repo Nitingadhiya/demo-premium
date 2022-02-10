@@ -197,7 +197,7 @@ const Helper = {
     }
     return false;
   },
-  phoneNumber(source, destination){
+  phoneNumber(source, destination, type){
     if(!source) {
       Alert.alert('Alert','Source Mobile Not not found');
       return;
@@ -207,7 +207,12 @@ const Helper = {
       Alert.alert('Alert','Destination Mobile Not not found');
       return;
     }
-    const url = `http://43.251.73.83:6751/call.php?src=${source}&dst=${destination}`;
+
+    let url = `http://43.251.73.83:6751/call.php?src=${source}&dst=${destination}`;
+    if(type === 'in') {
+      url = `http://192.168.1.105:6751/call.php?src=${source}&dst=${destination}`;
+    }
+   
     console.log(url);
   
     axios({
@@ -220,6 +225,8 @@ const Helper = {
         alert("failed");
       }
       console.log(response);
+    }).catch((e)=>{
+      alert("Network Error Found");
     });
   }
 };

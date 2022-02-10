@@ -93,7 +93,8 @@ class ComplainList extends Component {
     complaintRemarkValidation: null,
     complaintCloseQRcode: '',
     onHoldRemarkModal: false,
-    headerTitle: null
+    headerTitle: null,
+    localGlobal: false
   };
 
   constructor(props) {
@@ -621,11 +622,68 @@ class ComplainList extends Component {
     );
   };
 
+  
+
+  renderModal = () => {
+    console.log("CART");
+    return ( 
+      <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.localGlobal}
+          onRequestClose={() => {
+            this.setState({
+              localGlobal: false
+            })
+          }}
+        >
+          <View style={{alignSelf: 'center', justifyContent: 'center', alignItems: 'center', width: 500, height: Matrics.screenHeight}}>
+          <View style={{ height: 100, borderWidth: 1, borderColor: Color.paleGrey, width: 200,backgroundColor: 'white', borderRadius: 10,  alignItems: 'center', alignSelf: 'center', flexDirection: 'row', justifyContent: 'space-evenly', paddingTop: 30  }}>
+             
+             <TouchableOpacity style={{ height: 40, width: 40, position: 'absolute', zIndex: 1, right: 0, top: 0, alignItems: 'center', justifyContent: 'center'}} onPress={()=> this.setState({
+                localGlobal: false
+             }) }>
+               <MIcon name="close" size={20} color={Color.black30} />
+             </TouchableOpacity>
+
+              <TouchableOpacity
+               style={{ height: 40, width: 80, backgroundColor: Color.primary, justifyContent: 'center', alignItems: 'center', borderRadius: 10}}
+                onPress={() => this.inOutCall('in')}
+              >
+                <Text style={{ color: 'white', fontSize: 18}}>In</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+               style={{ height: 40, width: 80, backgroundColor: Color.primary, justifyContent: 'center', alignItems: 'center', borderRadius: 10}}
+                 onPress={() => this.inOutCall('out')}
+              >
+                <Text style={{ color: 'white', fontSize: 18}}>Out</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal> 
+        );
+  }
+
+  inOutCall(type) {
+    if(type == 'in') {
+      Helper.phoneNumber(userInfo.MobileNo, this.itemForCall.MobileNo, type);
+    } else {
+      Helper.phoneNumber(userInfo.MobileNo, this.itemForCall.MobileNo, type);
+    }
+    this.setState({
+      localGlobal: false
+    })
+  }
+
   renderCallIcon = item => {
     return (
       <TouchableOpacity
         onPress={() => {
-          Helper.phoneNumber(item.AssignedToMobile, item.MobileNo);
+          this.itemForCall = item; 
+          this.setState({
+            localGlobal: true
+          });
+          // console.log(userInfo);
           //Linking.openURL("http://43.251.73.83:6751/call.php?src=8141925856&dst=9033685001");
           //Linking.openURL(`tel:${item.MobileNo}`);
         }}
@@ -1574,6 +1632,7 @@ class ComplainList extends Component {
         </KeyboardAvoidingView>
         <ComplaintWithQRCode userInfo={userInfo} navigation={navigation} />
         <ComplaintRemarkModal userInfo={userInfo} />
+        {this.renderModal()}
       </SafeAreaView>
     );
   }
