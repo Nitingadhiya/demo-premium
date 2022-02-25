@@ -13,6 +13,7 @@ import APICaller from '../../../../utils/api-caller';
 import {
   userDashboardEndPoint,
   getUserProfileEndPoint,
+  getComplaintCallEndpoint
 } from '../../../../config/api-endpoint';
 import Helper from '../../../../utils/helper';
 import Events from '../../../../utils/events';
@@ -35,6 +36,7 @@ import SystemWarrantyModal from '../../../../components/system-warranty-modal';
 import {Appbar, Badge} from 'react-native-paper';
 import {Color} from '../../../../common/styles';
 import {ConfirmModal} from '../../../../common/components/confirm-modal';
+import { McIcon } from '../../../../common/assets/vector-icon';
 
 export default class Dashboard extends Component {
   state = {
@@ -44,7 +46,9 @@ export default class Dashboard extends Component {
     complaintRegisterModal: true,
     cartCount: 0,
     isVisibleConfirm: false,
-    profileUpdated: true
+    profileUpdated: true,
+    complaintCallButton: false,
+    complaintPhoneData: null
   };
 
   async componentDidMount() {
@@ -85,6 +89,7 @@ export default class Dashboard extends Component {
     if (userInfo) {
       this.userDashboard(userInfo.UserName);
       this.getUserDetails(userInfo.UserName);
+      this.getComplaintCall(userInfo.UserName);
     }
   }
 
@@ -171,6 +176,19 @@ export default class Dashboard extends Component {
     NavigationHelper.navigate(navigation, 'EditProfile');
   }
 
+  getComplaintCall(userName){
+    APICaller(getComplaintCallEndpoint(userName), 'GET','').then(json => {
+      // console.log('json,', json);
+      const flag = _.get(json,'data.Response[0].Flag',false);
+      // console.log(flag);
+      this.setState({
+        complaintCallButton: flag,
+        complaintPhoneData: _.get(json,'data.Response[0]',null)
+      })
+
+    });
+  }
+
   render() {
     const {navigation} = this.props;
     const {
@@ -198,6 +216,7 @@ export default class Dashboard extends Component {
             {cartCount}
           </Badge>
         </Appbar.Header>
+       
 
         {updateAvailable ? <UpdateAvailableView /> : null}
         <ScrollView
@@ -217,6 +236,7 @@ export default class Dashboard extends Component {
             />
           ) : null}
         </ScrollView>
+      
         {!profileUpdated ? <TouchableOpacity
               style={{padding: 10, alignSelf: 'center'}}
               onPress={() => NavigationHelper.navigate(navigation, 'MyProfile')}>
@@ -277,6 +297,19 @@ export default class Dashboard extends Component {
             })
           }
         />
+          {this.state.complaintCallButton ? 
+        <View style={{position: 'absolute', zIndex: 10001, bottom: 20, right: 20, shadowColor: 'red',
+          shadowOffset: {width: 2, height:14},
+          shadowOpacity: 0.9,
+          shadowRadius: 3}}>
+          <TouchableOpacity
+              style={{borderRadius: 60, width:60, height: 60, backgroundColor: 'green', alignItems: 'center', justifyContent: 'center'}}
+              onPress={async() => {   
+                          Helper.phoneNumber(_.get(this.state.complaintPhoneData,'FromMobileNo', ''),_.get(this.state.complaintPhoneData,'ToMobile', ''))
+                }}>
+              <McIcon name="phone" size={30} color={'white'} />
+            </TouchableOpacity>
+      </View> : null}
       </View>
     );
   }

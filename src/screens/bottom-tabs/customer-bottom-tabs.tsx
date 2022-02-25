@@ -1,5 +1,6 @@
 import React from 'react';
 import color from 'color';
+import {View, TouchableOpacity} from'react-native';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {useTheme, Portal, FAB} from 'react-native-paper';
 import {useSafeArea} from 'react-native-safe-area-context';
@@ -15,6 +16,7 @@ import WishList from '../wish-list';
 import Order from '../order';
 import Offer from '../offer';
 import ChatList from '../chat-list';
+import { McIcon, MIcon } from '../../common/assets/vector-icon';
 
 const Tab = createMaterialBottomTabNavigator();
 

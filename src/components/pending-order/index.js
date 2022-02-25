@@ -168,7 +168,7 @@ export default class POrder extends React.PureComponent {
         </View>
         <View style={{marginVertical: 5}}>
           <Text style={{fontSize: 16}}>
-            <Text style={{fontWeight: 'bold'}}>OrderStatus :</Text>{' '}
+            {/* <Text style={{fontWeight: 'bold'}}>OrderStatus :</Text>{' '} */}
             {data.OrderStatus}
           </Text>
         </View>

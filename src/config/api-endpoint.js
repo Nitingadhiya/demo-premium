@@ -17,6 +17,7 @@ const getComplaintChargeEndPoint = (systemTag, userName) =>
   `GetComplaintCharges?SystemTag=${systemTag}&BaseUserName=${userName}`;
 const getItemTypeListEndPoint = 'GetItemTypeList';
 const getSystemTypeListEndPoint = 'GetSystemTypeList';
+
 const addSystemEndPoint = (
   itemType,
   systemType,
@@ -141,6 +142,10 @@ const getGreetingsFolderEndpoint = 'GetFestivalList';
 
 const getGreetingsFestivalEndpoint = (FolderName) =>`GetFestivalImages?FolderName=${FolderName}`;
 
+//Complaint Call
+
+const getComplaintCallEndpoint =  (userName) =>`CurrentComplaint?UserName=${userName}&`;
+
 module.exports = {
   checkVersionEndPoint,
   sliderImagesEndPoint,
@@ -217,5 +222,6 @@ module.exports = {
   getPartWiseFilterEndPoint,
   activeDeactiveUserEndPoint,
   getGreetingsFolderEndpoint,
-  getGreetingsFestivalEndpoint
+  getGreetingsFestivalEndpoint,
+  getComplaintCallEndpoint
 };

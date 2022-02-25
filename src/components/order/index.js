@@ -169,7 +169,7 @@ class POrder extends Component {
             justifyContent: 'space-between',
           }}>
           <Text style={{fontSize: 16}}>
-            <Text style={{fontWeight: 'bold'}}>OrderStatus :</Text>{' '}
+            {/* <Text style={{fontWeight: 'bold'}}>OrderStatus :</Text>{' '} */}
             {data.OrderStatus}
           </Text>
           <View style={{ flex:1}}>
