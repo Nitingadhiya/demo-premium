@@ -78,6 +78,12 @@ export default class Dashboard extends Component {
       this.addSystem();
     });
     Helper.checkUpdateAvailable();
+
+    Events.on('app-resume','appResume',() => {
+      if(userInfo) {
+        this.getComplaintCall(userInfo.UserName);
+      }
+    })
   }
 
   async getUserInfo() {
@@ -180,7 +186,7 @@ export default class Dashboard extends Component {
     APICaller(getComplaintCallEndpoint(userName), 'GET','').then(json => {
       // console.log('json,', json);
       const flag = _.get(json,'data.Response[0].Flag',false);
-      // console.log(flag);
+      console.log(flag);
       this.setState({
         complaintCallButton: flag,
         complaintPhoneData: _.get(json,'data.Response[0]',null)

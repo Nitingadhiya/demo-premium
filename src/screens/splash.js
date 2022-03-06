@@ -96,7 +96,10 @@ export default class Splash extends React.Component {
        const userinfo = await Helper.getLocalStorageItem('userInfo');
        if(userInfo.LoginType == "Engineer" || userInfo.LoginType == "3" || userInfo.LoginType == 3) {
           LocationChecker.checkParticualrLocation();
+       } else if(userInfo.LoginType == '4'){
+        Events.trigger('app-resume');
        }
+       
     }
     this.setState({ appState: nextAppState });
   };
